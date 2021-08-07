@@ -278,6 +278,10 @@ function wc_prepare_product_attributes( $attributes, bool $for_variation){
 
         // Loop through the term names
         foreach( $values as $term_name ){
+            if ($term_name == ''){
+                continue; //*
+            }
+
             if( term_exists( $term_name, $taxonomy ) ){
                 // Get and set the term ID in the array from the term name
                 $term_ids[] = get_term_by( 'name', $term_name, $taxonomy )->term_id;
@@ -504,6 +508,10 @@ function add_variation( $product_id, Array $args ){
         // Iterating through the variations attributes
         foreach ($args['attributes'] as $attribute => $term_name )
         {
+            if ($term_name == ''){
+                continue; //
+            }
+            
             $taxonomy = str_replace('attribute_pa_', '', $attribute);
             $taxonomy = str_replace('pa_', '', $taxonomy);
             $taxonomy = 'pa_'.$taxonomy; // The attribute taxonomy

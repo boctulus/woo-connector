@@ -73,8 +73,9 @@ return array (
     array (
       'term_names' => 
       array (
-        0 => 'blanco',
-        1 => 'negro',
+        0 => 'rosa',
+        1 => 'blanco',
+        2 => 'negro',
       ),
       'is_visible' => true,
     ),
@@ -82,8 +83,9 @@ return array (
     array (
       'term_names' => 
       array (
-        0 => 'l',
-        1 => 'xl',
+        0 => '',
+        1 => 'l',
+        2 => 'xl',
       ),
       'is_visible' => true,
     ),
@@ -94,6 +96,64 @@ return array (
   'variations' => 
   array (
     0 => 
+    array (
+      'attributes' => 
+      array (
+        'attribute_pa_color' => 'rosa',
+        'attribute_pa_talla' => '',
+      ),
+      'availability_html' => '<p class="stock in-stock">999 in stock</p>
+',
+      'backorders_allowed' => false,
+      'dimensions' => 
+      array (
+        'length' => '10',
+        'width' => '10',
+        'height' => '10',
+      ),
+      'dimensions_html' => '10 &times; 10 &times; 10 cm',
+      'display_price' => 489.0,
+      'display_regular_price' => 500.0,
+      'image' => 
+      array (
+        'title' => 'pantalonELBA_HUPIT1-scaled-700x1050',
+        'caption' => '',
+        'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
+        'alt' => '',
+        'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg',
+        'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg 700w',
+        'sizes' => '(max-width: 600px) 100vw, 600px',
+        'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
+        'full_src_w' => 700,
+        'full_src_h' => 1050,
+        'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-100x100.jpg',
+        'gallery_thumbnail_src_w' => 100,
+        'gallery_thumbnail_src_h' => 100,
+        'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
+        'thumb_src_w' => 300,
+        'thumb_src_h' => 300,
+        'src_w' => 600,
+        'src_h' => 900,
+      ),
+      'image_id' => 33,
+      'is_downloadable' => false,
+      'is_in_stock' => true,
+      'is_purchasable' => true,
+      'is_sold_individually' => 'no',
+      'is_virtual' => false,
+      'max_qty' => 999,
+      'min_qty' => 1,
+      'price_html' => '<span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>500</bdi></span></del> <ins><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>489</bdi></span></ins></span>',
+      'sku' => 'elefante-panta-1',
+      'variation_description' => '<p>un ofertón!</p>
+',
+      'variation_id' => 35,
+      'variation_is_active' => true,
+      'variation_is_visible' => true,
+      'weight' => '15',
+      'weight_html' => '15 kg',
+    ),
+    1 => 
     array (
       'attributes' => 
       array (
@@ -150,7 +210,7 @@ return array (
       'weight' => '15',
       'weight_html' => '15 kg',
     ),
-    1 => 
+    2 => 
     array (
       'attributes' => 
       array (
@@ -208,7 +268,7 @@ return array (
       'weight' => '15',
       'weight_html' => '15 kg',
     ),
-    2 => 
+    3 => 
     array (
       'attributes' => 
       array (
@@ -265,7 +325,7 @@ return array (
       'weight' => '15',
       'weight_html' => '15 kg',
     ),
-    3 => 
+    4 => 
     array (
       'attributes' => 
       array (
