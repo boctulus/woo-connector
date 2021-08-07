@@ -16,7 +16,7 @@ return array (
   'manage_stock' => false,
   'stock_quantity' => NULL,
   'stock_status' => 'instock',
-  'sold_individually' => false,
+  'is_sold_individually' => 'no',
   'weight' => '15',
   'length' => '10',
   'width' => '10',
@@ -69,47 +69,46 @@ return array (
   ),
   'attributes' => 
   array (
-    'pa_color' => 
+    'color' => 
     array (
       'term_names' => 
       array (
         0 => 'blanco',
         1 => 'negro',
       ),
-      'is_visible' => true,
-      'for_variation' => false,
+      'is_visible' => true
     ),
-    'pa_talla' => 
+    'talla' => 
     array (
       'term_names' => 
       array (
         0 => 'l',
         1 => 'xl',
       ),
-      'is_visible' => true,
-      'for_variation' => false,
+      'is_visible' => true
     ),
   ),
+
+
   'variations' => 
   array (
     0 => 
     array (
       'attributes' => 
       array (
-        'attribute_pa_color' => 'blanco',
-        'attribute_pa_talla' => 'l',
+        'color' => 'blanco',
+        'talla' => 'l',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
-        'length' => '10',
-        'width' => '10',
-        'height' => '10',
+        'length' => '15',
+        'width' => '15',
+        'height' => '15',
       ),
-      'dimensions_html' => '10 &times; 10 &times; 10 cm',
-      'display_price' => 222.0,
-      'display_regular_price' => 222.0,
+      'display_price' => 444.0,
+      'display_regular_price' => 304.0,
       'image' => 
       array (
         'title' => 'pantalonELBA_HUPIT1-scaled-700x1050',
@@ -152,8 +151,8 @@ return array (
     array (
       'attributes' => 
       array (
-        'attribute_pa_color' => 'blanco',
-        'attribute_pa_talla' => 'xl',
+        'color' => 'blanco',
+        'talla' => 'xl',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
@@ -208,8 +207,8 @@ return array (
     array (
       'attributes' => 
       array (
-        'attribute_pa_color' => 'negro',
-        'attribute_pa_talla' => 'l',
+        'color' => 'negro',
+        'talla' => 'l',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
@@ -264,8 +263,8 @@ return array (
     array (
       'attributes' => 
       array (
-        'attribute_pa_color' => 'negro',
-        'attribute_pa_talla' => 'xl',
+        'color' => 'negro',
+        'talla' => 'xl',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,

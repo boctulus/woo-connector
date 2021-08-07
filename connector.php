@@ -250,6 +250,60 @@ function setProductTagNames($product_id, Array $categos){
 }
 
 
+// Utility function that prepare product attributes before saving
+function wc_prepare_product_attributes( $attributes, bool $for_variation){
+
+    $data = array();
+    $position = 0;
+
+    foreach( $attributes as $_taxonomy => $values ){
+        $taxonomy = 'pa_'. $_taxonomy;
+
+        if( ! taxonomy_exists( $taxonomy ) )
+            continue;
+
+        // Get an instance of the WC_Product_Attribute Object
+        $attribute = new WC_Product_Attribute();
+
+        $term_ids = array();
+
+        if (isset($values['is_visible'])){
+            $visibility = $values['is_visible'];
+        }
+
+        if (isset($values['term_names'])){
+            $values = $values['term_names'];
+        }
+
+        // Loop through the term names
+        foreach( $values as $term_name ){
+            if( term_exists( $term_name, $taxonomy ) ){
+                // Get and set the term ID in the array from the term name
+                $term_ids[] = get_term_by( 'name', $term_name, $taxonomy )->term_id;
+            }else{
+                $term_data = wp_insert_term( $term_name, $taxonomy );
+                $term_ids[]   = $term_data['term_id'];
+                //continue;
+            }    
+        }
+
+        $taxonomy_id = wc_attribute_taxonomy_id_by_name( $taxonomy ); // Get taxonomy ID
+
+        $attribute->set_id( $taxonomy_id );
+        $attribute->set_name( $taxonomy );
+        $attribute->set_options( $term_ids );
+        $attribute->set_position( $position );
+        $attribute->set_visible( $visibility );
+        $attribute->set_variation($for_variation);
+
+        $data[$taxonomy] = $attribute; // Set in an array
+
+        $position++; // Increase position
+    }
+    return $data;
+}
+
+
 // Custom function for product creation (For Woocommerce 3+ only)
 function create_product( $args ){
 
@@ -278,23 +332,25 @@ function create_product( $args ){
     $product->set_virtual( isset($args['virtual']) ? $args['virtual'] : false );
 
     // Prices
-    $product->set_regular_price( $args['regular_price'] );
 
-    if (isset($args['price'])){
-        $product->set_sale_price($args['price']);
-    } else {
-        $product->set_sale_price( isset( $args['sale_price'] ) ? $args['sale_price'] : '' );
+    if (isset($args['regular_price'])){
+        $product->set_regular_price( $args['regular_price'] );
+    }elseif (isset($args['price'])){
+        $product->set_regular_price( $args['regular_price'] );
+    }
+
+    if (isset($args['sale_price'])){
+        $product->set_sale_price($args['sale_price']);
     }
     
-    if( isset( $args['sale_price'] ) ){
-        $product->set_date_on_sale_from( isset( $args['sale_from'] ) ? $args['sale_from'] : '' );
-        $product->set_date_on_sale_to( isset( $args['sale_to'] ) ? $args['sale_to'] : '' );
+    if( isset($args['sale_from'])){
+        $product->set_date_on_sale_from($args['sale_from']);
     }
 
-    //if (isset($args['stock_status'])){
-        //$product->set_stock_status($args['stock_status']);
-    //}    
-
+    if( isset($args['sale_to'])){
+        $product->set_date_on_sale_to($args['sale_to']);
+    }
+    
     // Downloadable (boolean)
     $product->set_downloadable(  isset($args['downloadable']) ? $args['downloadable'] : false );
     if( isset($args['downloadable']) && $args['downloadable'] ) {
@@ -316,6 +372,7 @@ function create_product( $args ){
         ###$product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
         $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
         $product->set_stock_status( isset( $args['stock_status'] ) ? $args['stock_status'] : 'instock' );
+        
         if( isset( $args['manage_stock'] ) && $args['manage_stock'] ) {
             $product->set_stock_status( $args['stock_qty'] );
             $product->set_backorders( isset( $args['backorders'] ) ? $args['backorders'] : 'no' ); // 'yes', 'no' or 'notify'
@@ -323,15 +380,21 @@ function create_product( $args ){
     }
 
     // Sold Individually
-    $product->set_sold_individually( isset( $args['sold_individually'] ) ? $args['sold_individually'] : false );
+    if (isset($args['sold_individually'])){
+        $product->set_sold_individually($args['is_sold_individually'] != 'no');
+    }
 
     // Weight, dimensions and shipping class
     $product->set_weight( isset( $args['weight'] ) ? $args['weight'] : '' );
     $product->set_length( isset( $args['length'] ) ? $args['length'] : '' );
     $product->set_width( isset(  $args['width'] ) ?  $args['width']  : '' );
     $product->set_height( isset( $args['height'] ) ? $args['height'] : '' );
-    if( isset( $args['shipping_class_id'] ) )
+
+    /*
+    if( isset( $args['shipping_class_id'] ) ){
         $product->set_shipping_class_id( $args['shipping_class_id'] );
+    }
+    */        
 
     // Upsell and Cross sell (IDs)
     $product->set_upsell_ids( isset( $args['upsells'] ) ? $args['upsells'] : '' );
@@ -341,8 +404,7 @@ function create_product( $args ){
     // Attributes et default attributes
     
     if( isset( $args['attributes'] ) ){
-        $attr = wc_prepare_product_attributes($args['attributes']);
-        //dd($attr, 'ATTRIBUTES');
+        $attr = wc_prepare_product_attributes($args['attributes'], true);
         $product->set_attributes($attr);
     }
         
@@ -392,7 +454,124 @@ function create_product( $args ){
         addImagesToPost($product_id, $ids);         
     }
 
+    if ($args['type'] == 'variable' && isset($args['variations'])){
+        foreach ($args['variations'] as $variation){
+            add_variation($product_id, $variation);
+        }        
+    }
+
     return $product_id;
+}
+
+function add_variation( $product_id, Array $args ){
+    
+    // Get the Variable product object (parent)
+    $product = wc_get_product($product_id);
+
+    $variation_post = array(
+        'post_title'  => $product->get_name(),
+        'post_name'   => 'product-'.$product_id.'-variation',
+        'post_status' => isset($args['status']) ? $args['status'] : 'publish',
+        'post_parent' => $product_id,
+        'post_type'   => 'product_variation',
+        'guid'        => $product->get_permalink()
+    );
+
+    // Creating the product variation
+    $variation_id = wp_insert_post( $variation_post );
+
+    // Get an instance of the WC_Product_Variation object
+    $variation = new WC_Product_Variation( $variation_id );
+
+  
+    dd($variation_id, "variation_id del producto con product_id=$product_id"); //
+
+    if( isset( $args['attributes'] ) ){
+        // Iterating through the variations attributes
+        foreach ($args['attributes'] as $attribute => $term_name )
+        {
+            $taxonomy = 'pa_'.$attribute; // The attribute taxonomy
+
+            // If taxonomy doesn't exists we create it (Thanks to Carl F. Corneil)
+            if( ! taxonomy_exists( $taxonomy ) ){
+                register_taxonomy(
+                    $taxonomy,
+                'product_variation',
+                    array(
+                        'hierarchical' => false,
+                        'label' => ucfirst( $attribute ),
+                        'query_var' => true,
+                        'rewrite' => array( 'slug' => sanitize_title($attribute) ), // The base slug
+                    ),
+                );
+            }
+
+            // Check if the Term name exist and if not we create it.
+            if( ! term_exists( $term_name, $taxonomy ) )
+                wp_insert_term( $term_name, $taxonomy ); // Create the term
+
+            $term_slug = get_term_by('name', $term_name, $taxonomy )->slug; // Get the term slug
+
+            // Get the post Terms names from the parent variable product.
+            $post_term_names =  wp_get_post_terms( $product_id, $taxonomy, array('fields' => 'names') );
+
+            // Check if the post term exist and if not we set it in the parent variable product.
+            if( ! in_array( $term_name, $post_term_names ) )
+                wp_set_post_terms( $product_id, $term_name, $taxonomy, true );
+
+            // Set/save the attribute data in the product variation
+            update_post_meta( $variation_id, 'attribute_'.$taxonomy, $term_slug );
+        }
+    }
+
+
+    if (isset($args['sku'])){
+        #######$variation->set_sku($args['sku']);
+    }
+
+    // Prices
+    if (isset($args['display_regular_price'])){
+        $variation->set_regular_price( $args['display_regular_price'] );
+    }
+
+    if (isset($args['display_price'])){
+        $variation->set_sale_price($args['display_price']);
+    }
+    
+    if( isset($args['sale_from'])){
+        $variation->set_date_on_sale_from($args['sale_from']);
+    }
+
+    if( isset($args['sale_to'])){
+        $variation->set_date_on_sale_to($args['sale_to']);
+    }
+
+    // Sold Individually
+    if (isset($args['sold_individually'])){
+        $variation->set_sold_individually($args['is_sold_individually'] != 'no');
+    }
+
+    // Weight, dimensions and shipping class
+    $variation->set_weight( isset( $args['weight'] ) ? $args['weight'] : '' );
+
+    // Stock    
+    if (isset($args['stock_status'])){
+        $variation->set_stock_status($args['stock_status']);
+    }
+
+    if( ! empty($args['stock_quantity']) ){
+        $variation->set_stock_quantity( $args['stock_quantity'] );
+        $variation->set_manage_stock(true);
+    } else {
+        $variation->set_manage_stock(false);
+    }
+
+    
+    $variation->save();
+
+    // agrega la variación al producto
+    $product = wc_get_product($product_id);
+    $product->save();
 }
 
 // Utility function that returns the correct product object instance
@@ -414,45 +593,3 @@ function wc_get_product_object_type( $type = 'simple') {
         return $product;
 }
 
-// Utility function that prepare product attributes before saving
-function wc_prepare_product_attributes( $attributes ){
-
-    $data = array();
-    $position = 0;
-
-    foreach( $attributes as $taxonomy => $values ){
-        if( ! taxonomy_exists( $taxonomy ) )
-            continue;
-
-        // Get an instance of the WC_Product_Attribute Object
-        $attribute = new WC_Product_Attribute();
-
-        $term_ids = array();
-
-        // Loop through the term names
-        foreach( $values['term_names'] as $term_name ){
-            if( term_exists( $term_name, $taxonomy ) ){
-                // Get and set the term ID in the array from the term name
-                $term_ids[] = get_term_by( 'name', $term_name, $taxonomy )->term_id;
-            }else{
-                $term_data = wp_insert_term( $term_name, $taxonomy );
-                $term_ids[]   = $term_data['term_id'];
-                //continue;
-            }    
-        }
-
-        $taxonomy_id = wc_attribute_taxonomy_id_by_name( $taxonomy ); // Get taxonomy ID
-
-        $attribute->set_id( $taxonomy_id );
-        $attribute->set_name( $taxonomy );
-        $attribute->set_options( $term_ids );
-        $attribute->set_position( $position );
-        $attribute->set_visible( $values['is_visible'] );
-        $attribute->set_variation( $values['for_variation'] );
-
-        $data[$taxonomy] = $attribute; // Set in an array
-
-        $position++; // Increase position
-    }
-    return $data;
-}
