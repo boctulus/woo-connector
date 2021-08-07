@@ -317,8 +317,8 @@ function create_product( $args ){
     $product->set_name( $args['name'] ); // Name (title).
  
     // Description and short description:
-    $product->set_description( $args['description'] );
-    $product->set_short_description( $args['short_description'] );
+    $product->set_description( $args['description'] ?? '' );
+    $product->set_short_description( $args['short_description'] ?? '');
 
     // Status ('publish', 'pending', 'draft' or 'trash')
     $product->set_status( isset($args['status']) ? $args['status'] : 'publish' );
@@ -471,6 +471,7 @@ function add_variation( $product_id, Array $args ){
 
     $variation_post = array(
         'post_title'  => $product->get_name(),
+        'post_description' => $args['variation_description'] ?? '',
         'post_name'   => 'product-'.$product_id.'-variation',
         'post_status' => isset($args['status']) ? $args['status'] : 'publish',
         'post_parent' => $product_id,
@@ -484,8 +485,12 @@ function add_variation( $product_id, Array $args ){
     // Get an instance of the WC_Product_Variation object
     $variation = new WC_Product_Variation( $variation_id );
 
+    
+    // Description and short description:
+    $variation->set_description($args['variation_description']);
+
   
-    dd($variation_id, "variation_id del producto con product_id=$product_id"); //
+    dd("Product_id = $product_id"); //
 
     if( isset( $args['attributes'] ) ){
         // Iterating through the variations attributes
@@ -494,8 +499,7 @@ function add_variation( $product_id, Array $args ){
             $taxonomy = str_replace('attribute_pa_', '', $attribute);
             $taxonomy = str_replace('pa_', '', $taxonomy);
             $taxonomy = 'pa_'.$taxonomy; // The attribute taxonomy
-            
-            dd($taxonomy, 'TAXONOMY');
+
 
             // If taxonomy doesn't exists we create it (Thanks to Carl F. Corneil)
             if( ! taxonomy_exists( $taxonomy ) ){

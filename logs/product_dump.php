@@ -166,8 +166,8 @@ return array (
         'height' => '10',
       ),
       'dimensions_html' => '10 &times; 10 &times; 10 cm',
-      'display_price' => 222.0,
-      'display_regular_price' => 222.0,
+      'display_price' => 2220.0,
+      'display_regular_price' => 2220.0,
       'image' => 
       array (
         'title' => 'pocketpantswhite_mariamalo2',
@@ -197,7 +197,7 @@ return array (
       'is_virtual' => false,
       'max_qty' => 99,
       'min_qty' => 1,
-      'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
+      'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>2220</bdi></span></span>',
       'sku' => 'elefante-panta-1',
       'variation_description' => '<p>descripción para blanco XL (para gorditas)</p>
 ',
