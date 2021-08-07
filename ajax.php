@@ -169,7 +169,7 @@ function create_prod($req)
 	/wp-json/connector/v1/xxxxx
 */
 
-#	GET /wp-json/connector/v1/products
+#	GET /index.php/wp-json/connector/v1/products?id=15
 add_action( 'rest_api_init', function () {
 	register_rest_route( 'connector/v1', '/products', array(
 		'methods' => 'GET',
@@ -177,7 +177,7 @@ add_action( 'rest_api_init', function () {
         'permission_callback' => '__return_true'
 	) );
 	
-	#	POST /wp-json/connector/v1/products
+	#	POST /index.php/wp-json/connector/v1/products
 	register_rest_route( 'connector/v1', '/products', array(
 		'methods' => 'POST',
 		'callback' => 'create_prod',

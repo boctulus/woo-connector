@@ -9,7 +9,7 @@ return array (
   'catalog_visibility' => 'visible',
   'description' => 'bla bla bla tipo elefanteeeee',
   'short_description' => 'desc corta',
-  'sku' => 'elefante-panta-1aaa',
+  'sku' => 'elefante-panta-1',
   'price' => '222',
   'regular_price' => '',
   'sale_price' => '',
@@ -24,8 +24,8 @@ return array (
   'parent_id' => 0,
   'tags' => 
   array (
-    0 => 'Tag 1',
-    1 => 'Tag 2',
+    0 => 'tag1',
+    1 => 'tag3',
   ),
   'categories' => 
   array (
@@ -69,15 +69,25 @@ return array (
   ),
   'attributes' => 
   array (
-    'color' => 
+    'pa_color' => 
     array (
-      0 => 'blanco',
-      1 => 'negro',
+      'term_names' => 
+      array (
+        0 => 'blanco',
+        1 => 'negro',
+      ),
+      'is_visible' => true,
+      'for_variation' => false,
     ),
-    'talla' => 
+    'pa_talla' => 
     array (
-      0 => 'l',
-      1 => 'xl',
+      'term_names' => 
+      array (
+        0 => 'l',
+        1 => 'xl',
+      ),
+      'is_visible' => true,
+      'for_variation' => false,
     ),
   ),
   'variations' => 
@@ -130,7 +140,7 @@ return array (
       'max_qty' => '',
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
-      'sku' => 'elefante-panta-1aaa',
+      'sku' => 'elefante-panta-1',
       'variation_description' => '',
       'variation_id' => 20,
       'variation_is_active' => true,
@@ -186,7 +196,7 @@ return array (
       'max_qty' => '',
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
-      'sku' => 'elefante-panta-1aaa',
+      'sku' => 'elefante-panta-1',
       'variation_description' => '',
       'variation_id' => 21,
       'variation_is_active' => true,
@@ -242,7 +252,7 @@ return array (
       'max_qty' => '',
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>333</bdi></span></span>',
-      'sku' => 'elefante-panta-1aaa',
+      'sku' => 'elefante-panta-1',
       'variation_description' => '',
       'variation_id' => 22,
       'variation_is_active' => true,
@@ -298,7 +308,7 @@ return array (
       'max_qty' => '',
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
-      'sku' => 'elefante-panta-1aaa',
+      'sku' => 'elefante-panta-1',
       'variation_description' => '',
       'variation_id' => 23,
       'variation_is_active' => true,

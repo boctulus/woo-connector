@@ -253,9 +253,6 @@ function setProductTagNames($product_id, Array $categos){
 // Custom function for product creation (For Woocommerce 3+ only)
 function create_product( $args ){
 
-    if( ! function_exists('wc_get_product_object_type') && ! function_exists('wc_prepare_product_attributes') )
-        return false;
-
     // Get an empty instance of the product object (defining it's type)
     $product = wc_get_product_object_type( $args['type'] );
     if( ! $product )
@@ -340,11 +337,18 @@ function create_product( $args ){
     $product->set_upsell_ids( isset( $args['upsells'] ) ? $args['upsells'] : '' );
     $product->set_cross_sell_ids( isset( $args['cross_sells'] ) ? $args['upsells'] : '' );
 
+
     // Attributes et default attributes
-    if( isset( $args['attributes'] ) )
-        $product->set_attributes( wc_prepare_product_attributes($args['attributes']) );
+    
+    if( isset( $args['attributes'] ) ){
+        $attr = wc_prepare_product_attributes($args['attributes']);
+        //dd($attr, 'ATTRIBUTES');
+        $product->set_attributes($attr);
+    }
+        
     if( isset( $args['default_attributes'] ) )
         $product->set_default_attributes( $args['default_attributes'] ); // Needs a special formatting
+
 
     // Reviews, purchase note and menu order
     $product->set_reviews_allowed( isset( $args['reviews'] ) ? $args['reviews'] : false );
@@ -412,7 +416,6 @@ function wc_get_product_object_type( $type = 'simple') {
 
 // Utility function that prepare product attributes before saving
 function wc_prepare_product_attributes( $attributes ){
-    global $woocommerce;
 
     $data = array();
     $position = 0;
@@ -428,11 +431,14 @@ function wc_prepare_product_attributes( $attributes ){
 
         // Loop through the term names
         foreach( $values['term_names'] as $term_name ){
-            if( term_exists( $term_name, $taxonomy ) )
+            if( term_exists( $term_name, $taxonomy ) ){
                 // Get and set the term ID in the array from the term name
                 $term_ids[] = get_term_by( 'name', $term_name, $taxonomy )->term_id;
-            else
-                continue;
+            }else{
+                $term_data = wp_insert_term( $term_name, $taxonomy );
+                $term_ids[]   = $term_data['term_id'];
+                //continue;
+            }    
         }
 
         $taxonomy_id = wc_attribute_taxonomy_id_by_name( $taxonomy ); // Get taxonomy ID
