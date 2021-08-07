@@ -2,7 +2,7 @@
 
 return array (
   'type' => 'variable',
-  'name' => 'Pantalones elefante-like --updated!',
+  'name' => 'Pantalones elefante-like --updated!~~',
   'slug' => 'pantalones-tipo-elefante',
   'status' => 'publish',
   'featured' => false,
@@ -13,8 +13,8 @@ return array (
   'price' => '222',
   'regular_price' => '',
   'sale_price' => '',
-  'manage_stock' => false,
-  'stock_quantity' => NULL,
+  'manage_stock' => true,
+  'stock_quantity' => 999,
   'stock_status' => 'instock',
   'is_sold_individually' => false,
   'weight' => '15',
@@ -100,7 +100,8 @@ return array (
         'attribute_pa_color' => 'blanco',
         'attribute_pa_talla' => 'l',
       ),
-      'availability_html' => '',
+      'availability_html' => '<p class="stock in-stock">88 in stock</p>
+',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
@@ -138,7 +139,7 @@ return array (
       'is_purchasable' => true,
       'is_sold_individually' => 'no',
       'is_virtual' => false,
-      'max_qty' => '',
+      'max_qty' => 88,
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
       'sku' => 'elefante-panta-1',
@@ -214,7 +215,8 @@ return array (
         'attribute_pa_color' => 'negro',
         'attribute_pa_talla' => 'l',
       ),
-      'availability_html' => '',
+      'availability_html' => '<p class="stock in-stock">999 in stock</p>
+',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
@@ -252,7 +254,7 @@ return array (
       'is_purchasable' => true,
       'is_sold_individually' => 'no',
       'is_virtual' => false,
-      'max_qty' => '',
+      'max_qty' => 999,
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>333</bdi></span></span>',
       'sku' => 'elefante-panta-1',
@@ -270,7 +272,8 @@ return array (
         'attribute_pa_color' => 'negro',
         'attribute_pa_talla' => 'xl',
       ),
-      'availability_html' => '',
+      'availability_html' => '<p class="stock in-stock">999 in stock</p>
+',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
@@ -308,7 +311,7 @@ return array (
       'is_purchasable' => true,
       'is_sold_individually' => 'no',
       'is_virtual' => false,
-      'max_qty' => '',
+      'max_qty' => 999,
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
       'sku' => 'elefante-panta-1',
