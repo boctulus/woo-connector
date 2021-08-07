@@ -224,9 +224,7 @@ function create_product( $args ){
 
     // Product name (Title) and slug
     $product->set_name( $args['name'] ); // Name (title).
-    if( isset( $args['slug'] ) )
-        $product->set_name( $args['slug'] );
-
+ 
     // Description and short description:
     $product->set_description( $args['description'] );
     $product->set_short_description( $args['short_description'] );
@@ -234,23 +232,32 @@ function create_product( $args ){
     // Status ('publish', 'pending', 'draft' or 'trash')
     $product->set_status( isset($args['status']) ? $args['status'] : 'publish' );
 
-    // Visibility ('hidden', 'visible', 'search' or 'catalog')
-    $product->set_catalog_visibility( isset($args['visibility']) ? $args['visibility'] : 'visible' );
-
     // Featured (boolean)
     $product->set_featured(  isset($args['featured']) ? $args['featured'] : false );
+
+    // Visibility ('hidden', 'visible', 'search' or 'catalog')
+    $product->set_catalog_visibility( isset($args['visibility']) ? $args['visibility'] : 'visible' );
 
     // Virtual (boolean)
     $product->set_virtual( isset($args['virtual']) ? $args['virtual'] : false );
 
     // Prices
     $product->set_regular_price( $args['regular_price'] );
-    $product->set_sale_price( isset( $args['sale_price'] ) ? $args['sale_price'] : '' );
-    $product->set_price( isset( $args['sale_price'] ) ? $args['sale_price'] :  $args['regular_price'] );
+
+    if (isset($args['price'])){
+        $product->set_sale_price($args['price']);
+    } else {
+        $product->set_sale_price( isset( $args['sale_price'] ) ? $args['sale_price'] : '' );
+    }
+    
     if( isset( $args['sale_price'] ) ){
         $product->set_date_on_sale_from( isset( $args['sale_from'] ) ? $args['sale_from'] : '' );
         $product->set_date_on_sale_to( isset( $args['sale_to'] ) ? $args['sale_to'] : '' );
     }
+
+    //if (isset($args['stock_status'])){
+        //$product->set_stock_status($args['stock_status']);
+    //}    
 
     // Downloadable (boolean)
     $product->set_downloadable(  isset($args['downloadable']) ? $args['downloadable'] : false );
@@ -266,8 +273,10 @@ function create_product( $args ){
         $product->set_tax_class(  isset($args['tax_class']) ? $args['tax_class'] : '' );
     }
 
+    $args['virtual'] = $args['virtual'] ?? false;
+
     // SKU and Stock (Not a virtual product)
-    if( isset($args['virtual']) && ! $args['virtual'] ) {
+    if( ! $args['virtual'] ) {
         $product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
         $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
         $product->set_stock_status( isset( $args['stock_status'] ) ? $args['stock_status'] : 'instock' );
@@ -318,20 +327,25 @@ function create_product( $args ){
     ## --- SAVE PRODUCT --- ##
     $product_id = $product->save();
 
+    if (isset($args['stock_status'])){
+        //$product->set_stock_status($args['stock_status']);
+        update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
+    } 
+
     return $product_id;
 }
 
 // Utility function that returns the correct product object instance
-function wc_get_product_object_type( $type ) {
+function wc_get_product_object_type( $type = 'simple') {
     // Get an instance of the WC_Product object (depending on his type)
-    if( isset($args['type']) && $args['type'] === 'variable' ){
+    if($type === 'variable' ){
         $product = new WC_Product_Variable();
-    } elseif( isset($args['type']) && $args['type'] === 'grouped' ){
+    } elseif($type === 'grouped' ){
         $product = new WC_Product_Grouped();
-    } elseif( isset($args['type']) && $args['type'] === 'external' ){
+    } elseif($type === 'external' ){
         $product = new WC_Product_External();
-    } else {
-        $product = new WC_Product_Simple(); // "simple" By default
+    } elseif($type === 'simple' )  {
+        $product = new WC_Product_Simple(); 
     } 
     
     if( ! is_a( $product, 'WC_Product' ) )
