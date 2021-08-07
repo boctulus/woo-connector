@@ -257,7 +257,8 @@ function wc_prepare_product_attributes( $attributes, bool $for_variation){
     $position = 0;
 
     foreach( $attributes as $_taxonomy => $values ){
-        $taxonomy = 'pa_'. $_taxonomy;
+        $taxonomy = str_replace('pa_', '', $_taxonomy);
+        $taxonomy = 'pa_'. $taxonomy;
 
         if( ! taxonomy_exists( $taxonomy ) )
             continue;
@@ -490,7 +491,11 @@ function add_variation( $product_id, Array $args ){
         // Iterating through the variations attributes
         foreach ($args['attributes'] as $attribute => $term_name )
         {
-            $taxonomy = 'pa_'.$attribute; // The attribute taxonomy
+            $taxonomy = str_replace('attribute_pa_', '', $attribute);
+            $taxonomy = str_replace('pa_', '', $taxonomy);
+            $taxonomy = 'pa_'.$taxonomy; // The attribute taxonomy
+            
+            dd($taxonomy, 'TAXONOMY');
 
             // If taxonomy doesn't exists we create it (Thanks to Carl F. Corneil)
             if( ! taxonomy_exists( $taxonomy ) ){

@@ -2,7 +2,7 @@
 
 return array (
   'type' => 'variable',
-  'name' => 'Pantalones elefante-like --updated',
+  'name' => 'Pantalones elefante-like --updated!',
   'slug' => 'pantalones-tipo-elefante',
   'status' => 'publish',
   'featured' => false,
@@ -16,7 +16,7 @@ return array (
   'manage_stock' => false,
   'stock_quantity' => NULL,
   'stock_status' => 'instock',
-  'is_sold_individually' => 'no',
+  'is_sold_individually' => false,
   'weight' => '15',
   'length' => '10',
   'width' => '10',
@@ -69,68 +69,70 @@ return array (
   ),
   'attributes' => 
   array (
-    'color' => 
+    'pa_color' => 
     array (
       'term_names' => 
       array (
         0 => 'blanco',
         1 => 'negro',
       ),
-      'is_visible' => true
+      'is_visible' => true,
     ),
-    'talla' => 
+    'pa_talla' => 
     array (
       'term_names' => 
       array (
         0 => 'l',
         1 => 'xl',
       ),
-      'is_visible' => true
+      'is_visible' => true,
     ),
   ),
-
-
+  'default_attributes' => 
+  array (
+  ),
   'variations' => 
   array (
     0 => 
     array (
       'attributes' => 
       array (
-        'color' => 'blanco',
-        'talla' => 'l',
+        'attribute_pa_color' => 'blanco',
+        'attribute_pa_talla' => 'l',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
-        'length' => '15',
-        'width' => '15',
-        'height' => '15',
+        'length' => '10',
+        'width' => '10',
+        'height' => '10',
       ),
-      'display_price' => 444.0,
-      'display_regular_price' => 304.0,
+      'dimensions_html' => '10 &times; 10 &times; 10 cm',
+      'display_price' => 222.0,
+      'display_regular_price' => 222.0,
       'image' => 
       array (
-        'title' => 'pantalonELBA_HUPIT1-scaled-700x1050',
+        'title' => 'pocketpantswhite_mariamalo3',
         'caption' => '',
-        'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
+        'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3.jpg',
         'alt' => '',
-        'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg',
-        'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg 700w',
+        'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-600x900.jpg',
+        'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-768x1152.jpg 768w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3.jpg 1000w',
         'sizes' => '(max-width: 600px) 100vw, 600px',
-        'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
-        'full_src_w' => 700,
-        'full_src_h' => 1050,
-        'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-100x100.jpg',
+        'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3.jpg',
+        'full_src_w' => 1000,
+        'full_src_h' => 1500,
+        'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-100x100.jpg',
         'gallery_thumbnail_src_w' => 100,
         'gallery_thumbnail_src_h' => 100,
-        'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
+        'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo3-300x300.jpg',
         'thumb_src_w' => 300,
         'thumb_src_h' => 300,
         'src_w' => 600,
         'src_h' => 900,
       ),
-      'image_id' => 33,
+      'image_id' => 30,
       'is_downloadable' => false,
       'is_in_stock' => true,
       'is_purchasable' => true,
@@ -151,10 +153,11 @@ return array (
     array (
       'attributes' => 
       array (
-        'color' => 'blanco',
-        'talla' => 'xl',
+        'attribute_pa_color' => 'blanco',
+        'attribute_pa_talla' => 'xl',
       ),
-      'availability_html' => '',
+      'availability_html' => '<p class="stock in-stock">99 in stock</p>
+',
       'backorders_allowed' => false,
       'dimensions' => 
       array (
@@ -167,36 +170,37 @@ return array (
       'display_regular_price' => 222.0,
       'image' => 
       array (
-        'title' => 'pantalonELBA_HUPIT1-scaled-700x1050',
+        'title' => 'pocketpantswhite_mariamalo2',
         'caption' => '',
-        'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
+        'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2.jpg',
         'alt' => '',
-        'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg',
-        'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg 700w',
+        'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-600x900.jpg',
+        'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-768x1152.jpg 768w, http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2.jpg 1000w',
         'sizes' => '(max-width: 600px) 100vw, 600px',
-        'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
-        'full_src_w' => 700,
-        'full_src_h' => 1050,
-        'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-100x100.jpg',
+        'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2.jpg',
+        'full_src_w' => 1000,
+        'full_src_h' => 1500,
+        'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-100x100.jpg',
         'gallery_thumbnail_src_w' => 100,
         'gallery_thumbnail_src_h' => 100,
-        'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
+        'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo2-300x300.jpg',
         'thumb_src_w' => 300,
         'thumb_src_h' => 300,
         'src_w' => 600,
         'src_h' => 900,
       ),
-      'image_id' => 33,
+      'image_id' => 31,
       'is_downloadable' => false,
       'is_in_stock' => true,
       'is_purchasable' => true,
       'is_sold_individually' => 'no',
       'is_virtual' => false,
-      'max_qty' => '',
+      'max_qty' => 99,
       'min_qty' => 1,
       'price_html' => '<span class="price"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>222</bdi></span></span>',
       'sku' => 'elefante-panta-1',
-      'variation_description' => '',
+      'variation_description' => '<p>descripción para blanco XL (para gorditas)</p>
+',
       'variation_id' => 21,
       'variation_is_active' => true,
       'variation_is_visible' => true,
@@ -207,8 +211,8 @@ return array (
     array (
       'attributes' => 
       array (
-        'color' => 'negro',
-        'talla' => 'l',
+        'attribute_pa_color' => 'negro',
+        'attribute_pa_talla' => 'l',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
@@ -263,8 +267,8 @@ return array (
     array (
       'attributes' => 
       array (
-        'color' => 'negro',
-        'talla' => 'xl',
+        'attribute_pa_color' => 'negro',
+        'attribute_pa_talla' => 'xl',
       ),
       'availability_html' => '',
       'backorders_allowed' => false,
@@ -315,8 +319,5 @@ return array (
       'weight' => '15',
       'weight_html' => '15 kg',
     ),
-  ),
-  'default_attributes' => 
-  array (
   ),
 );
