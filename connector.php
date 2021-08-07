@@ -371,6 +371,7 @@ function create_product( $args ){
     // SKU and Stock (Not a virtual product)
     if( ! $args['virtual'] ) {
         ###$product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
+
         $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
 
         if (isset($args['stock_status'])){
@@ -382,7 +383,7 @@ function create_product( $args ){
         }
         
         if( isset( $args['manage_stock'] ) && $args['manage_stock'] ) {
-            $product->set_stock_status( $args['stock_qty'] );
+            $product->set_stock_quantity( $args['stock_quantity'] );
             $product->set_backorders( isset( $args['backorders'] ) ? $args['backorders'] : 'no' ); // 'yes', 'no' or 'notify'
         }
     }
@@ -579,8 +580,8 @@ function add_variation( $product_id, Array $args ){
         $variation->set_stock_status('instock');        
     }
 
-    if( ! empty($args['stock_quantity']) ){
-        $variation->set_stock_quantity( $args['stock_quantity'] );
+    if ($args['max_qty'] != ''){
+        $variation->set_stock_quantity( $args['max_qty'] );
         $variation->set_manage_stock(true);
     } else {
         $variation->set_manage_stock(false);
