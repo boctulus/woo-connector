@@ -1,5 +1,9 @@
 <?php
 
+use connector\libs\Debug;
+use connector\libs\Files;
+use connector\libs\Strings;
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -21,7 +25,7 @@ class Test
         
     }
 
-    function upload_image($imageurl){
+    function uploadImage($imageurl){
         $size = getimagesize($imageurl)['mime'];
         $f_sz = explode('/', $size);
         $imagetype = end($f_sz);
@@ -52,7 +56,12 @@ class Test
         return $attach_id;
     }
 
-    function add_images_to_post($pid, Array $image_ids){
+    function setDefaultImage($product_id, $image_id){
+        update_post_meta( $product_id, '_thumbnail_id', $image_id );
+    }
+
+
+    function addImagesToPost($pid, Array $image_ids){
         $image_ids = implode(",", $image_ids);
         update_post_meta($pid, '_product_image_gallery', $image_ids);
     }
@@ -61,7 +70,7 @@ class Test
     function create(){
         $arr = include(__DIR__ . '/logs/product_dump.php');
 
-        #$attach_id = $this->upload_image('https://mueblesespana.es/wp-content/uploads/2021/06/50091-2-600x427-2.jpg');
+        $attach_id = $this->uploadImage('http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg');
         #dd($attach_id); // 49, 58
 
         #exit;
@@ -70,14 +79,11 @@ class Test
         $product_id = create_product($arr);
         dd($product_id, 'product_id');
 
-        $this->add_images_to_post($product_id, [49,58]);  // --ok
-        $this->setDefaultImage($product_id, 58); // -- ok
+        $this->addImagesToPost($product_id, [$attach_id, 49,58]);  // --ok
+        $this->setDefaultImage($product_id, $attach_id); // -- ok
     }
 
-    function setDefaultImage($product_id, $image_id){
-        update_post_meta( $product_id, '_thumbnail_id', $image_id );
-    }
-
+   
 }
 
 

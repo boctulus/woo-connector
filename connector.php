@@ -42,18 +42,6 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 }	
 
 
-add_action( 'woocommerce_new_product', function($id, $product ){
-    Files::logger("Nuevo producto creado con id=$id");
-    Files::dump($product);
-}, 10, 2);
-
-
-add_action( 'woocommerce_update_product', function($id, $product ){
-    Files::logger("Nuevo producto actualizado con id=$id");
-    Files::dump($product);
-}, 10, 2);
-
-
 /*
     $product es el objeto producto
     $taxonomy es opcional y es algo como 'pa_talla'
@@ -211,6 +199,57 @@ function delete_product($id, $force = false)
     return true;
 }
 
+
+function uploadImage($imageurl){
+    $size = getimagesize($imageurl)['mime'];
+    $f_sz = explode('/', $size);
+    $imagetype = end($f_sz);
+    $uniq_name = date('dmY').''.(int) microtime(true); 
+    $filename = $uniq_name.'.'.$imagetype;
+
+    $uploaddir = wp_upload_dir();
+    $uploadfile = $uploaddir['path'] . '/' . $filename;
+    $contents= file_get_contents($imageurl);
+    $savefile = fopen($uploadfile, 'w');
+    fwrite($savefile, $contents);
+    fclose($savefile);
+
+    $wp_filetype = wp_check_filetype(basename($filename), null );
+    $attachment = array(
+        'post_mime_type' => $wp_filetype['type'],
+        'post_title' => $filename,
+        'post_content' => '',
+        'post_status' => 'inherit'
+    );
+
+    $attach_id = wp_insert_attachment( $attachment, $uploadfile );
+    $imagenew = get_post( $attach_id );
+    $fullsizepath = get_attached_file( $imagenew->ID );
+    $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
+    wp_update_attachment_metadata( $attach_id, $attach_data ); 
+
+    return $attach_id;
+}
+
+function setDefaultImage($product_id, $image_id){
+    update_post_meta( $product_id, '_thumbnail_id', $image_id );
+}
+
+
+function addImagesToPost($product_id, Array $image_ids){
+    $image_ids = implode(",", $image_ids);
+    update_post_meta($product_id, '_product_image_gallery', $image_ids);
+}
+
+function setProductCategoryNames($product_id, Array $categos){
+    wp_set_object_terms($product_id, $categos, 'product_cat');
+}
+
+function setProductTagNames($product_id, Array $categos){
+    wp_set_object_terms($product_id, $categos, 'product_tag');
+}
+
+
 // Custom function for product creation (For Woocommerce 3+ only)
 function create_product( $args ){
 
@@ -277,7 +316,7 @@ function create_product( $args ){
 
     // SKU and Stock (Not a virtual product)
     if( ! $args['virtual'] ) {
-        $product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
+        ###$product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
         $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
         $product->set_stock_status( isset( $args['stock_status'] ) ? $args['stock_status'] : 'instock' );
         if( isset( $args['manage_stock'] ) && $args['manage_stock'] ) {
@@ -313,17 +352,7 @@ function create_product( $args ){
     if( isset( $args['menu_order'] ) )
         $product->set_menu_order( $args['menu_order'] );
 
-    // Product categories and Tags
-    if( isset( $args['category_ids'] ) )
-        $product->set_category_ids( $args['category_ids'] );
-    if( isset( $args['tag_ids'] ) )
-        $product->set_tag_ids( $args['tag_ids'] );
-
-
-    // Images and Gallery
-    $product->set_image_id( isset( $args['image_id'] ) ? $args['image_id'] : "" );
-    $product->set_gallery_image_ids( isset( $args['gallery_ids'] ) ? $args['gallery_ids'] : array() );
-
+        
     ## --- SAVE PRODUCT --- ##
     $product_id = $product->save();
 
@@ -331,6 +360,33 @@ function create_product( $args ){
         //$product->set_stock_status($args['stock_status']);
         update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
     } 
+
+
+    // Product categories and Tags
+    if( isset( $args['categories'] ) ){
+        setProductCategoryNames($product_id, array_column($args['categories'], 'name'));
+    }        
+
+    if( isset( $args['tags'] ) ){
+        setProductTagNames($product_id, $args['tags'] );
+    }
+        
+
+    // Images and Gallery
+  
+    if (isset($args['image'])){
+        $attach_id = uploadImage($args['image']);
+        setDefaultImage($product_id, $attach_id);
+    }
+
+    if (isset($args['gallery_images']) && count($args['gallery_images'])){
+        $ids = [];
+        foreach ($args['gallery_images'] as $img){
+            $attach_id = uploadImage($img[0]);
+        }
+
+        addImagesToPost($product_id, $ids);         
+    }
 
     return $product_id;
 }
