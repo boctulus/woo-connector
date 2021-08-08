@@ -73,7 +73,7 @@ class Test
     }
 
 
-    function addImagesToPost($pid, Array $image_ids){
+    function setImagesForPost($pid, Array $image_ids){
         $image_ids = implode(",", $image_ids);
         update_post_meta($pid, '_product_image_gallery', $image_ids);
     }
@@ -82,17 +82,8 @@ class Test
     function create(){
         $arr = include(__DIR__ . '/logs/product_dump.php');
 
-        $attach_id = $this->uploadImage('http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg');
-        #dd($attach_id); // 49, 58
-
-        #exit;
-
-        //dd($arr);
         $product_id = create_product($arr);
         dd($product_id, 'product_id');
-
-        $this->addImagesToPost($product_id, [$attach_id, 49,58]);  // --ok
-        $this->setDefaultImage($product_id, $attach_id); // -- ok
     }
 
     function get_attachment_id_from_src ($image_src) {
@@ -107,17 +98,13 @@ class Test
         $product_id = 450;
 
         $img_src = [
-            'https://mueblesespana.es/wp-content/uploads/2021/06/21110-600x600-1.jpg',
-            'https://mueblesespana.es/wp-content/uploads/2021/06/21110-VISTA-INTERIOR.jpg',
-            'https://mueblesespana.es/wp-content/uploads/2021/06/12191-600x600-1.jpg'
+            'https://mueblesespana.es/wp-content/uploads/2021/06/colchon-viscoelastica-luxury-1.jpg',
         ];
 
         $ids = [];
         $ids[] = $this->uploadImage($img_src[0]);
-        $ids[] = $this->uploadImage($img_src[1]);
-        $ids[] = $this->uploadImage($img_src[2]);
 
-        $this->addImagesToPost($product_id, $ids); 
+        $this->setImagesForPost($product_id, $ids); 
         $this->setDefaultImage($product_id, $ids[0]);
 
 
@@ -134,7 +121,7 @@ class Test
 
 $test = new Test();
 
-//$test->create();
+$test->create();
 $test->test_set_images();
 
 //

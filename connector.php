@@ -199,17 +199,25 @@ function delete_product($id, $force = false)
     return true;
 }
 
+function get_attachment_id_from_src ($image_src) {
+    global $wpdb;
 
-function uploadImage($imageurl){
-    static $attachs = [];
+    $query = "SELECT ID FROM {$wpdb->posts} WHERE guid='$image_src'";
+    $id = $wpdb->get_var($query);
+    return $id;    
+}
 
-    /*
-    if (!empty($attachs)){
-        if (in_array($imageurl, $attachs)){
-            return $attachs[$imageurl];
-        }
+/*
+    Otra implentación:
+
+    https://wordpress.stackexchange.com/questions/64313/add-image-to-media-library-from-url-in-uploads-directory
+*/
+function uploadImage($imageurl)
+{
+    $attach_id = get_attachment_id_from_src($imageurl);
+    if ( $attach_id !== null){
+        return $attach_id;
     }
-    */
 
     $size = getimagesize($imageurl)['mime'];
     $f_sz = explode('/', $size);
@@ -229,7 +237,8 @@ function uploadImage($imageurl){
         'post_mime_type' => $wp_filetype['type'],
         'post_title' => $filename,
         'post_content' => '',
-        'post_status' => 'inherit'
+        'post_status' => 'inherit',
+        'guid'        => $imageurl
     );
 
     $attach_id = wp_insert_attachment( $attachment, $uploadfile );
@@ -237,8 +246,6 @@ function uploadImage($imageurl){
     $fullsizepath = get_attached_file( $imagenew->ID );
     $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
     wp_update_attachment_metadata( $attach_id, $attach_data ); 
-
-    //$attachs[$imageurl] = $attach_id;
 
     return $attach_id;
 }
@@ -248,7 +255,7 @@ function setDefaultImage($product_id, $image_id){
 }
 
 
-function addImagesToPost($product_id, Array $image_ids){
+function setImagesForPost($product_id, Array $image_ids){
     $image_ids = implode(",", $image_ids);
     update_post_meta($product_id, '_product_image_gallery', $image_ids);
 }
@@ -475,12 +482,9 @@ function create_product( $args ){
         foreach ($args['gallery_images'] as $img){
             $img_url   = $img[0];
             $attach_id = uploadImage($img_url);
-
-            dd($img_url, 'img_url');
         }
 
-        dd($ids, 'ATTACH IDs');
-        addImagesToPost($product_id, $ids);         
+        setImagesForPost($product_id, $ids);         
     }
 
     if ($args['type'] == 'variable' && isset($args['variations'])){
@@ -609,6 +613,15 @@ function add_variation( $product_id, Array $args ){
         $variation->set_manage_stock(true);
     } else {
         $variation->set_manage_stock(false);
+    }
+
+
+    // Image por variation if any
+
+    if (isset($args['image'])){
+        $attach_id = uploadImage($args['image']['full_src']);
+        setImagesForPost($variation_id, [$attach_id]); 
+        setDefaultImage($variation_id, $attach_id);
     }
 
     
