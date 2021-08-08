@@ -44,7 +44,8 @@ class Test
             'post_mime_type' => $wp_filetype['type'],
             'post_title' => $filename,
             'post_content' => '',
-            'post_status' => 'inherit'
+            'post_status' => 'inherit',
+            'guid'        => $imageurl
         );
 
         $attach_id = wp_insert_attachment( $attachment, $uploadfile );
@@ -83,13 +84,46 @@ class Test
         $this->setDefaultImage($product_id, $attach_id); // -- ok
     }
 
+    function get_attachment_id_from_src ($image_src) {
+        global $wpdb;
+    
+        $query = "SELECT ID FROM {$wpdb->posts} WHERE guid='$image_src'";
+        $id = $wpdb->get_var($query);
+        return $id;    
+    }
+
+    function test_set_images(){
+        $product_id = 462;
+
+        $img_src = [
+            'https://mueblesespana.es/wp-content/uploads/2021/06/45025-600x600-1.jpg',
+            'https://mueblesespana.es/wp-content/uploads/2021/06/29504-600x600-1.jpg',
+            'https://mueblesespana.es/wp-content/uploads/2021/06/29015-600x600-1.jpg'
+        ];
+
+        $ids = [];
+        $ids[] = $this->uploadImage($img_src[0]);
+        $ids[] = $this->uploadImage($img_src[1]);
+        $ids[] = $this->uploadImage($img_src[2]);
+
+        /*
+        $this->addImagesToPost($product_id, $ids); 
+        $this->setDefaultImage($product_id, $ids[0]);
+        */
+
+        foreach ($img_src as $src){
+            dd($this->get_attachment_id_from_src($src), 'attach id');
+        }
+    }
+
+
    
 }
 
 
 $test = new Test();
 
-$test->create();
-//$test->test_set_images();
+//$test->create();
+$test->test_set_images();
 
 //

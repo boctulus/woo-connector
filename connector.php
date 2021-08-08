@@ -201,6 +201,16 @@ function delete_product($id, $force = false)
 
 
 function uploadImage($imageurl){
+    static $attachs = [];
+
+    /*
+    if (!empty($attachs)){
+        if (in_array($imageurl, $attachs)){
+            return $attachs[$imageurl];
+        }
+    }
+    */
+
     $size = getimagesize($imageurl)['mime'];
     $f_sz = explode('/', $size);
     $imagetype = end($f_sz);
@@ -227,6 +237,8 @@ function uploadImage($imageurl){
     $fullsizepath = get_attached_file( $imagenew->ID );
     $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
     wp_update_attachment_metadata( $attach_id, $attach_data ); 
+
+    //$attachs[$imageurl] = $attach_id;
 
     return $attach_id;
 }
@@ -458,12 +470,16 @@ function create_product( $args ){
         setDefaultImage($product_id, $attach_id);
     }
 
-    if (isset($args['gallery_images']) && count($args['gallery_images'])){
+    if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
         $ids = [];
         foreach ($args['gallery_images'] as $img){
-            $attach_id = uploadImage($img[0]);
+            $img_url   = $img[0];
+            $attach_id = uploadImage($img_url);
+
+            dd($img_url, 'img_url');
         }
 
+        dd($ids, 'ATTACH IDs');
         addImagesToPost($product_id, $ids);         
     }
 
@@ -511,7 +527,7 @@ function add_variation( $product_id, Array $args ){
             if ($term_name == ''){
                 continue; //
             }
-            
+
             $taxonomy = str_replace('attribute_pa_', '', $attribute);
             $taxonomy = str_replace('pa_', '', $taxonomy);
             $taxonomy = 'pa_'.$taxonomy; // The attribute taxonomy
