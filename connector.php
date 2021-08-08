@@ -212,7 +212,7 @@ function get_attachment_id_from_src ($image_src) {
 
     https://wordpress.stackexchange.com/questions/64313/add-image-to-media-library-from-url-in-uploads-directory
 */
-function uploadImage($imageurl)
+function uploadImage($imageurl, $title = '', $alt = '', $caption = '')
 {
     $attach_id = get_attachment_id_from_src($imageurl);
     if ( $attach_id !== null){
@@ -235,10 +235,13 @@ function uploadImage($imageurl)
     $wp_filetype = wp_check_filetype(basename($filename), null );
     $attachment = array(
         'post_mime_type' => $wp_filetype['type'],
-        'post_title' => $filename,
-        'post_content' => '',
-        'post_status' => 'inherit',
-        'guid'        => $imageurl
+        'post_title'     => $filename,
+        'post_content'   => '',
+        'post_status'    => 'inherit',
+        'guid'           => $imageurl,
+        'title'          => $title,
+        'alt'            => $alt,
+        'caption'        => $caption
     );
 
     $attach_id = wp_insert_attachment( $attachment, $uploadfile );
@@ -329,7 +332,11 @@ function wc_prepare_product_attributes( $attributes, bool $for_variation){
 
 
 // Custom function for product creation (For Woocommerce 3+ only)
-function create_product( $args ){
+function create_product( $args )
+{
+    if (isset($args['sku']) && !empty(wc_get_product_id_by_sku($args['sku']))){
+        throw new \InvalidArgumentException("SKU {$args['sku']} ya está en uso.");
+    }
 
     // Get an empty instance of the product object (defining it's type)
     $product = wc_get_product_object_type( $args['type'] );
@@ -393,7 +400,11 @@ function create_product( $args ){
 
     // SKU and Stock (Not a virtual product)
     if( ! $args['virtual'] ) {
-        ###$product->set_sku( isset( $args['sku'] ) ? $args['sku'] : '' );
+
+        // SKU
+        if (isset($args['sku'])){
+            $product->set_sku($args['sku']);
+        }        
 
         $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
 
@@ -455,7 +466,6 @@ function create_product( $args ){
     $product_id = $product->save();
 
     if (isset($args['stock_status'])){
-        //$product->set_stock_status($args['stock_status']);
         update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
     } 
 
@@ -521,7 +531,7 @@ function add_variation( $product_id, Array $args ){
     // Description and short description:
     $variation->set_description($args['variation_description']);
 
-  
+
     dd("Product_id = $product_id"); //
 
     if( isset( $args['attributes'] ) ){
@@ -566,12 +576,13 @@ function add_variation( $product_id, Array $args ){
 
             // Set/save the attribute data in the product variation
             update_post_meta( $variation_id, 'attribute_'.$taxonomy, $term_slug );
+
         }
     }
 
-
+    // SKU
     if (isset($args['sku'])){
-        #######$variation->set_sku($args['sku']);
+        $variation->set_sku($args['sku']);
     }
 
     // Prices
@@ -619,7 +630,7 @@ function add_variation( $product_id, Array $args ){
     // Image por variation if any
 
     if (isset($args['image'])){
-        $attach_id = uploadImage($args['image']['full_src']);
+        $attach_id = uploadImage($args['image']['full_src'], $args['image']['title'], $args['image']['alt'], $args['image']['caption'] );
         setImagesForPost($variation_id, [$attach_id]); 
         setDefaultImage($variation_id, $attach_id);
     }

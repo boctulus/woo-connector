@@ -115,13 +115,25 @@ class Test
     }
 
 
-   
+    function delete_all_products(){
+        global $wpdb;
+
+        $wpdb->query("DELETE FROM wp_terms WHERE term_id IN (SELECT term_id FROM wp_term_taxonomy WHERE taxonomy LIKE 'pa_%')");
+        $wpdb->query("DELETE FROM wp_term_taxonomy WHERE taxonomy LIKE 'pa_%'");
+        $wpdb->query("DELETE FROM wp_term_relationships WHERE term_taxonomy_id not IN (SELECT term_taxonomy_id FROM wp_term_taxonomy)");
+        $wpdb->query("DELETE FROM wp_term_relationships WHERE object_id IN (SELECT ID FROM wp_posts WHERE post_type IN ('product','product_variation'))");
+        $wpdb->query("DELETE FROM wp_postmeta WHERE post_id IN (SELECT ID FROM wp_posts WHERE post_type IN ('product','product_variation'))");
+        $wpdb->query("DELETE FROM wp_posts WHERE post_type IN ('product','product_variation')");
+        $wpdb->query("DELETE pm FROM wp_postmeta pm LEFT JOIN wp_posts wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL");
+    }   
 }
 
 
 $test = new Test();
 
+//$test->delete_all_products();
 $test->create();
-$test->test_set_images();
+//$test->test_set_images();
+
 
 //
