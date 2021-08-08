@@ -25,7 +25,18 @@ class Test
         
     }
 
-    function uploadImage($imageurl){
+    /*
+        Otra implentación:
+
+        https://wordpress.stackexchange.com/questions/64313/add-image-to-media-library-from-url-in-uploads-directory
+    */
+    function uploadImage($imageurl)
+    {
+        $attach_id = $this->get_attachment_id_from_src($imageurl);
+        if ( $attach_id !== null){
+            return $attach_id;
+        }
+
         $size = getimagesize($imageurl)['mime'];
         $f_sz = explode('/', $size);
         $imagetype = end($f_sz);
@@ -42,7 +53,7 @@ class Test
         $wp_filetype = wp_check_filetype(basename($filename), null );
         $attachment = array(
             'post_mime_type' => $wp_filetype['type'],
-            'post_title' => $filename,
+            'post_title' => preg_replace( '/\.[^.]+$/', '', basename($filename )),
             'post_content' => '',
             'post_status' => 'inherit',
             'guid'        => $imageurl
@@ -93,12 +104,12 @@ class Test
     }
 
     function test_set_images(){
-        $product_id = 462;
+        $product_id = 450;
 
         $img_src = [
-            'https://mueblesespana.es/wp-content/uploads/2021/06/45025-600x600-1.jpg',
-            'https://mueblesespana.es/wp-content/uploads/2021/06/29504-600x600-1.jpg',
-            'https://mueblesespana.es/wp-content/uploads/2021/06/29015-600x600-1.jpg'
+            'https://mueblesespana.es/wp-content/uploads/2021/06/21110-600x600-1.jpg',
+            'https://mueblesespana.es/wp-content/uploads/2021/06/21110-VISTA-INTERIOR.jpg',
+            'https://mueblesespana.es/wp-content/uploads/2021/06/12191-600x600-1.jpg'
         ];
 
         $ids = [];
@@ -106,11 +117,11 @@ class Test
         $ids[] = $this->uploadImage($img_src[1]);
         $ids[] = $this->uploadImage($img_src[2]);
 
-        /*
         $this->addImagesToPost($product_id, $ids); 
         $this->setDefaultImage($product_id, $ids[0]);
-        */
 
+
+        dd($ids);
         foreach ($img_src as $src){
             dd($this->get_attachment_id_from_src($src), 'attach id');
         }
