@@ -427,19 +427,15 @@ class Products
 
         // Images and Gallery
     
-        if (isset($args['image'])){
-            $attach_id = static::uploadImage($args['image']);
-            static::setDefaultImage($product_id, $attach_id);
-        }
-
         if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
-            $ids = [];
+            $attach_ids = [];
             foreach ($args['gallery_images'] as $img){
-                $img_url   = $img[0];
-                $attach_id = static::uploadImage($img_url);
+                $img_url      = $img[0];
+                $attach_ids[] = static::uploadImage($img_url);
             }
 
-            static::setImagesForPost($product_id, $ids);         
+            static::setImagesForPost($product_id, $attach_ids); 
+            static::setDefaultImage($product_id, $attach_ids[0]);        
         }
 
         if ($args['type'] == 'variable' && isset($args['variations'])){
