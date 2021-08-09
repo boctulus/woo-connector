@@ -2,7 +2,6 @@
 
 use connector\libs\Products;
 
-require __DIR__ . '/libs/Url.php';
 require __DIR__ . '/libs/Products.php';
 
 
@@ -86,15 +85,10 @@ function get_products(){
 	#$obj['cross_sell_id'] = $product->get_cross_sell_ids();
 	$obj['parent_id'] = $product->get_parent_id();
 	
-	// Get Product Taxonomies --- corregir ***************************
-	
-	$terms = get_terms( 'product_tag' );
 
-	if ( ! empty( $terms ) && ! is_wp_error( $terms ) ){
-		foreach ( $terms as $term ) {
-			$obj['tags'][] = $term->name;
-		}
-	}
+	// Get Product Taxonomies 
+	
+	$obj['tags'][] = Products::getTagsByPid($product_id);
 
 	$obj['categories'] = [];
 	$category_ids = $product->get_category_ids();

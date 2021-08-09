@@ -49,6 +49,18 @@ class Products
         return $arr;
     }
 
+    function getTagsByPid($pid){
+		global $wpdb;
+
+		$pid = (int) $pid;
+
+		$sql = "SELECT T.name, T.slug FROM wp_term_relationships as TR 
+		INNER JOIN `wp_term_taxonomy` as TT ON TR.term_taxonomy_id = TT.term_id  
+		INNER JOIN `wp_terms` as T ON  TT.term_taxonomy_id = T.term_id
+		WHERE taxonomy = 'product_tag' AND TR.object_id='$pid'";
+
+		return $wpdb->get_results($sql);
+	}
     
     // ok
     static function updateProductTypeByProductId($product_id, $new_type){
@@ -151,6 +163,41 @@ class Products
         $id = $wpdb->get_var($query);
         return $id;    
     }
+
+    /*
+        Otra implementación:
+
+        https://wpsimplehacks.com/how-to-automatically-delete-woocommerce-images/
+    */
+    static function deleteGaleryImages($pid)
+    {
+        // Delete Attachments from Post ID $pid
+        $attachments = get_posts(
+            array(
+                'post_type'      => 'attachment',
+                'posts_per_page' => -1,
+                'post_status'    => 'any',
+                'post_parent'    => $pid,
+            )
+        );
+
+        foreach ($attachments as $attachment) {
+            wp_delete_attachment($attachment->ID, true);
+        }        
+    }
+
+    /*De
+        Advertencia: no está restringido por post_type a posts
+    */
+    static function deleteAllGaleryImages()
+    {
+        global $wpdb;
+
+        $wpdb->query('DELETE FROM `wp_posts` WHERE `post_type` = "attachment";');
+        $wpdb->query('DELETE FROM `wp_postmeta` WHERE `meta_key` = "_wp_attached_file";');
+        $wpdb->query('DELETE FROM `wp_postmeta` WHERE `meta_key` = "_wp_attachment_metadata";');
+    }       
+
 
     /*
         Otra implentación:
@@ -421,7 +468,7 @@ class Products
         }        
 
         if( isset( $args['tags'] ) ){
-            static::setProductTagNames($product_id, $args['tags'] );
+            static::setProductTagNames($product_id, array_column($args['tags'], 'name'));
         }
             
 

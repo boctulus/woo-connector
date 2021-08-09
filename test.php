@@ -5,19 +5,19 @@ use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
 
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include __DIR__ . '/../../../wp-load.php';
-include_once(__DIR__ . '/../../../wp-admin/includes/image.php' );
+#require __DIR__ . '/libs/Products.php';
 
 if (!function_exists('dd')){
 	function dd($val, $msg = null, $pre_cond = null){
 		Debug::dd($val, $msg, $pre_cond);
 	}
 }
-
 
 class Test
 {
@@ -32,10 +32,11 @@ class Test
 }
 
 
-$test = new Test();
+Products::deleteAllGaleryImages();
+Products::deleteAllProducts();
 
-//$test->delete_all_products();
-$test->create();
+//$test = new Test();
+//$test->create();
 //$test->test_set_images();
 
 
