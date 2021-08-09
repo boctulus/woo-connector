@@ -1,6 +1,9 @@
 <?php
 
+use connector\libs\Products;
+
 require __DIR__ . '/libs/Url.php';
+require __DIR__ . '/libs/Products.php';
 
 
 function send($message, $status = 200){
@@ -24,7 +27,7 @@ function get_products(){
 	}
 
 	$obj = [];
-
+	
 	$get_src = function($html) {
 		$parsed_img = json_decode(json_encode(simplexml_load_string($html)), true);
 		$src = $parsed_img['@attributes']['src']; 
@@ -32,7 +35,7 @@ function get_products(){
 	};
 
 	// Get Product General Info
-  
+	
 	$obj['type'] = $product->get_type();
 	$obj['name'] = $product->get_name();
 	$obj['slug'] = $product->get_slug();
@@ -65,7 +68,7 @@ function get_products(){
 	$obj['stock_quantity'] = $product->get_stock_quantity();
 	$obj['stock_status'] = $product->get_stock_status();
 	#$obj['backorders'] = $product->get_backorders();
-	$obj['sold_individually'] = $product->get_sold_individually();
+	$obj['is_sold_individually'] = $product->get_sold_individually();
 	#$obj['purchase_note'] = $product->get_purchase_note();
 	#$obj['shipping_class_id'] = $product->get_shipping_class_id();
 	
@@ -75,7 +78,7 @@ function get_products(){
 	$obj['length'] = $product->get_length();
 	$obj['width'] = $product->get_width();
 	$obj['height'] = $product->get_height();
-	$obj['dimensions'] = $product->get_dimensions();
+	//	$obj['dimensions'] = $product->get_dimensions(false);
 	
 	// Get Linked Products
 	
@@ -83,7 +86,7 @@ function get_products(){
 	#$obj['cross_sell_id'] = $product->get_cross_sell_ids();
 	$obj['parent_id'] = $product->get_parent_id();
 	
-	// Get Product Taxonomies
+	// Get Product Taxonomies --- corregir ***************************
 	
 	$terms = get_terms( 'product_tag' );
 
@@ -132,17 +135,26 @@ function get_products(){
 	#$obj['average_rating'] = $product->get_average_rating();
 	#$obj['review_count'] = $product->get_review_count();
 
-
 	// Get Product Variations and Attributes
 
-	$variation_ids = $product->get_children(); // get variations
+	if($obj['type'] == 'variable'){
+		$variation_ids = $product->get_children(); // get variations
 
-	$obj['variations'] = $product->get_available_variations();
-	$obj['default_attributes'] = $product->get_default_attributes();
+		$obj['attributes'] = Products::getVariatioAttributes($product);
+		$obj['default_attributes'] = $product->get_default_attributes();
+
+		$obj['variations'] = $product->get_available_variations();	
 		
+		foreach ($obj['variations'] as $k => $var){
 
-	dd($obj);
-	/////send($obj);
+			if ($var['sku'] == $obj['sku']){
+				$obj['variations'][$k]['sku'] = '';
+			}
+			
+		}
+	}
+	
+	send($obj);
 }
 
 function create_prod($req)
@@ -159,9 +171,13 @@ function create_prod($req)
         throw new \Exception("Invalid JSON");
     }
 
-	dd($data);
+	//dd($data);
 
-	//$product_id = create_product($args);
+	$product_id = Products::createProduct($data);
+
+	send([
+		'product_id' => $product_id
+	]);
 }
 
 
