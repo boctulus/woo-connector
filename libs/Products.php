@@ -259,10 +259,228 @@ class Products
         wp_set_object_terms($product_id, $categos, 'product_cat');
     }
 
-    static function setProductTagNames($product_id, Array $categos){
-        wp_set_object_terms($product_id, $categos, 'product_tag');
+    static function setProductTagNames($product_id, Array $names){
+        wp_set_object_terms($product_id, $names, 'product_tag');
     }
 
+    static function updateProductBySku( $args )
+    {
+        if (!isset($args['sku']) || empty($args['sku'])){
+            throw new \InvalidArgumentException("SKU es requerido");
+        }
+
+        $pid = wc_get_product_id_by_sku($args['sku']);
+
+
+        if (empty($pid)){
+            throw new \InvalidArgumentException("SKU {$args['sku']} no encontrado");
+        }
+
+        $product = wc_get_product($pid);
+
+        // Si hay cambio de tipo de producto, lo actualizo
+        if ($product->get_type() != $args['type']){
+            self::updateProductTypeByProductId($product_id, $args['type']);
+        }
+
+        // Product name (Title) and slug
+        if (isset($args['name'])){
+            $product->set_name( $args['name'] ); 
+        }
+           
+        // Description and short description:
+        if (isset($args['description'])){
+            $product->set_description($args['description']);
+        }
+
+        if (isset($args['short_description'])){
+            $product->set_short_description( $args['short_description'] ?? '');
+        }
+
+        // Status ('publish', 'pending', 'draft' or 'trash')
+        if (isset($args['status'])){
+            $product->set_status($args['status']);
+        }
+
+        // Featured (boolean)
+        if (isset($args['featured'])){
+            $product->set_featured($args['featured']);
+        }        
+
+        // Visibility ('hidden', 'visible', 'search' or 'catalog')
+        if (isset($args['visibility'])){
+            $product->set_catalog_visibility($args['visibility']);
+        }
+
+        // Virtual (boolean)
+        if (isset($args['virtual'])){
+            $product->set_virtual($args['virtual']);
+        }        
+
+        // Prices
+
+        if (isset($args['regular_price'])){
+            $product->set_regular_price( $args['regular_price'] );
+        }elseif (isset($args['price'])){
+            $product->set_regular_price( $args['regular_price'] );
+        }
+
+        if (isset($args['sale_price'])){
+            $product->set_sale_price($args['sale_price']);
+        }
+        
+        if( isset($args['sale_from'])){
+            $product->set_date_on_sale_from($args['sale_from']);
+        }
+
+        if( isset($args['sale_to'])){
+            $product->set_date_on_sale_to($args['sale_to']);
+        }
+        
+        // Downloadable (boolean)
+        $product->set_downloadable(  isset($args['downloadable']) ? $args['downloadable'] : false );
+        if( isset($args['downloadable']) && $args['downloadable'] ) {
+            $product->set_downloads(  isset($args['downloads']) ? $args['downloads'] : array() );
+            $product->set_download_limit(  isset($args['download_limit']) ? $args['download_limit'] : '-1' );
+            $product->set_download_expiry(  isset($args['download_expiry']) ? $args['download_expiry'] : '-1' );
+        }
+
+        // Taxes
+        if ( get_option( 'woocommerce_calc_taxes' ) === 'yes' ) {
+            if (isset($args['tax_status'])){
+                $product->set_tax_status($args['tax_status']);
+            }
+            
+            if (isset($args['tax_class'])){
+                $product->set_tax_class($args['tax_class']);
+            }            
+        }
+
+        $args['virtual'] = $args['virtual'] ?? false;
+
+        // SKU and Stock (Not a virtual product)
+        if( ! $args['virtual'] ) {
+
+            // SKU
+            if (isset($args['sku'])){
+                $product->set_sku($args['sku']);
+            }        
+
+            $product->set_manage_stock( isset( $args['manage_stock'] ) ? $args['manage_stock'] : false );
+
+            if (isset($args['stock_status'])){
+                $product->set_stock_status($args['stock_status']);
+            } elseif (isset($args['is_in_stock'])){
+                $product->set_stock_status($args['is_in_stock']);
+            } else {
+                $product->set_stock_status('instock');        
+            }
+            
+            if( isset( $args['manage_stock'] ) && $args['manage_stock'] ) {
+                $product->set_stock_quantity( $args['stock_quantity'] );
+                $product->set_backorders( isset( $args['backorders'] ) ? $args['backorders'] : 'no' ); // 'yes', 'no' or 'notify'
+            }
+        }
+
+        // Sold Individually
+        if (isset($args['sold_individually'])){
+            $product->set_sold_individually($args['is_sold_individually'] != 'no');
+        }
+
+        // Weight, dimensions and shipping class
+        if (isset($args['weight'])){
+            $product->set_weight($args['weight']);
+        }
+        
+        if (isset($args['length'])){
+            $product->set_length($args['length']);
+        }
+        
+        if (isset($args['width'])){
+            $product->set_width($args['width']);
+        }
+        
+        if (isset( $args['height'])){
+            $product->set_height($args['height']);
+        }        
+
+        /*
+        if( isset( $args['shipping_class_id'] ) ){
+            $product->set_shipping_class_id( $args['shipping_class_id'] );
+        }
+        */        
+
+        // Upsell and Cross sell (IDs)
+        //$product->set_upsell_ids( isset( $args['upsells'] ) ? $args['upsells'] : '' );
+        //$product->set_cross_sell_ids( isset( $args['cross_sells'] ) ? $args['upsells'] : '' );
+
+
+        // Attributes et default attributes
+        
+        if( isset( $args['attributes'] ) ){
+            $attr = static::createProductAttributes($args['attributes'], true);
+            $product->set_attributes($attr);
+        }
+            
+        if( isset( $args['default_attributes'] ) )
+            $product->set_default_attributes( $args['default_attributes'] ); // Needs a special formatting
+
+
+        // Reviews, purchase note and menu order
+        $product->set_reviews_allowed( isset( $args['reviews'] ) ? $args['reviews'] : false );
+        $product->set_purchase_note( isset( $args['note'] ) ? $args['note'] : '' );
+        
+        if( isset( $args['menu_order'] ) )
+            $product->set_menu_order( $args['menu_order'] );
+
+            
+        ## --- SAVE PRODUCT --- ##
+        $product_id = $product->save();
+
+        if (isset($args['stock_status'])){
+            update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
+        } 
+
+
+        // Product categories and Tags
+        if( isset( $args['categories'] ) ){
+            static::setProductCategoryNames($product_id, array_column($args['categories'], 'name'));
+        }        
+
+        if( isset( $args['tags'] ) ){
+            static::setProductTagNames($product_id, array_column($args['tags'], 'name'));
+        }
+            
+
+        // Images and Gallery
+    
+        if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
+            $attach_ids = [];
+            foreach ($args['gallery_images'] as $img){
+                $img_url      = $img[0];
+                $attach_ids[] = static::uploadImage($img_url);
+            }
+
+            static::setImagesForPost($product_id, $attach_ids); 
+            static::setDefaultImage($product_id, $attach_ids[0]);        
+        }
+
+        if ($args['type'] == 'variable'){
+            $variation_ids = $product->get_children();
+            //dd($variation_ids, 'V_IDS');
+            
+            // elimino variaciones para volver a crearlas
+            foreach ($variation_ids as $vid){
+                wp_delete_post($vid, true);
+            }
+
+            if (isset($args['variations'])){
+                foreach ($args['variations'] as $variation){
+                    static::addVariation($product_id, $variation);
+                }      
+            }  
+        }
+    }
 
     // Utility function that prepare product attributes before saving
     static function createProductAttributes( $attributes, bool $for_variation){
@@ -432,8 +650,8 @@ class Products
         */        
 
         // Upsell and Cross sell (IDs)
-        $product->set_upsell_ids( isset( $args['upsells'] ) ? $args['upsells'] : '' );
-        $product->set_cross_sell_ids( isset( $args['cross_sells'] ) ? $args['upsells'] : '' );
+        //$product->set_upsell_ids( isset( $args['upsells'] ) ? $args['upsells'] : '' );
+        //$product->set_cross_sell_ids( isset( $args['cross_sells'] ) ? $args['upsells'] : '' );
 
 
         // Attributes et default attributes

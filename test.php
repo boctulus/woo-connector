@@ -19,25 +19,27 @@ if (!function_exists('dd')){
 	}
 }
 
-class Test
-{
    	
-    // /wp-content/plugins/connector/test.php
-    function create(){
-        $arr = include(__DIR__ . '/logs/product_dump.php');
+// /wp-content/plugins/connector/test.php
+function create(){
+    $arr = include(__DIR__ . '/logs/product_dump.php');
 
-        $product_id = Products::createProduct($arr);
-        dd($product_id, 'product_id');
-    }
+    $product_id = Products::createProduct($arr);
+    dd($product_id, 'product_id');
+}
+
+function edit(){
+    $arr = include(__DIR__ . '/logs/product_dump_edit.php');
+   
+    $ok = Products::updateProductBySku($arr);
+    //dd($product_id, 'product_id');
 }
 
 
-Products::deleteAllGaleryImages();
-Products::deleteAllProducts();
 
-//$test = new Test();
-//$test->create();
-//$test->test_set_images();
-
+#Products::deleteAllGaleryImages();
+#Products::deleteAllProducts();
+//create();
+edit();
 
 //

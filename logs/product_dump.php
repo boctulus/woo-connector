@@ -1,6 +1,7 @@
 <?php
 
 return array (
+  'id' => 11,
   'type' => 'variable',
   'name' => 'Pantalones elefante-like --updated!~~',
   'slug' => 'pantalones-tipo-elefante',
@@ -24,8 +25,16 @@ return array (
   'parent_id' => 0,
   'tags' => 
   array (
-    0 => 'tag1',
-    1 => 'tag3',
+    0 => 
+    (object) array(
+       'name' => 'Tag uno',
+       'slug' => 'tag-uno',
+    ),
+    1 => 
+    (object) array(
+       'name' => 'Tag dos',
+       'slug' => 'tag-dos',
+    ),
   ),
   'categories' => 
   array (
@@ -441,4 +450,5 @@ return array (
       'weight_html' => '15 kg',
     ),
   ),
-);
+)
+;
