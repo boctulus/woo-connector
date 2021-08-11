@@ -132,7 +132,16 @@ function updateCount($vendor){
 
 
 
-dd(getVendors());
+$vendors = getVendors();
+
+foreach ($vendors as $k => $vendor){
+    if (!$vendor['enabled']){
+        unset($vendors[$k]);
+    }
+}
+
+dd($vendors);
+
 
 
 
