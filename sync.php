@@ -30,13 +30,19 @@ function getVendors(){
     foreach ($lines as $line){
         $line = trim($line);
 
+        if (empty($line) || $line[0] == '#' || $line[0] == ';'){
+            continue;
+        }
+
         $line   = str_replace("\t", " ", $line);
         $line   = preg_replace('!\s+!', ' ', $line);
         $fields = explode(' ', $line);
 
         $arr[] = [
-            'slug' => $fields[0],
-            'url'  => $fields[1]
+            'url'       => $fields[0],
+            'slug'      => $fields[1],
+            'cms'       => $fields[2],
+            'enabled'   => !(isset($fields[3]) && $fields[3] == 'no')
         ];
     }
 
@@ -121,12 +127,12 @@ function updateCount($vendor){
 #exit;
 #
 
-$ok = removeVendor('act-and-be', 786);
-dd($ok);
+//$ok = removeVendor('act-and-be', 786);
+//dd($ok);
 
 
 
-#dd(getVendors());
+dd(getVendors());
 
 
 

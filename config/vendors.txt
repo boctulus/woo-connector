@@ -1,2 +1,6 @@
-act-and-be               http://woo2.lan
-azul-marino-casi-negro   http://woo3.lan   
+# url                   vendor_slug             cms         enabled?
+
+http://woo2.lan         act-and-be              wc
+http://otrovendor.com   otro-vendor             shopi         
+http://woo3.lan         azul-marino-casi-negro  wc   
+http://woo4.lan         xxx                     wc          no
