@@ -67,27 +67,66 @@ function removeVendor($vendor, $pid){
 
     $sql = "DELETE FROM `{$wpdb->prefix}term_relationships` WHERE `object_id` = $pid AND `term_taxonomy_id` = $tt_id";
 
-    return $wpdb->query($sql);
+    $ok = $wpdb->query($sql);
+
+    if (!$ok){
+        return false;
+    }
+
+    updateCount($vendor);
+
+    return true;
 }
 
 function addVendor($vendor, $pid){
     global $wpdb;
 
-    $sql = "SELECT term_id FROM wp_terms WHERE slug = '$vendor'";
+    $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
     $vendor_id = $wpdb->get_var($sql);
 
-    $sql = "INSERT INTO `wp_term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
+    $sql = "INSERT INTO `{$wpdb->prefix}term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
+   
+    $ok = $wpdb->query($sql);
+    
+    if (!$ok){
+        return false;
+    }
+
+    updateCount($vendor);
+
+    return true;
+}
+
+function updateCount($vendor){
+    global $wpdb;
+
+    $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
+    $vendor_id = $wpdb->get_var($sql);
+
+    $sql = "SELECT COUNT(*) as count FROM `wp_term_relationships` as TR 
+    INNER JOIN `wp_term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
+    INNER JOIN `wp_terms` as T ON T.term_id = TT.term_id
+    WHERE slug='$vendor';";
+
+    $count = $wpdb->get_var($sql);
+
+    $sql = "UPDATE  `wp_term_taxonomy` SET count = $count WHERE term_id = $vendor_id";
     return $wpdb->query($sql);
 }
 
-dd(hasVendor('act-and-be', 786));
-addVendor('act-and-be', 786);
-dd(hasVendor('act-and-be', 786));
-exit;
+
+#dd(hasVendor('act-and-be', 786));
+#addVendor('act-and-be', 786);
+#dd(hasVendor('act-and-be', 786));
+#exit;
+#
 
 $ok = removeVendor('act-and-be', 786);
 dd($ok);
 
+
+
 #dd(getVendors());
+
 
 
