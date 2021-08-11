@@ -24,15 +24,9 @@ error_reporting(E_ALL);
 require __DIR__ . '/libs/Debug.php';
 require __DIR__ . '/libs/Files.php';
 require __DIR__ . '/libs/Strings.php';
-require __DIR__ . '/config.php';
+require __DIR__ . '/config/config.php';
 require __DIR__ . '/ajax.php';
 
-
-if (!function_exists('dd')){
-	function dd($val, $msg = null, $pre_cond = null){
-		Debug::dd($val, $msg, $pre_cond);
-	}
-}
 
 /**
  * Check if WooCommerce is active
@@ -47,5 +41,6 @@ function connector_installer(){
 }
 
 register_activation_hook(__file__, 'connector_installer');
+
 
 

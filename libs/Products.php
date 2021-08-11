@@ -54,9 +54,9 @@ class Products
 
 		$pid = (int) $pid;
 
-		$sql = "SELECT T.name, T.slug FROM wp_term_relationships as TR 
-		INNER JOIN `wp_term_taxonomy` as TT ON TR.term_taxonomy_id = TT.term_id  
-		INNER JOIN `wp_terms` as T ON  TT.term_taxonomy_id = T.term_id
+		$sql = "SELECT T.name, T.slug FROM {$wpdb->prefix}term_relationships as TR 
+		INNER JOIN `{$wpdb->prefix}term_taxonomy` as TT ON TR.term_taxonomy_id = TT.term_id  
+		INNER JOIN `{$wpdb->prefix}terms` as T ON  TT.term_taxonomy_id = T.term_id
 		WHERE taxonomy = 'product_tag' AND TR.object_id='$pid'";
 
 		return $wpdb->get_results($sql);
@@ -478,7 +478,7 @@ class Products
 
             if (isset($args['variations'])){
                 foreach ($args['variations'] as $variation){
-                    static::addVariation($pid, $variation);
+                    $var_id = static::addVariation($pid, $variation);                    
                 }      
             }  
         }
@@ -708,7 +708,9 @@ class Products
         if ($args['type'] == 'variable' && isset($args['variations'])){
             foreach ($args['variations'] as $variation){
                 static::addVariation($pid, $variation);
-            }        
+            }     
+            
+            //@$product->variable_product_sync();
         }
 
         return $pid;
@@ -840,12 +842,13 @@ class Products
             static::setDefaultImage($variation_id, $attach_id);
         }
 
-        
         $variation->save();
-
+        
         // agrega la variación al producto
         $product = wc_get_product($pid);
         $product->save();
+
+        return $variation_id;
     }
 
     // Utility function that returns the correct product object instance

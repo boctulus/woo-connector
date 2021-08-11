@@ -1,7 +1,7 @@
 <?php
 
 return array (
-  'type' => 'simple',
+  'type' => 'variable',
   'name' => 'Pantalones elefante-like ******+',
   //'slug' => 'pantalones-tipo-elefante',
   'status' => 'publish',
@@ -86,6 +86,7 @@ return array (
         0 => 'xl',
         1 => 'l',
         2 => 'm',
+        3 => '',
       ),
       'is_visible' => true,
     ),
@@ -119,7 +120,7 @@ return array (
         'full_src' => 'https://static.dafiti.com.ar/p/her-jeans-5031-972295-2-zoom.jpg',
       ),
       'is_downloadable' => false,
-      'is_in_stock' => false,
+      'is_in_stock' => true,
       'is_purchasable' => true,
       'is_sold_individually' => 'yes',
       'is_virtual' => false,
@@ -139,7 +140,7 @@ return array (
       'attributes' => 
       array (
         'attribute_pa_color' => 'blanco',
-        'attribute_pa_talla' => 'm',
+        'attribute_pa_talla' => '',
       ),
       'availability_html' => '<p class="stock in-stock">999 in stock</p>
 ',

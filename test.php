@@ -29,7 +29,7 @@ function create(){
 }
 
 function edit(){
-    $arr = include(__DIR__ . '/logs/product_dump.php');
+    $arr = include(__DIR__ . '/logs/product_dump_edit.php');
    
     $ok = Products::updateProductBySku($arr);
     //dd($product_id, 'product_id');
@@ -39,7 +39,7 @@ function edit(){
 
 #Products::deleteAllGaleryImages();
 #Products::deleteAllProducts();
-//create();
-edit();
+#create();
+#edit();
 
 //
