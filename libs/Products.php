@@ -63,7 +63,7 @@ class Products
 	}
     
     // ok
-    static function updateProductTypeByProductId($product_id, $new_type){
+    static function updateProductTypeByProductId($pid, $new_type){
         $types = ['simple', 'variable', 'grouped', 'external'];
     
         if (!in_array($new_type, $types)){
@@ -71,10 +71,10 @@ class Products
         }
     
         // Get the correct product classname from the new product type
-        $product_classname = \WC_Product_Factory::get_product_classname( $product_id, $new_type );
+        $product_classname = \WC_Product_Factory::get_product_classname( $pid, $new_type );
     
         // Get the new product object from the correct classname
-        $new_product       = new $product_classname( $product_id );
+        $new_product       = new $product_classname( $pid );
     
         // Save product to database and sync caches
         $new_product->save();
@@ -83,8 +83,8 @@ class Products
     }
     
     
-    static function updateTagsByProductId($product_id, $tags){
-        wp_set_object_terms($product_id, $tags, 'product_tag');
+    static function updateTagsByProductId($pid, $tags){
+        wp_set_object_terms($pid, $tags, 'product_tag');
     }
 
 
@@ -147,13 +147,15 @@ class Products
     static function deleteAllProducts(){
         global $wpdb;
 
-        $wpdb->query("DELETE FROM wp_terms WHERE term_id IN (SELECT term_id FROM wp_term_taxonomy WHERE taxonomy LIKE 'pa_%')");
-        $wpdb->query("DELETE FROM wp_term_taxonomy WHERE taxonomy LIKE 'pa_%'");
-        $wpdb->query("DELETE FROM wp_term_relationships WHERE term_taxonomy_id not IN (SELECT term_taxonomy_id FROM wp_term_taxonomy)");
-        $wpdb->query("DELETE FROM wp_term_relationships WHERE object_id IN (SELECT ID FROM wp_posts WHERE post_type IN ('product','product_variation'))");
-        $wpdb->query("DELETE FROM wp_postmeta WHERE post_id IN (SELECT ID FROM wp_posts WHERE post_type IN ('product','product_variation'))");
-        $wpdb->query("DELETE FROM wp_posts WHERE post_type IN ('product','product_variation')");
-        $wpdb->query("DELETE pm FROM wp_postmeta pm LEFT JOIN wp_posts wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL");
+        $prefix = $wpdb->prefix;
+
+        $wpdb->query("DELETE FROM {$prefix}terms WHERE term_id IN (SELECT term_id FROM {$prefix}term_taxonomy WHERE taxonomy LIKE 'pa_%')");
+        $wpdb->query("DELETE FROM {$prefix}term_taxonomy WHERE taxonomy LIKE 'pa_%'");
+        $wpdb->query("DELETE FROM {$prefix}term_relationships WHERE term_taxonomy_id not IN (SELECT term_taxonomy_id FROM {$prefix}term_taxonomy)");
+        $wpdb->query("DELETE FROM {$prefix}term_relationships WHERE object_id IN (SELECT ID FROM {$prefix}posts WHERE post_type IN ('product','product_variation'))");
+        $wpdb->query("DELETE FROM {$prefix}postmeta WHERE post_id IN (SELECT ID FROM {$prefix}posts WHERE post_type IN ('product','product_variation'))");
+        $wpdb->query("DELETE FROM {$prefix}posts WHERE post_type IN ('product','product_variation')");
+        $wpdb->query("DELETE pm FROM {$prefix}postmeta pm LEFT JOIN {$prefix}posts wp ON wp.ID = pm.post_id WHERE wp.ID IS NULL");
     } 
 
     static function getAttachmentIdFromSrc ($image_src) {
@@ -193,9 +195,9 @@ class Products
     {
         global $wpdb;
 
-        $wpdb->query('DELETE FROM `wp_posts` WHERE `post_type` = "attachment";');
-        $wpdb->query('DELETE FROM `wp_postmeta` WHERE `meta_key` = "_wp_attached_file";');
-        $wpdb->query('DELETE FROM `wp_postmeta` WHERE `meta_key` = "_wp_attachment_metadata";');
+        $wpdb->query("DELETE FROM `{$wpdb->prefix}posts` WHERE `post_type` = \"attachment\";");
+        $wpdb->query("DELETE FROM `{$wpdb->prefix}postmeta` WHERE `meta_key` = \"_wp_attached_file\";");
+        $wpdb->query("DELETE FROM `{$wpdb->prefix}postmeta` WHERE `meta_key` = \"_wp_attachment_metadata\";");
     }       
 
 
@@ -245,22 +247,22 @@ class Products
         return $attach_id;
     }
 
-    static function setDefaultImage($product_id, $image_id){
-        update_post_meta( $product_id, '_thumbnail_id', $image_id );
+    static function setDefaultImage($pid, $image_id){
+        update_post_meta( $pid, '_thumbnail_id', $image_id );
     }
 
 
-    static function setImagesForPost($product_id, Array $image_ids){
+    static function setImagesForPost($pid, Array $image_ids){
         $image_ids = implode(",", $image_ids);
-        update_post_meta($product_id, '_product_image_gallery', $image_ids);
+        update_post_meta($pid, '_product_image_gallery', $image_ids);
     }
 
-    static function setProductCategoryNames($product_id, Array $categos){
-        wp_set_object_terms($product_id, $categos, 'product_cat');
+    static function setProductCategoryNames($pid, Array $categos){
+        wp_set_object_terms($pid, $categos, 'product_cat');
     }
 
-    static function setProductTagNames($product_id, Array $names){
-        wp_set_object_terms($product_id, $names, 'product_tag');
+    static function setProductTagNames($pid, Array $names){
+        wp_set_object_terms($pid, $names, 'product_tag');
     }
 
     static function updateProductBySku( $args )
@@ -280,7 +282,7 @@ class Products
 
         // Si hay cambio de tipo de producto, lo actualizo
         if ($product->get_type() != $args['type']){
-            self::updateProductTypeByProductId($product_id, $args['type']);
+            self::updateProductTypeByProductId($pid, $args['type']);
         }
 
         // Product name (Title) and slug
@@ -435,20 +437,20 @@ class Products
 
             
         ## --- SAVE PRODUCT --- ##
-        $product_id = $product->save();
+        $pid = $product->save();
 
         if (isset($args['stock_status'])){
-            update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
+            update_post_meta( $pid, '_stock_status', wc_clean( $args['stock_status'] ) );
         } 
 
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            static::setProductCategoryNames($product_id, array_column($args['categories'], 'name'));
+            static::setProductCategoryNames($pid, array_column($args['categories'], 'name'));
         }        
 
         if( isset( $args['tags'] ) ){
-            static::setProductTagNames($product_id, array_column($args['tags'], 'name'));
+            static::setProductTagNames($pid, array_column($args['tags'], 'name'));
         }
             
 
@@ -461,8 +463,8 @@ class Products
                 $attach_ids[] = static::uploadImage($img_url);
             }
 
-            static::setImagesForPost($product_id, $attach_ids); 
-            static::setDefaultImage($product_id, $attach_ids[0]);        
+            static::setImagesForPost($pid, $attach_ids); 
+            static::setDefaultImage($pid, $attach_ids[0]);        
         }
 
         if ($args['type'] == 'variable'){
@@ -476,7 +478,7 @@ class Products
 
             if (isset($args['variations'])){
                 foreach ($args['variations'] as $variation){
-                    static::addVariation($product_id, $variation);
+                    static::addVariation($pid, $variation);
                 }      
             }  
         }
@@ -673,20 +675,20 @@ class Products
 
             
         ## --- SAVE PRODUCT --- ##
-        $product_id = $product->save();
+        $pid = $product->save();
 
         if (isset($args['stock_status'])){
-            update_post_meta( $product_id, '_stock_status', wc_clean( $args['stock_status'] ) );
+            update_post_meta( $pid, '_stock_status', wc_clean( $args['stock_status'] ) );
         } 
 
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            static::setProductCategoryNames($product_id, array_column($args['categories'], 'name'));
+            static::setProductCategoryNames($pid, array_column($args['categories'], 'name'));
         }        
 
         if( isset( $args['tags'] ) ){
-            static::setProductTagNames($product_id, array_column($args['tags'], 'name'));
+            static::setProductTagNames($pid, array_column($args['tags'], 'name'));
         }
             
 
@@ -699,30 +701,30 @@ class Products
                 $attach_ids[] = static::uploadImage($img_url);
             }
 
-            static::setImagesForPost($product_id, $attach_ids); 
-            static::setDefaultImage($product_id, $attach_ids[0]);        
+            static::setImagesForPost($pid, $attach_ids); 
+            static::setDefaultImage($pid, $attach_ids[0]);        
         }
 
         if ($args['type'] == 'variable' && isset($args['variations'])){
             foreach ($args['variations'] as $variation){
-                static::addVariation($product_id, $variation);
+                static::addVariation($pid, $variation);
             }        
         }
 
-        return $product_id;
+        return $pid;
     }
 
-    static function addVariation( $product_id, Array $args ){
+    static function addVariation( $pid, Array $args ){
         
         // Get the Variable product object (parent)
-        $product = wc_get_product($product_id);
+        $product = wc_get_product($pid);
 
         $variation_post = array(
             'post_title'  => $product->get_name(),
             'post_description' => $args['variation_description'] ?? '',
-            'post_name'   => 'product-'.$product_id.'-variation',
+            'post_name'   => 'product-'.$pid.'-variation',
             'post_status' => isset($args['status']) ? $args['status'] : 'publish',
-            'post_parent' => $product_id,
+            'post_parent' => $pid,
             'post_type'   => 'product_variation',
             'guid'        => $product->get_permalink()
         );
@@ -771,11 +773,11 @@ class Products
                 $term_slug = get_term_by('name', $term_name, $taxonomy )->slug; // Get the term slug
 
                 // Get the post Terms names from the parent variable product.
-                $post_term_names =  wp_get_post_terms( $product_id, $taxonomy, array('fields' => 'names') );
+                $post_term_names =  wp_get_post_terms( $pid, $taxonomy, array('fields' => 'names') );
 
                 // Check if the post term exist and if not we set it in the parent variable product.
                 if( ! in_array( $term_name, $post_term_names ) )
-                    wp_set_post_terms( $product_id, $term_name, $taxonomy, true );
+                    wp_set_post_terms( $pid, $term_name, $taxonomy, true );
 
                 // Set/save the attribute data in the product variation
                 update_post_meta( $variation_id, 'attribute_'.$taxonomy, $term_slug );
@@ -833,7 +835,7 @@ class Products
         // Image por variation if any
 
         if (isset($args['image'])){
-            $attach_id = static::uploadImage($args['image']['full_src'], $args['image']['title'], $args['image']['alt'], $args['image']['caption'] );
+            $attach_id = static::uploadImage($args['image']['full_src'], $args['image']['title'] ?? '', $args['image']['alt'] ?? '', $args['image']['caption'] ?? '' );
             static::setImagesForPost($variation_id, [$attach_id]); 
             static::setDefaultImage($variation_id, $attach_id);
         }
@@ -842,7 +844,7 @@ class Products
         $variation->save();
 
         // agrega la variación al producto
-        $product = wc_get_product($product_id);
+        $product = wc_get_product($pid);
         $product->save();
     }
 

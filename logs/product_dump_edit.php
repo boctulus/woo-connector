@@ -1,13 +1,13 @@
 <?php
 
 return array (
-  'type' => 'variable',
-  'name' => 'Pantalones elefante-like *******',
+  'type' => 'simple',
+  'name' => 'Pantalones elefante-like ******+',
   //'slug' => 'pantalones-tipo-elefante',
   'status' => 'publish',
   //'featured' => false,
   'catalog_visibility' => 'visible',
-  'description' => 'bla bla bla tipo elefanteeeee ****',
+  'description' => 'bla bla bla tipo elefanteeeee ***+',
   'short_description' => 'desc corta ******',
   'sku' => 'elefante-panta-1',
   'price' => '2220000',
@@ -112,22 +112,22 @@ return array (
         'height' => '20',
       ),
       'dimensions_html' => '10 &times; 10 &times; 10 cm',
-      'display_price' => 699.0,
-      'display_regular_price' => 700.0,
+      'display_price' => 69988.0,
+      'display_regular_price' => 70088.0,
       'image' => 
       array (
         'full_src' => 'https://static.dafiti.com.ar/p/her-jeans-5031-972295-2-zoom.jpg',
       ),
       'is_downloadable' => false,
-      'is_in_stock' => true,
+      'is_in_stock' => false,
       'is_purchasable' => true,
-      'is_sold_individually' => 'no',
+      'is_sold_individually' => 'yes',
       'is_virtual' => false,
-      'max_qty' => 6666,
+      'max_qty' => 4,
       'min_qty' => 1,
       'price_html' => '<span class="price"><del aria-hidden="true"><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>700</bdi></span></del> <ins><span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol">&#36;</span>699</bdi></span></ins></span>',
-      'sku' => 'panta-verde',
-      'variation_description' => '',
+      'sku' => 'panta-azul',
+      'variation_description' => 'nueva desc para el panta azul',
       'variation_id' => 36,
       'variation_is_active' => true,
       'variation_is_visible' => true,
@@ -139,7 +139,7 @@ return array (
       'attributes' => 
       array (
         'attribute_pa_color' => 'blanco',
-        'attribute_pa_talla' => '',
+        'attribute_pa_talla' => 'm',
       ),
       'availability_html' => '<p class="stock in-stock">999 in stock</p>
 ',

@@ -51,7 +51,7 @@ return array (
       'description' => '',
     ),
   ),
-  'image' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
+  //'image' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
   'gallery_images' => 
   array (
     0 => 

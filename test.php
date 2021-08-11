@@ -29,7 +29,7 @@ function create(){
 }
 
 function edit(){
-    $arr = include(__DIR__ . '/logs/product_dump_edit.php');
+    $arr = include(__DIR__ . '/logs/product_dump.php');
    
     $ok = Products::updateProductBySku($arr);
     //dd($product_id, 'product_id');
