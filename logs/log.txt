@@ -32,3 +32,5 @@
 2021-08-07 00:02:02	Nuevo producto creado con id=69
 2021-08-07 00:02:43	Nuevo producto creado con id=70
 2021-08-07 00:04:20	Nuevo producto creado con id=71
+2021-08-12 18:28:18	No hay datos
+2021-08-12 18:47:35	No hay datos
