@@ -208,10 +208,7 @@ class Sync
             if (! isset($res['data']) || empty($res['data'])){
                 $msg = "No hay datos";
 
-                Files::logger($msg);
-                dd($msg);
-
-                return;
+                continue;
             }
             
 
@@ -226,12 +223,12 @@ class Sync
                 
                 // específico para WooCommerce
                 if (Strings::endsWith('__trashed', $row['slug'])){
-                    $operation == 'DELETE';
+                    //$operation == 'DELETE';
                 }
                 
                 $pid = wc_get_product_id_by_sku($sku);
 
-                dd("Procesando ...", "VENDOR: $vendor_slug - SKU $sku");
+                dd($operation, "VENDOR: $vendor_slug - SKU $sku");
 
                 // Si ya existe,...
                 if (!empty($pid)){
@@ -278,7 +275,7 @@ class Sync
                 }
             }
 
-            //Files::dump($res, 'response.txt');
+            Files::dump($res, 'response.txt');
         }
     }
 
