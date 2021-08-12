@@ -101,17 +101,25 @@ class Sync
     // 
     static function hasVendor($vendor, $pid){
         global $wpdb;
+
+        if (empty($pid)){
+            throw new \InvalidArgumentException("product_id no puede ser nulo");
+        }
     
         $sql = "SELECT COUNT(*) FROM `{$wpdb->prefix}term_taxonomy`  as TT
         INNER JOIN `{$wpdb->prefix}terms` as T ON TT.term_id = T.term_id
         INNER JOIN `{$wpdb->prefix}term_relationships` as TR ON TT.term_taxonomy_id = TR.term_taxonomy_id
         WHERE T.slug = '$vendor' AND object_id = $pid";
-    
+
         return $wpdb->get_var($sql) != 0;
     }
     
     static function removeVendor($vendor, $pid){
         global $wpdb;
+
+        if (empty($pid)){
+            throw new \InvalidArgumentException("product_id no puede ser nulo");
+        }
     
         $sql = "SELECT TR.term_taxonomy_id as tt_id FROM `{$wpdb->prefix}term_relationships` as TR 
         INNER JOIN `{$wpdb->prefix}term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
@@ -135,12 +143,16 @@ class Sync
     
     static function addVendor($vendor, $pid){
         global $wpdb;
+
+        if (empty($pid)){
+            throw new \InvalidArgumentException("product_id no puede ser nulo");
+        }
     
         $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
         $vendor_id = $wpdb->get_var($sql);
     
         $sql = "INSERT INTO `{$wpdb->prefix}term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
-       
+    
         $ok = $wpdb->query($sql);
         
         if (!$ok){
@@ -174,17 +186,17 @@ class Sync
         $vendors = Sync::getVendors(true);
 
         foreach ($vendors as $vendor){
-            $url  = $vendor['url'];
-            $slug = $vendor['slug'];
+            $vendor_url  = $vendor['url'];
+            $vendor_slug = $vendor['slug'];
 
-            /*
+            
             $config = self::getConfig();
 
-            $full_url = $url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
+            $full_url = $vendor_url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
 		    $res = Url::consume_api($full_url, 'GET');
 
             if ($res['http_code'] != 200){
-                $msg = "vendor=$slug http_code={$res['http_code']} error={$res['error']}";
+                $msg = "vendor=$vendor_slug http_code={$res['http_code']} error={$res['error']}";
                
                 Files::logger($msg);
                 dd($msg);
@@ -200,10 +212,10 @@ class Sync
 
                 return;
             }
-            */
+            
 
             // cache ---------- solo pruebas
-            include __DIR__ . '/logs/response.php';
+            //include __DIR__ . '/logs/response.php';
 
             $data = $res['data'];
             
@@ -217,23 +229,24 @@ class Sync
                 }
                 
                 $pid = wc_get_product_id_by_sku($sku);
-                #dd($pid, 'PID');
-                #dd($sku, 'SKU');
-                #dd($operation, 'OP');
 
+                dd("Procesando ...", "VENDOR: $vendor_slug - SKU $sku");
+
+                // Si ya existe,...
                 if (!empty($pid)){
                     switch ($operation){
                         case 'DELETE':
                             Products::deleteProduct($pid, true);
                             break;
-                        case 'CREATE':
-                            Products::updateProductBySku($row);
-                            break;                       
-                        case 'RESTORE':
-                            Products::updateProductBySku($row);
-                            break;
+                        case 'CREATE':                                             
+                        case 'RESTORE':                            
                         case 'UPDATE':
                             Products::updateProductBySku($row);
+
+                            if (!self::hasVendor($vendor_slug, $pid)){
+                                self::addVendor($vendor_slug, $pid);
+                            }
+
                             break;
                         default:
                             $msg = "Operación $operation desconocida";
@@ -243,16 +256,17 @@ class Sync
                 } else {
                     switch ($operation){
                         case 'DELETE':
-                            // nada que hacer en este caso
+                            // nada que hacer en este caso                        
                             break;                        
-                        case 'UPDATE':
-                            Products::createProduct($row);
-                            break;
-                        case 'RESTORE':
-                            Products::createProduct($row);
-                            break;
+                        case 'UPDATE':                           
+                        case 'RESTORE':                            
                         case 'CREATE':
-                            Products::createProduct($row);
+                            $pid = Products::createProduct($row);
+
+                            if (!self::hasVendor($vendor_slug, $pid)){
+                                self::addVendor($vendor_slug, $pid);
+                            }
+
                             break;
                         default:
                             $msg = "Operación $operation desconocida";
@@ -261,10 +275,6 @@ class Sync
                     }
 
                 }
-
-                // otros casos
-
-                #dd('-------------------------------');
             }
 
             //Files::dump($res, 'response.txt');
@@ -274,16 +284,6 @@ class Sync
 }
 
 
-
-
-#dd(hasVendor('act-and-be', 786));
-#addVendor('act-and-be', 786);
-#dd(hasVendor('act-and-be', 786));
-#exit;
-#
-
-//$ok = removeVendor('act-and-be', 786);
-//dd($ok);
 
 
 Sync::getData();
