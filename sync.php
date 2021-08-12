@@ -221,11 +221,6 @@ class Sync
                 $sku = $row['sku'];
                 $operation = $row['operation'];
                 
-                // específico para WooCommerce
-                if (Strings::endsWith('__trashed', $row['slug'])){
-                    //$operation == 'DELETE';
-                }
-                
                 $pid = wc_get_product_id_by_sku($sku);
 
                 dd($operation, "VENDOR: $vendor_slug - SKU $sku");
@@ -275,7 +270,7 @@ class Sync
                 }
             }
 
-            Files::dump($res, 'response.txt');
+            //Files::dump($res, 'response.txt');
         }
     }
 
