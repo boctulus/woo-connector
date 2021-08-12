@@ -2,8 +2,9 @@
 
 namespace connector\libs;
 
+
 if ( ! function_exists( 'wp_crop_image' ) ) {
-    include( ABSPATH . 'wp-admin/includes/image.php' );
+    include( __DIR__ . '/../../../../wp-admin/includes/image.php' );
 }
 
 class Products

@@ -12,6 +12,7 @@ use connector\libs\Products;
 
 
 require __DIR__ . '/libs/Url.php';
+require __DIR__ . '/libs/Products.php';
 
 include __DIR__ . '/../../../wp-load.php';
 
@@ -20,6 +21,10 @@ if (!function_exists('dd')){
 	function dd($val, $msg = null, $pre_cond = null){
 		Debug::dd($val, $msg, $pre_cond);
 	}
+}
+
+if (php_sapi_name() != "cli") {
+    echo "Error: acceso solo desde la terminal<p/>";
 }
 
 class Sync
@@ -172,9 +177,9 @@ class Sync
             $url  = $vendor['url'];
             $slug = $vendor['slug'];
 
+            /*
             $config = self::getConfig();
 
-            /*
             $full_url = $url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
 		    $res = Url::consume_api($full_url, 'GET');
 
@@ -195,17 +200,71 @@ class Sync
 
                 return;
             }
-
             */
 
-            // cache para pruebas
-            exit;
-            $res = include __DIR__ . '/logs/response.txt';
+            // cache ---------- solo pruebas
+            include __DIR__ . '/logs/response.php';
 
             $data = $res['data'];
             
             foreach ($data as $row){
-                //dd($row);
+                $sku = $row['sku'];
+                $operation = $row['operation'];
+                
+                // específico para WooCommerce
+                if (Strings::endsWith('__trashed', $row['slug'])){
+                    $operation == 'DELETE';
+                }
+                
+                $pid = wc_get_product_id_by_sku($sku);
+                #dd($pid, 'PID');
+                #dd($sku, 'SKU');
+                #dd($operation, 'OP');
+
+                if (!empty($pid)){
+                    switch ($operation){
+                        case 'DELETE':
+                            Products::deleteProduct($pid, true);
+                            break;
+                        case 'CREATE':
+                            Products::updateProductBySku($row);
+                            break;                       
+                        case 'RESTORE':
+                            Products::updateProductBySku($row);
+                            break;
+                        case 'UPDATE':
+                            Products::updateProductBySku($row);
+                            break;
+                        default:
+                            $msg = "Operación $operation desconocida";
+                            dd($msg);
+                            Files::logger($msg);
+                    }
+                } else {
+                    switch ($operation){
+                        case 'DELETE':
+                            // nada que hacer en este caso
+                            break;                        
+                        case 'UPDATE':
+                            Products::createProduct($row);
+                            break;
+                        case 'RESTORE':
+                            Products::createProduct($row);
+                            break;
+                        case 'CREATE':
+                            Products::createProduct($row);
+                            break;
+                        default:
+                            $msg = "Operación $operation desconocida";
+                            dd($msg);
+                            Files::logger($msg);
+                    }
+
+                }
+
+                // otros casos
+
+                #dd('-------------------------------');
             }
 
             //Files::dump($res, 'response.txt');
