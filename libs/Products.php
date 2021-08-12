@@ -8,47 +8,6 @@ if ( ! function_exists( 'wp_crop_image' ) ) {
 
 class Products
 {    
-    /*
-        $product es el objeto producto
-        $taxonomy es opcional y es algo como 'pa_talla'
-    */
-    static function getVariationAttributes($product, $taxonomy = null){
-        $attr = [];
-
-        if ( $product->get_type() == 'variable' ) {
-            foreach ($product->get_available_variations() as $values) {
-                foreach ( $values['attributes'] as $attr_variation => $term_slug ) {
-                    if (!isset($attr[$attr_variation])){
-                        $attr[$attr_variation] = [];
-                    }
-
-                    if ($taxonomy != null){
-                        if( $attr_variation === 'attribute_' . $taxonomy ){
-                            if (!in_array($term_slug, $attr[$attr_variation])){
-                                $attr[$attr_variation][] = $term_slug;
-                            }                        
-                        }
-                    } else {
-                        if (!in_array($term_slug, $attr[$attr_variation])){
-                            $attr[$attr_variation][] = $term_slug;
-                        } 
-                    }
-
-                }
-            }
-        }
-
-        $arr = [];
-        foreach ($attr as $name => $a){
-            $key = substr($name, 13);
-            foreach ($a as $e){
-                $arr[$key][] = $e;
-            }
-        }
-
-        return $arr;
-    }
-
     function getTagsByPid($pid){
 		global $wpdb;
 
@@ -874,7 +833,7 @@ class Products
 		$product es el objeto producto
 		$taxonomy es opcional y es algo como 'pa_talla'
 	*/
-	static function getVariatioAttributes($product, $taxonomy = null){
+	static function getVariationAttributes($product, $taxonomy = null){
 		$attr = [];
 
 		if ( $product->get_type() == 'variable' ) {

@@ -24,8 +24,6 @@ error_reporting(E_ALL);
 require __DIR__ . '/libs/Debug.php';
 require __DIR__ . '/libs/Files.php';
 require __DIR__ . '/libs/Strings.php';
-require __DIR__ . '/config/config.php';
-require __DIR__ . '/ajax.php';
 
 
 /**
@@ -35,12 +33,12 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 	return;
 }	
 
-
+/*
 function connector_installer(){
     include('installer.php');
 }
 
 register_activation_hook(__file__, 'connector_installer');
-
+*/
 
 

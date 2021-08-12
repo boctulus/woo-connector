@@ -22,103 +22,152 @@ if (!function_exists('dd')){
 	}
 }
 
-function getVendors(){
-    $list  = file_get_contents(__DIR__ . '/config/vendors.txt');
-    $lines = explode(PHP_EOL, $list);
-
-    $arr = [];
-    foreach ($lines as $line){
-        $line = trim($line);
-
-        if (empty($line) || $line[0] == '#' || $line[0] == ';'){
-            continue;
-        }
-
-        $line   = str_replace("\t", " ", $line);
-        $line   = preg_replace('!\s+!', ' ', $line);
-        $fields = explode(' ', $line);
-
-        $arr[] = [
-            'url'       => $fields[0],
-            'slug'      => $fields[1],
-            'cms'       => $fields[2],
-            'enabled'   => !(isset($fields[3]) && $fields[3] == 'no')
-        ];
-    }
-
-    return $arr;
-}
-
-// 
-function hasVendor($vendor, $pid){
-    global $wpdb;
-
-    $sql = "SELECT COUNT(*) FROM `{$wpdb->prefix}term_taxonomy`  as TT
-    INNER JOIN `{$wpdb->prefix}terms` as T ON TT.term_id = T.term_id
-    INNER JOIN `{$wpdb->prefix}term_relationships` as TR ON TT.term_taxonomy_id = TR.term_taxonomy_id
-    WHERE T.slug = '$vendor' AND object_id = $pid";
-
-    return $wpdb->get_var($sql) != 0;
-}
-
-function removeVendor($vendor, $pid){
-    global $wpdb;
-
-    $sql = "SELECT TR.term_taxonomy_id as tt_id FROM `{$wpdb->prefix}term_relationships` as TR 
-	INNER JOIN `{$wpdb->prefix}term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
-	INNER JOIN `{$wpdb->prefix}terms` as T ON T.term_id = TT.term_id
-	WHERE object_id = $pid AND slug='$vendor'";
-
-    $tt_id = $wpdb->get_var($sql);
-
-    $sql = "DELETE FROM `{$wpdb->prefix}term_relationships` WHERE `object_id` = $pid AND `term_taxonomy_id` = $tt_id";
-
-    $ok = $wpdb->query($sql);
-
-    if (!$ok){
-        return false;
-    }
-
-    updateCount($vendor);
-
-    return true;
-}
-
-function addVendor($vendor, $pid){
-    global $wpdb;
-
-    $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
-    $vendor_id = $wpdb->get_var($sql);
-
-    $sql = "INSERT INTO `{$wpdb->prefix}term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
-   
-    $ok = $wpdb->query($sql);
+class Sync
+{   
+    /*
+        array (
+            0 => 
+            array (
+                'url' => 'http://woo2.lan',
+                'slug' => 'act-and-be',
+                'cms' => 'wc',
+                'enabled' => true,
+            ),
+            1 => 
+            array (
+                'url' => 'http://otrovendor.com',
+                'slug' => 'otro-vendor',
+                'cms' => 'shopi',
+                'enabled' => true,
+            ),
+            2 => 
+            array (
+                'url' => 'http://woo3.lan',
+                'slug' => 'azul-marino-casi-negro',
+                'cms' => 'wc',
+                'enabled' => true,
+            ),
+        )
+    */
+    static function getVendors($only_active = false){
+        $list  = file_get_contents(__DIR__ . '/config/vendors.txt');
+        $lines = explode(PHP_EOL, $list);
     
-    if (!$ok){
-        return false;
+        $arr = [];
+        foreach ($lines as $line){
+            $line = trim($line);
+    
+            if (empty($line) || $line[0] == '#' || $line[0] == ';'){
+                continue;
+            }
+    
+            $line   = str_replace("\t", " ", $line);
+            $line   = preg_replace('!\s+!', ' ', $line);
+            $fields = explode(' ', $line);
+    
+            $enabled = !(isset($fields[3]) && $fields[3] == 'no');
+    
+            if ($only_active && !$enabled){
+                continue;
+            }
+    
+            $arr[] = [
+                'url'       => $fields[0],
+                'slug'      => $fields[1],
+                'cms'       => $fields[2],
+                'enabled'   => $enabled
+            ];
+        }
+    
+        return $arr;
+    }
+    
+    // 
+    static function hasVendor($vendor, $pid){
+        global $wpdb;
+    
+        $sql = "SELECT COUNT(*) FROM `{$wpdb->prefix}term_taxonomy`  as TT
+        INNER JOIN `{$wpdb->prefix}terms` as T ON TT.term_id = T.term_id
+        INNER JOIN `{$wpdb->prefix}term_relationships` as TR ON TT.term_taxonomy_id = TR.term_taxonomy_id
+        WHERE T.slug = '$vendor' AND object_id = $pid";
+    
+        return $wpdb->get_var($sql) != 0;
+    }
+    
+    static function removeVendor($vendor, $pid){
+        global $wpdb;
+    
+        $sql = "SELECT TR.term_taxonomy_id as tt_id FROM `{$wpdb->prefix}term_relationships` as TR 
+        INNER JOIN `{$wpdb->prefix}term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
+        INNER JOIN `{$wpdb->prefix}terms` as T ON T.term_id = TT.term_id
+        WHERE object_id = $pid AND slug='$vendor'";
+    
+        $tt_id = $wpdb->get_var($sql);
+    
+        $sql = "DELETE FROM `{$wpdb->prefix}term_relationships` WHERE `object_id` = $pid AND `term_taxonomy_id` = $tt_id";
+    
+        $ok = $wpdb->query($sql);
+    
+        if (!$ok){
+            return false;
+        }
+    
+        self::updateCount($vendor);
+    
+        return true;
+    }
+    
+    static function addVendor($vendor, $pid){
+        global $wpdb;
+    
+        $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
+        $vendor_id = $wpdb->get_var($sql);
+    
+        $sql = "INSERT INTO `{$wpdb->prefix}term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
+       
+        $ok = $wpdb->query($sql);
+        
+        if (!$ok){
+            return false;
+        }
+    
+        self::updateCount($vendor);
+    
+        return true;
+    }
+    
+    static function updateCount($vendor){
+        global $wpdb;
+    
+        $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
+        $vendor_id = $wpdb->get_var($sql);
+    
+        $sql = "SELECT COUNT(*) as count FROM `wp_term_relationships` as TR 
+        INNER JOIN `wp_term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
+        INNER JOIN `wp_terms` as T ON T.term_id = TT.term_id
+        WHERE slug='$vendor';";
+    
+        $count = $wpdb->get_var($sql);
+    
+        $sql = "UPDATE  `wp_term_taxonomy` SET count = $count WHERE term_id = $vendor_id";
+        return $wpdb->query($sql);
     }
 
-    updateCount($vendor);
 
-    return true;
+    static function getData(){
+        $vendors = Sync::getVendors(true);
+
+        foreach ($vendors as $vendor){
+            $url  = $vendor['url'];
+            $slug = $vendor['slug'];
+
+            dd($url, $slug);
+        }
+    }
+
 }
 
-function updateCount($vendor){
-    global $wpdb;
 
-    $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
-    $vendor_id = $wpdb->get_var($sql);
-
-    $sql = "SELECT COUNT(*) as count FROM `wp_term_relationships` as TR 
-    INNER JOIN `wp_term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
-    INNER JOIN `wp_terms` as T ON T.term_id = TT.term_id
-    WHERE slug='$vendor';";
-
-    $count = $wpdb->get_var($sql);
-
-    $sql = "UPDATE  `wp_term_taxonomy` SET count = $count WHERE term_id = $vendor_id";
-    return $wpdb->query($sql);
-}
 
 
 #dd(hasVendor('act-and-be', 786));
@@ -131,16 +180,8 @@ function updateCount($vendor){
 //dd($ok);
 
 
+Sync::getData();
 
-$vendors = getVendors();
-
-foreach ($vendors as $k => $vendor){
-    if (!$vendor['enabled']){
-        unset($vendors[$k]);
-    }
-}
-
-dd($vendors);
 
 
 

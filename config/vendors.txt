@@ -1,6 +1,6 @@
 # url                   vendor_slug             cms         enabled?
 
 http://woo2.lan         act-and-be              wc
-http://otrovendor.com   otro-vendor             shopi         
-http://woo3.lan         azul-marino-casi-negro  wc   
+http://otrovendor.com   otro-vendor             shopi       no  
+http://woo3.lan         azul-marino-casi-negro  wc          no
 http://woo4.lan         xxx                     wc          no
