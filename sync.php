@@ -5,14 +5,14 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 use connector\libs\Debug;
+use connector\libs\Url;
 use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
 
-#require __DIR__ . '/libs/Debug.php';
-#require __DIR__ . '/libs/Files.php';
-#require __DIR__ . '/libs/Strings.php';
-#require __DIR__ . '/config/config.php';
+
+require __DIR__ . '/libs/Url.php';
+
 include __DIR__ . '/../../../wp-load.php';
 
 
@@ -24,6 +24,17 @@ if (!function_exists('dd')){
 
 class Sync
 {   
+    static protected $config;
+
+    static function getConfig(){
+        if (self::$config != null){
+            return self::$config;
+        }
+
+		self::$config = include __DIR__ . '/config/config.php';
+		return self::$config;
+	}
+
     /*
         array (
             0 => 
@@ -161,7 +172,43 @@ class Sync
             $url  = $vendor['url'];
             $slug = $vendor['slug'];
 
-            dd($url, $slug);
+            $config = self::getConfig();
+
+            /*
+            $full_url = $url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
+		    $res = Url::consume_api($full_url, 'GET');
+
+            if ($res['http_code'] != 200){
+                $msg = "vendor=$slug http_code={$res['http_code']} error={$res['error']}";
+               
+                Files::logger($msg);
+                dd($msg);
+
+                return;
+            }
+
+            if (! isset($res['data']) || empty($res['data'])){
+                $msg = "No hay datos";
+
+                Files::logger($msg);
+                dd($msg);
+
+                return;
+            }
+
+            */
+
+            // cache para pruebas
+            exit;
+            $res = include __DIR__ . '/logs/response.txt';
+
+            $data = $res['data'];
+            
+            foreach ($data as $row){
+                //dd($row);
+            }
+
+            //Files::dump($res, 'response.txt');
         }
     }
 
