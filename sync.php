@@ -237,7 +237,7 @@ class Sync
                             Products::deleteProduct($pid, true);
                             break;
                         case 'CREATE':                                             
-                        case 'RESTORE':                            
+                        case 'RESTORE':                           
                         case 'UPDATE':
                             Products::updateProductBySku($row);
 

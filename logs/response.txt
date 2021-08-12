@@ -7,7 +7,7 @@ array (
       'type' => 'simple',
       'name' => 'Producto Maravilloso',
       'slug' => '__trashed',
-      'status' => 'draft',
+      'status' => 'publish',
       'featured' => false,
       'catalog_visibility' => 'visible',
       'description' => '',
