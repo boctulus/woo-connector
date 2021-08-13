@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 ini_set('display_errors', 1);
@@ -25,7 +24,8 @@ if (!function_exists('dd')){
 }
 
 if (php_sapi_name() != "cli") {
-    echo "Error: acceso solo desde la terminal<p/>";
+    #echo "Error: acceso solo desde la terminal<p/>";
+    #exit;
 }
 
 class Sync
