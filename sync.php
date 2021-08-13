@@ -217,6 +217,7 @@ class Sync
 
             $data = $res['data'];
             
+            
             foreach ($data as $row){
                 $sku = $row['sku'];
                 $operation = $row['operation'];
@@ -272,6 +273,8 @@ class Sync
 
             //Files::dump($res, 'response.txt');
         }
+
+        dd("La sincronización ha terminado");
     }
 
 }
