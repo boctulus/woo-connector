@@ -181,7 +181,7 @@ class Products
 
         $uploaddir = wp_upload_dir();
         $uploadfile = $uploaddir['path'] . '/' . $filename;
-        $contents= file_get_contents($imageurl);
+        $contents= Files::file_get_contents_curl($imageurl);
         $savefile = fopen($uploadfile, 'w');
         fwrite($savefile, $contents);
         fclose($savefile);
@@ -425,6 +425,11 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
+        } elseif (isset($args['image'])) {
+            $attach_id = static::uploadImage($args['image'][0]);
+
+            static::setImagesForPost($pid, [$attach_id]); 
+            static::setDefaultImage($pid, $attach_id); 
         }
 
         if ($args['type'] == 'variable'){
@@ -663,6 +668,11 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
+        } elseif (isset($args['image'])) {
+            $attach_id = static::uploadImage($args['image'][0]);
+
+            static::setImagesForPost($pid, [$attach_id]); 
+            static::setDefaultImage($pid, $attach_id); 
         }
 
         if ($args['type'] == 'variable' && isset($args['variations'])){

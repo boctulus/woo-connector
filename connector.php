@@ -12,7 +12,7 @@ use connector\libs\Strings;
 use connector\libs\Products;
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly
+    exit; 
 }
 
 /*
