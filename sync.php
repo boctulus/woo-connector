@@ -260,6 +260,10 @@ class Sync
                         case 'UPDATE':                           
                         case 'RESTORE':                            
                         case 'CREATE':
+                            if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                                $row['status'] = $config['status_at_creation'];
+                            }
+                            
                             $pid = Products::createProduct($row);
 
                             if (!self::hasVendor($vendor_slug, $pid)){

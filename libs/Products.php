@@ -168,6 +168,10 @@ class Products
     */
     static function uploadImage($imageurl, $title = '', $alt = '', $caption = '')
     {
+        if (empty($imageurl)){
+            return false;
+        }
+
         $attach_id = static::getAttachmentIdFromSrc($imageurl);
         if ( $attach_id !== null){
             return $attach_id;
@@ -425,11 +429,13 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
-        } elseif (isset($args['image'])) {
+        } elseif (isset($args['image'][0])) {
             $attach_id = static::uploadImage($args['image'][0]);
 
-            static::setImagesForPost($pid, [$attach_id]); 
-            static::setDefaultImage($pid, $attach_id); 
+            if (!empty($attach_id)){
+                static::setImagesForPost($pid, [$attach_id]); 
+                static::setDefaultImage($pid, $attach_id);
+            }             
         }
 
         if ($args['type'] == 'variable'){
@@ -668,7 +674,7 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
-        } elseif (isset($args['image'])) {
+        } elseif (isset($args['image'][0])) {
             $attach_id = static::uploadImage($args['image'][0]);
 
             static::setImagesForPost($pid, [$attach_id]); 
@@ -808,8 +814,11 @@ class Products
 
         if (isset($args['image'])){
             $attach_id = static::uploadImage($args['image']['full_src'], $args['image']['title'] ?? '', $args['image']['alt'] ?? '', $args['image']['caption'] ?? '' );
-            static::setImagesForPost($variation_id, [$attach_id]); 
-            static::setDefaultImage($variation_id, $attach_id);
+            
+            if (!empty($attach_id)){
+                static::setImagesForPost($variation_id, [$attach_id]); 
+                static::setDefaultImage($variation_id, $attach_id);  
+            }
         }
 
         $variation->save();
