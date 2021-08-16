@@ -187,7 +187,7 @@ class Products
         $uploadfile = $uploaddir['path'] . '/' . $filename;
         $contents   = Files::file_get_contents_curl($imageurl);
 
-        if (empty($content)){
+        if (empty($contents)){
             return;
         }
 
@@ -447,9 +447,8 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
-        } elseif (isset($args['image'][0])) {
-            $attach_id = static::uploadImage($args['image'][0]);
-
+        } elseif (isset($args['image'])) {
+            $attach_id = static::uploadImage($args['image']);
             if (!empty($attach_id)){
                 static::setImagesForPost($pid, [$attach_id]); 
                 static::setDefaultImage($pid, $attach_id);
@@ -686,7 +685,7 @@ class Products
         if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
             $attach_ids = [];
             foreach ($args['gallery_images'] as $img){
-                $img_url      = $img[0];
+                $img_url = $img[0];
 
                 $att_id = static::uploadImage($img_url);
 
@@ -697,8 +696,8 @@ class Products
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
-        } elseif (isset($args['image'][0])) {
-            $att_id = static::uploadImage($args['image'][0]);
+        } elseif (isset($args['image'])) {
+            $att_id = static::uploadImage($args['image']);
 
             if (!empty($att_id)){
                 static::setImagesForPost($pid, [$att_id]); 
