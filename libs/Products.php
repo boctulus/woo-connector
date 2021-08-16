@@ -169,7 +169,7 @@ class Products
     static function uploadImage($imageurl, $title = '', $alt = '', $caption = '')
     {
         if (empty($imageurl)){
-            return false;
+            return;
         }
 
         $attach_id = static::getAttachmentIdFromSrc($imageurl);
@@ -183,12 +183,21 @@ class Products
         $uniq_name = date('dmY').''.(int) microtime(true); 
         $filename = $uniq_name.'.'.$imagetype;
 
-        $uploaddir = wp_upload_dir();
+        $uploaddir  = wp_upload_dir();
         $uploadfile = $uploaddir['path'] . '/' . $filename;
-        $contents= Files::file_get_contents_curl($imageurl);
+        $contents   = Files::file_get_contents_curl($imageurl);
+
+        if (empty($content)){
+            return;
+        }
+
         $savefile = fopen($uploadfile, 'w');
-        fwrite($savefile, $contents);
+        $bytes    = fwrite($savefile, $contents);
         fclose($savefile);
+
+        if (empty($bytes)){
+            return;
+        }
 
         $wp_filetype = wp_check_filetype(basename($filename), null );
         $attachment = array(
@@ -203,6 +212,11 @@ class Products
         );
 
         $attach_id = wp_insert_attachment( $attachment, $uploadfile );
+
+        if (empty($attach_id)){
+            return;
+        }
+
         $imagenew = get_post( $attach_id );
         $fullsizepath = get_attached_file( $imagenew->ID );
         $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
@@ -424,7 +438,11 @@ class Products
             $attach_ids = [];
             foreach ($args['gallery_images'] as $img){
                 $img_url      = $img[0];
-                $attach_ids[] = static::uploadImage($img_url);
+                $att_id = static::uploadImage($img_url);
+
+                if (!empty($att_id)){
+                    $attach_ids[] = $att_id;
+                }                
             }
 
             static::setImagesForPost($pid, $attach_ids); 
@@ -669,16 +687,23 @@ class Products
             $attach_ids = [];
             foreach ($args['gallery_images'] as $img){
                 $img_url      = $img[0];
-                $attach_ids[] = static::uploadImage($img_url);
+
+                $att_id = static::uploadImage($img_url);
+
+                if (!empty($att_id)){
+                    $attach_ids[] = $att_id;
+                }  
             }
 
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
         } elseif (isset($args['image'][0])) {
-            $attach_id = static::uploadImage($args['image'][0]);
+            $att_id = static::uploadImage($args['image'][0]);
 
-            static::setImagesForPost($pid, [$attach_id]); 
-            static::setDefaultImage($pid, $attach_id); 
+            if (!empty($att_id)){
+                static::setImagesForPost($pid, [$att_id]); 
+                static::setDefaultImage($pid, $att_id); 
+            }
         }
 
         if ($args['type'] == 'variable' && isset($args['variations'])){
