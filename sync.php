@@ -6,6 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
 
+namespace connector;
 
 use connector\libs\Debug;
 use connector\libs\Url;
@@ -30,6 +31,11 @@ if (php_sapi_name() != "cli") {
     #echo "Error: acceso solo desde la terminal<p/>";
     #exit;
 }
+
+if (!defined('WC_PRODUCT_VENDORS_TAXONOMY')){
+    define( 'WC_PRODUCT_VENDORS_TAXONOMY', 'wcpv_product_vendors' );
+}
+
 
 class Sync
 {   
@@ -101,72 +107,7 @@ class Sync
     
         return $arr;
     }
-    
-    // 
-    static function hasVendor($vendor, $pid){
-        global $wpdb;
 
-        if (empty($pid)){
-            throw new \InvalidArgumentException("product_id no puede ser nulo");
-        }
-    
-        $sql = "SELECT COUNT(*) FROM `{$wpdb->prefix}term_taxonomy`  as TT
-        INNER JOIN `{$wpdb->prefix}terms` as T ON TT.term_id = T.term_id
-        INNER JOIN `{$wpdb->prefix}term_relationships` as TR ON TT.term_taxonomy_id = TR.term_taxonomy_id
-        WHERE T.slug = '$vendor' AND object_id = $pid";
-
-        return $wpdb->get_var($sql) != 0;
-    }
-    
-    static function removeVendor($vendor, $pid){
-        global $wpdb;
-
-        if (empty($pid)){
-            throw new \InvalidArgumentException("product_id no puede ser nulo");
-        }
-    
-        $sql = "SELECT TR.term_taxonomy_id as tt_id FROM `{$wpdb->prefix}term_relationships` as TR 
-        INNER JOIN `{$wpdb->prefix}term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
-        INNER JOIN `{$wpdb->prefix}terms` as T ON T.term_id = TT.term_id
-        WHERE object_id = $pid AND slug='$vendor'";
-    
-        $tt_id = $wpdb->get_var($sql);
-    
-        $sql = "DELETE FROM `{$wpdb->prefix}term_relationships` WHERE `object_id` = $pid AND `term_taxonomy_id` = $tt_id";
-    
-        $ok = $wpdb->query($sql);
-    
-        if (!$ok){
-            return false;
-        }
-    
-        self::updateCount($vendor);
-    
-        return true;
-    }
-    
-    static function addVendor($vendor, $pid){
-        global $wpdb;
-
-        if (empty($pid)){
-            throw new \InvalidArgumentException("product_id no puede ser nulo");
-        }
-    
-        $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
-        $vendor_id = $wpdb->get_var($sql);
-    
-        $sql = "INSERT INTO `{$wpdb->prefix}term_relationships` (`object_id`, `term_taxonomy_id`, `term_order`) VALUES ($pid, $vendor_id, '0');";
-    
-        $ok = $wpdb->query($sql);
-        
-        if (!$ok){
-            return false;
-        }
-    
-        self::updateCount($vendor);
-    
-        return true;
-    }
     
     static function updateCount($vendor){
         global $wpdb;
@@ -240,11 +181,8 @@ class Sync
                         case 'CREATE':                                             
                         case 'RESTORE':                           
                         case 'UPDATE':
-                            Products::updateProductBySku($row);
-
-                            if (!self::hasVendor($vendor_slug, $pid)){
-                                self::addVendor($vendor_slug, $pid);
-                            }
+                            Products::updateProductBySku($row);                            
+                            Sync::updateVendor($vendor_slug, $pid);
 
                             break;
                         default:
@@ -265,10 +203,7 @@ class Sync
                             }
                             
                             $pid = Products::createProduct($row);
-
-                            if (!self::hasVendor($vendor_slug, $pid)){
-                                self::addVendor($vendor_slug, $pid);
-                            }
+                            Sync::updateVendor($vendor_slug, $pid);
 
                             break;
                         default:
@@ -286,9 +221,22 @@ class Sync
         dd("La sincronización ha terminado");
     }
 
+
+    /*
+        Devuelve el vendor_slug del post o NULL en caso contrario
+    */
+    static function getCurrentVendor($post_id){
+        return wp_get_object_terms( [$post_id], WC_PRODUCT_VENDORS_TAXONOMY );
+    }
+    
+    static function updateVendor($vendor_slug, $pid){
+        if (!isset($pid)){
+            return;
+        }
+
+        wp_set_object_terms( $pid, $vendor_slug, WC_PRODUCT_VENDORS_TAXONOMY, false );
+    }
 }
-
-
 
 
 Sync::getData();

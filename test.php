@@ -6,6 +6,7 @@ use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
 
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -27,4 +28,3 @@ if (!function_exists('dd')){
 		Debug::dd($val, $msg, $pre_cond);
 	}
 }
-
