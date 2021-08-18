@@ -25,7 +25,12 @@ class Url
         return $x;
     }
 
-    static function getBaseUrl($url, bool $include_path = false)
+    static function currentUrl(){
+        $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        return $actual_link;
+    }
+
+    static function getBaseUrl($url)
     {
         $url_info = parse_url($url);
         return  $url_info['scheme'] . '://' . $url_info['host'];

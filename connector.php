@@ -21,9 +21,10 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 */
 
-require __DIR__ . '/libs/Debug.php';
-require __DIR__ . '/libs/Files.php';
-require __DIR__ . '/libs/Strings.php';
+require_once __DIR__ . '/libs/Debug.php';
+require_once __DIR__ . '/libs/Files.php';
+require_once __DIR__ . '/libs/Strings.php';
+require_once __DIR__ . '/shopify.php';
 
 
 /**
@@ -33,12 +34,5 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 	return;
 }	
 
-/*
-function connector_installer(){
-    include('installer.php');
-}
-
-register_activation_hook(__file__, 'connector_installer');
-*/
 
 

@@ -234,6 +234,13 @@ class Sync
             return;
         }
 
+        if (class_exists(\WC_Product_Vendors_Utils::class)){
+            if (! \WC_Product_Vendors_Utils::is_valid_vendor($vendor_slug)){
+                dd("[ Advertencia ] El vendor $vendor_slug no existe.");
+                return;
+            }
+        }
+
         wp_set_object_terms( $pid, $vendor_slug, WC_PRODUCT_VENDORS_TAXONOMY, false );
     }
 }
