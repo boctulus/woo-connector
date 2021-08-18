@@ -35,4 +35,11 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 }	
 
 
+function reactor_installer(){
+    include('installer.php');
+}
+
+register_activation_hook(__file__, 'reactor_installer');
+
+
 
