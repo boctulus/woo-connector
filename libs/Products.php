@@ -448,7 +448,8 @@ class Products
             static::setImagesForPost($pid, $attach_ids); 
             static::setDefaultImage($pid, $attach_ids[0]);        
         } elseif (isset($args['image'])) {
-            $attach_id = static::uploadImage($args['image']);
+            $img = is_array($args['image']) ? $args['image'][0] : $args['image'];
+            $attach_id = static::uploadImage($img);
             if (!empty($attach_id)){
                 static::setImagesForPost($pid, [$attach_id]); 
                 static::setDefaultImage($pid, $attach_id);
@@ -672,11 +673,13 @@ class Products
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            static::setProductCategoryNames($pid, array_column($args['categories'], 'name'));
+            $names = isset($args['categories']['name']) ? array_column($args['categories'], 'name') : $args['categories'];
+            static::setProductCategoryNames($pid, $names);
         }        
 
         if( isset( $args['tags'] ) ){
-            static::setProductTagNames($pid, array_column($args['tags'], 'name'));
+            $names = isset($args['tags']['name']) ? array_column($args['tags'], 'name') : $args['tags'];
+            static::setProductTagNames($pid, $names);
         }
             
 
@@ -837,7 +840,12 @@ class Products
         // Image por variation if any
 
         if (isset($args['image'])){
-            $attach_id = static::uploadImage($args['image']['full_src'], $args['image']['title'] ?? '', $args['image']['alt'] ?? '', $args['image']['caption'] ?? '' );
+            $url = $args['image']['full_src'] ?? $args['image']['url'] ?? null;
+            $title = $args['image']['title'] ?? '';
+            $alt = $args['image']['alt'] ?? '';
+            $caption = $args['image']['caption'] ?? '';
+
+            $attach_id = static::uploadImage($url, $title, $alt, $caption );
             
             if (!empty($attach_id)){
                 static::setImagesForPost($variation_id, [$attach_id]); 

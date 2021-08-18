@@ -168,7 +168,16 @@ function test_create_wh(){
 }
 
 function test(){
+	// Solo para testing:
+	global $base_url;
+	global $shop;
+	global $api_key;
+	global $api_secret;
+	global $api_ver;
+
 	include 'logs/dump_2.php';
+
+	$pid = $a['id'];
 
 	$a['sku'] = $a['handle'];
 
@@ -214,11 +223,22 @@ function test(){
 
 	$a['tags'] = $tags;
 
+
+	// Categories
+
+	$a['categories'] = [];
+
+	if (isset($a["product_type"]) && !empty($a["product_type"])){
+		$a['categories'] = 	$a["product_type"];
+	}
+
+	$a['categories'] = array_merge($a['categories'], getCollectionsByProductId($shop, $pid, $api_key, $api_secret, $api_ver));
+
+	dd($a);
+ 
 	//$pid = Products::createProduct($row);
 }
 
 
-#test();
+test();
 
-$coll_names = getCollectionsByProductId($shop, 6873203212481, $api_key, $api_secret, $api_ver);
-dd($coll_names);

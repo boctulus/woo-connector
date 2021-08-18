@@ -155,7 +155,6 @@ class Sync
             $vendor_url  = $vendor['url'];
             $vendor_slug = $vendor['slug'];
 
-            
             $config = self::getConfig();
 
             $full_url = $vendor_url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
@@ -175,9 +174,10 @@ class Sync
 
                 continue;
             }
-            
+                        
 
             // cache ---------- solo pruebas
+            //Files::dump($res, 'response.php'); exit;
             //include __DIR__ . '/logs/response.php';
 
             $data = $res['data'];
