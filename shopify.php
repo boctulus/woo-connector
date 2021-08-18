@@ -15,14 +15,14 @@ if (!function_exists('dd')){
 
 function webhook_products_create(){
     $data = file_get_contents('php://input');
-    Files::dump($data, 'product_' . $_SERVER['REQUEST_METHOD'] .'.txt');  
+    Files::dump($data, 'product_create.txt');  
 
     // acá ocurre el procesamiento
 }
 
 function webhook_products_update(){
     $data = file_get_contents('php://input');
-    Files::dump($data, 'product_' . $_SERVER['REQUEST_METHOD'] .'.txt');  
+    Files::dump($data, 'product_update.txt');  
 }
 
 /*
@@ -32,7 +32,7 @@ function webhook_products_update(){
 */
 function webhook_products_delete(){
     $data = file_get_contents('php://input');
-    Files::dump($data, 'product_' . $_SERVER['REQUEST_METHOD'] .'.txt');  
+    Files::dump($data, 'product_delete.txt');  
 }
 
 add_action( 'rest_api_init', function () {
@@ -44,13 +44,13 @@ add_action( 'rest_api_init', function () {
 	) );
 
     register_rest_route( 'connector/v1', '/webhooks/products_update', array(
-		'methods' => 'POST,UPDATE',  // POST
+		'methods' => 'POST', 
 		'callback' => 'webhook_products_update',
         'permission_callback' => '__return_true'
 	) );
 
     register_rest_route( 'connector/v1', '/webhooks/products_delete', array(
-		'methods' => 'GET,POST,DELETE',
+		'methods' => 'POST',
 		'callback' => 'webhook_products_delete',
         'permission_callback' => '__return_true'
 	) );

@@ -29,19 +29,49 @@ if (!function_exists('dd')){
 	}
 }
 
+function getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
+	static $webhooks = [];
 
-function createWebhook($shop, $entity, $operation){
+	if (empty($webhooks)){
+		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
+
+		$res = Url::consume_api($endpoint, 'GET');
+
+		if (empty($res)){
+			return;
+		}
+
+		if (!isset($res["data"]["webhooks"])){
+			return;
+		}
+
+		$webhooks = $res["data"]["webhooks"];
+	}
+
+	$topic    = "$entity/$operation";
+
+	foreach ($webhooks as $wh){
+		if ($wh["topic"] == $topic){
+			return $wh;
+		}
+	}
+
+	return false;
+}
+
+function webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
+	$wh = getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver);
+	return !empty($wh);
+}
+
+function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $base_url, $check_before = true){
 	global $wpdb;
 
-	$base_url = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
+	if ($check_before && webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver)){
+		return;
+	}
 
-	// deben ir en el config
-	$api_key    = 'f2eefde7fca44c9f26abf7f913dba303';
-	$api_secret = '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';
-	$api_ver    = '2021-07';
-
-	$topic      = "$entity/$operation";
-
+	$topic    = "$entity/$operation";
 	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
 
 	$body = [
@@ -67,7 +97,6 @@ function createWebhook($shop, $entity, $operation){
 	}
 
 	$data = $res['data']['webhook'];
-	//dd($data);
 
 	$sql = "INSERT INTO `{$wpdb->prefix}shopi_webhooks` (`shop`, `topic`, `api_version`, `address`, `remote_id`, `created_at`) 
 	VALUES ('$shop', '{$data['topic']}', '{$data['api_version']}', '{$data['address']}' , '{$data['id']}', '{$data['created_at']}')";
@@ -83,6 +112,113 @@ function createWebhook($shop, $entity, $operation){
 }
 
 
-#$ok = createWebhook('act-and-beee', 'products', 'create');
-#$ok = createWebhook('act-and-beee', 'products', 'update');
-#$ok = createWebhook('act-and-beee', 'products', 'delete');
+function getCollectionsByProductId($shop, $product_id, $api_key, $api_secret, $api_ver)
+{
+	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/collects.json?product_id=$product_id";
+
+	$res = Url::consume_api($endpoint, 'GET');
+
+	if (!isset($res['data']["collects"])){
+		return;
+	}
+	
+	$col_ids = array_column($res['data']["collects"], "collection_id");
+
+	$coll_names = [];
+	foreach ($col_ids as $col_id){
+		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/custom_collections/$col_id.json";
+
+		$res = Url::consume_api($endpoint, 'GET');
+		$obj = $res['data']["custom_collection"];
+
+		if ($obj['handle'] != "frontpage"){
+			$coll_names[] = $obj['title'];
+		}
+	}
+
+	return $coll_names;
+}
+
+
+
+$base_url   = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
+
+$shop       = 'act-and-beee';
+$api_key    = 'f2eefde7fca44c9f26abf7f913dba303';
+$api_secret = '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';
+$api_ver    = '2021-07';
+
+
+function test_create_wh(){
+	// Solo para testing:
+	global $base_url;
+	global $shop;
+	global $api_key;
+	global $api_secret;
+	global $api_ver;
+
+	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver, $base_url);
+	dd($ok);
+
+	$ok = createWebhook($shop, 'products', 'update', $api_key, $api_secret, $api_ver, $base_url);
+	dd($ok);
+
+	$ok = createWebhook($shop, 'products', 'delete', $api_key, $api_secret, $api_ver, $base_url);
+	dd($ok);
+}
+
+function test(){
+	include 'logs/dump_2.php';
+
+	$a['sku'] = $a['handle'];
+
+	$a['name'] = $a['title'];
+	unset($a['title']);
+
+	$a['description'] = $a['body_html'];
+
+	// Visibility ('hidden', 'visible', 'search' or 'catalog')
+	if ($a['published_scope'] == 'web'){
+		$a['visibility'] = 'visible';
+	} else {
+		$a['visibility'] = 'hidden';
+	}	
+
+	/*
+		status
+
+		En WooCommerce puede ser publish, draft, pending
+		En Shopify serían active, draft, archived
+	*/
+
+	if ($a['status'] == 'pending'){
+		$a['status'] = 'draft';
+	} elseif ($a['status'] == 'publish'){
+		$a['status'] = 'active';
+	} elseif ($a['status'] == 'archived'){
+		$a['status'] = 'draft';
+	}
+	
+	/*
+		tags
+
+		En WooCommerce es un array
+		En Shopify están separados por ", "
+	*/
+
+	$tags = explode(',', $a['tags']);
+	
+	foreach ($tags as $k => $tag){
+		$tags[$k] = trim($tag);
+	}
+
+	$a['tags'] = $tags;
+
+	//$pid = Products::createProduct($row);
+}
+
+
+#test();
+
+$coll_names = getCollectionsByProductId($shop, 6873203212481, $api_key, $api_secret, $api_ver);
+dd($coll_names);

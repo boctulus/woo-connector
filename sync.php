@@ -108,6 +108,27 @@ class Sync
         return $arr;
     }
 
+    /*
+        Devuelve el vendor_slug del post o NULL en caso contrario
+    */
+    static function getCurrentVendor($post_id){
+        return wp_get_object_terms( [$post_id], WC_PRODUCT_VENDORS_TAXONOMY );
+    }
+    
+    static function updateVendor($vendor_slug, $pid){
+        if (!isset($pid)){
+            return;
+        }
+
+        if (class_exists(\WC_Product_Vendors_Utils::class)){
+            if (! \WC_Product_Vendors_Utils::is_valid_vendor($vendor_slug)){
+                dd("[ Advertencia ] El vendor $vendor_slug no existe.");
+                return;
+            }
+        }
+
+        wp_set_object_terms( $pid, $vendor_slug, WC_PRODUCT_VENDORS_TAXONOMY, false );
+    }
     
     static function updateCount($vendor){
         global $wpdb;
@@ -219,29 +240,6 @@ class Sync
         }
 
         dd("La sincronización ha terminado");
-    }
-
-
-    /*
-        Devuelve el vendor_slug del post o NULL en caso contrario
-    */
-    static function getCurrentVendor($post_id){
-        return wp_get_object_terms( [$post_id], WC_PRODUCT_VENDORS_TAXONOMY );
-    }
-    
-    static function updateVendor($vendor_slug, $pid){
-        if (!isset($pid)){
-            return;
-        }
-
-        if (class_exists(\WC_Product_Vendors_Utils::class)){
-            if (! \WC_Product_Vendors_Utils::is_valid_vendor($vendor_slug)){
-                dd("[ Advertencia ] El vendor $vendor_slug no existe.");
-                return;
-            }
-        }
-
-        wp_set_object_terms( $pid, $vendor_slug, WC_PRODUCT_VENDORS_TAXONOMY, false );
     }
 }
 
