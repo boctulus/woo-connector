@@ -240,5 +240,21 @@ function test(){
 }
 
 
-test();
+//test();
 
+
+include __DIR__ . '/logs/response.php';
+
+$data = $res['data'];
+
+$row = $data[0];
+$sku = $row['sku'];
+
+$pid = wc_get_product_id_by_sku($sku);
+
+
+if (!empty($pid)){
+	Products::updateProductBySku($row);
+} else {
+	$pid = Products::createProduct($row);
+}

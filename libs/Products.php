@@ -402,9 +402,25 @@ class Products
             $product->set_attributes($attr);
         }
             
-        if( isset( $args['default_attributes'] ) )
-            $product->set_default_attributes( $args['default_attributes'] ); // Needs a special formatting
+        /*
+            'default_attributes' => [
+                'pa_talla' => 'l',
+            ]
+        */
+        if( !isset($args['default_attributes']) || empty($args['default_attributes'])){           
+            foreach ($args['attributes'] as $key => $at){
+                $term_names = isset($at['term_names']) ? $at['term_names'] : $at;
 
+                if ($key == 'pa_talla' && in_array('m', $term_names)){
+                    $args['default_attributes'][$key] = 'm';
+                } else {
+                    $args['default_attributes'][$key] = $term_names[0];
+                }                
+            }
+        }
+
+        $product->set_default_attributes( $args['default_attributes'] );
+    
 
         // Reviews, purchase note and menu order
         $product->set_reviews_allowed( isset( $args['reviews'] ) ? $args['reviews'] : false );
