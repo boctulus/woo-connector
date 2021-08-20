@@ -42,4 +42,44 @@ function connector_installer(){
 register_activation_hook(__file__, 'connector_installer');
 
 
+class Connector
+{
+    static function getApiKeys($vendor_slug = null){
+        $list  = file_get_contents(__DIR__ . '/config/api_keys.txt');
+        $lines = explode(PHP_EOL, $list);
+    
+        $arr = [];
+        foreach ($lines as $line){
+            $line = trim($line);
+    
+            if (empty($line) || $line[0] == '#' || $line[0] == ';'){
+                continue;
+            }
+    
+            $line   = str_replace("\t", " ", $line);
+            $line   = preg_replace('!\s+!', ' ', $line);
+            $fields = explode(' ', $line);
+    
+            $row = [
+                'slug'           => $fields[0],
+                'api_key'        => $fields[1],
+                'api_secret'     => $fields[2],
+                'api_ver'        => $fields[3] ?? null,
+                'shop'           => $fields[4] ?? null
+            ];
+
+            if ($vendor_slug != null){
+                if ($row['slug'] == $vendor_slug){
+                    return $row;
+                }
+            }
+
+            $arr[] = $row;
+        }
+    
+        return $arr;
+    }
+
+}
+
 

@@ -152,6 +152,13 @@ class Sync
         $vendors = Sync::getVendors(true);
 
         foreach ($vendors as $vendor){
+            $vendor_cms  = strtolower($vendor['cms']);
+
+            // Para otros CMS se trabaja con Webhooks así que es innecesario pedir datos
+            if ($vendor_cms != 'wc' || $vendor_cms != 'woocommerce'){
+                return;
+            }
+
             $vendor_url  = $vendor['url'];
             $vendor_slug = $vendor['slug'];
 
@@ -177,7 +184,7 @@ class Sync
                         
 
             // cache ---------- solo pruebas
-            //Files::dump($res, 'response_woo_simple.php'); 
+            //  Files::dump($res, 'response_woo_simple.php'); 
             //dd($res);
             //include __DIR__ . '/logs/response.php';
 

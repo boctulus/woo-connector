@@ -1,0 +1,17 @@
+# vendor_slug           api_key                             api_secret                              api_ver     shop
+
+hupit                   f2eefde7fca44c9f26abf7f913dba303    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  2021-07     act-and-beee
+otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx                               
+
+
+;
+;  Aclaraciones para Shopify:
+;
+;  1) Se requiere de la API de Shopify requiere de mínima el permisos de lectura sobre los productos. 
+;
+;  2) Es necesario el 'shop' que es el subdominio en la url xxxxxxxx.myshopify.com
+;
+;  3) Se necesita especificar la versión de la API    
+;
+;  Evite confundir el vendor_slug (manejado por el plugin de vendors) con el subdominio de Shopify
+;

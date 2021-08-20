@@ -447,11 +447,13 @@ class Products
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            static::setProductCategoryNames($pid, array_column($args['categories'], 'name'));
+            $names = isset($args['categories']['name']) ? array_column($args['categories'], 'name') : $args['categories'];
+            static::setProductCategoryNames($pid, $names);
         }        
 
         if( isset( $args['tags'] ) ){
-            static::setProductTagNames($pid, array_column($args['tags'], 'name'));
+            $names = isset($args['tags']['name']) ? array_column($args['tags'], 'name') : $args['tags'];
+            static::setProductTagNames($pid, $names);
         }
             
 

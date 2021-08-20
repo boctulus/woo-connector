@@ -303,63 +303,23 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 }
 
 
+/*
+	array (
+		'slug' => 'hupit',
+		'api_key' => 'f2eefde7fca44c9f26abf7f913dba303',
+		'api_secret' => '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',
+		'api_ver' => '2021-07',
+		'shop' => 'act-and-beee',
+	)
+*/
+$api = Connector::getApiKeys('hupit');
+
+
 include 'logs/response2.php';
 
-$rows = adaptToShopify($a, $shop, $api_key, $api_secret, $api_ver);
+$rows = adaptToShopify($a, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
 
 $row = $rows[0];
-#dd($row); //
-#exit; /////////////////
-
-/*
-$row = 
-array (
-    'type' => 'simple',
-    'name' => 'Doble complejidad - Azul / M / Europeo',
-    'description' => 'Bla bla bla x2',
-    'visibility' => 'visible',
-    'status' => 'publish',
-    'tags' => 
-    array (
-      0 => '',
-    ),
-    'categories' => 
-    array (
-      0 => 'Informal',
-      1 => 'Verano',
-    ),
-    'regular_price' => '0.00',
-    'sale_price' => NULL,
-    'sku' => 'x2-2.100' . rand(9999,999999),
-    'weight' => 0.0,
-    'stock_quantity' => 0,
-    'attributes' => 
-    array (
-      'pa_color' => 
-      array (
-        0 => 'Azul',
-        1 => 'Negro',
-      ),
-      'pa_talla' => 
-      array (
-        0 => 'M',
-        1 => 'L',
-      ),
-      'pa_estilo' => 
-      array (
-        0 => 'Americano',
-        1 => 'Europeo',
-      ),
-    ),
-    'image' => 
-    array (
-      0 => 'https://cea.vtexassets.com/arquivos/ids/11449113-800-auto?width=800&height=auto&aspect=true',
-      1 => 500,
-      2 => 500,
-    ),
-  );
-*/
-
 $sku = $row['sku'];
 
 $pid = wc_get_product_id_by_sku($sku);
@@ -372,3 +332,4 @@ if (!empty($pid)){
 }
 
 dd($pid);
+
