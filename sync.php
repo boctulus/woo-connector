@@ -177,7 +177,8 @@ class Sync
                         
 
             // cache ---------- solo pruebas
-            //Files::dump($res, 'response.php'); exit;
+            //Files::dump($res, 'response_woo_simple.php'); 
+            //dd($res);
             //include __DIR__ . '/logs/response.php';
 
             $data = $res['data'];

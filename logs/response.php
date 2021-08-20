@@ -1,141 +1,176 @@
 <?php
 
-$res = 
-array (
-  'data' => 
+$a = array (
+  'id' => 6873203212481,
+  'title' => 'Jeans chinosss',
+  'body_html' => 'panta panta lones',
+  'vendor' => 'act-and-beee',
+  'product_type' => 'Informal',
+  'created_at' => '2021-08-15T23:55:19+01:00',
+  'handle' => 'jeans-chinos',
+  'updated_at' => '2021-08-19T18:34:43+01:00',
+  'published_at' => '2021-08-18T03:13:56+01:00',
+  'template_suffix' => '',
+  'status' => 'active',
+  'published_scope' => 'web',
+  'tags' => 'Algodón, Chinos',
+  'admin_graphql_api_id' => 'gid://shopify/Product/6873203212481',
+  'variants' => 
   array (
     0 => 
     array (
-      'id' => 66,
-      'type' => 'variable',
-      'name' => 'Shopi-like product',
-      'slug' => '',
-      'status' => 'draft',
-      'featured' => false,
-      'catalog_visibility' => 'visible',
-      'description' => 'bla bla',
-      'short_description' => 'short',
-      'sku' => 'asdf',
-      'price' => '789',
-      'regular_price' => '',
-      'sale_price' => '',
-      'manage_stock' => false,
-      'stock_quantity' => NULL,
-      'stock_status' => 'instock',
-      'is_sold_individually' => false,
-      'weight' => '',
-      'length' => '',
-      'width' => '',
-      'height' => '',
-      'parent_id' => 0,
-      'tags' => 
-      array (
-      ),
-      'categories' => 
-      array (
-        0 => 
-        array (
-          'name' => 'Pantalones',
-          'slug' => 'pantalones',
-          'description' => '',
-        ),
-      ),
-      'image' => 
-      array (
-        0 => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg',
-        1 => 683,
-        2 => 1024,
-        3 => true,
-      ),
-      'gallery_images' => 
-      array (
-        0 => 
-        array (
-          0 => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg',
-          1 => 683,
-          2 => 1024,
-          3 => true,
-        ),
-      ),
-      'attributes' => 
-      array (
-        'pa_talla' => 
-        array (
-          'term_names' => 
-          array (
-            's',
-            'm',
-            'l',
-            'xl'
-          ),
-          'is_visible' => true,
-        ),
-      ),
-      'default_attributes' => 
-      array (
-        'pa_talla' => 'l',
-      ),
-      'variations' => 
-      array (
-        0 => 
-        array (
-          'attributes' => 
-          array (
-            'attribute_pa_talla' => 'l',
-          ),
-          'availability_html' => '',
-          'backorders_allowed' => false,
-          'dimensions' => 
-          array (
-            'length' => '',
-            'width' => '',
-            'height' => '',
-          ),
-          'dimensions_html' => 'N/A',
-          'display_price' => 789,
-          'display_regular_price' => 789,
-          'image' => 
-          array (
-            'title' => 'pantalonELBA_HUPIT1-scaled-700x1050',
-            'caption' => '',
-            'url' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
-            'alt' => '',
-            'src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg',
-            'srcset' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-600x900.jpg 600w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-200x300.jpg 200w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-683x1024.jpg 683w, http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg 700w',
-            'sizes' => '(max-width: 600px) 100vw, 600px',
-            'full_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1.jpg',
-            'full_src_w' => 700,
-            'full_src_h' => 1050,
-            'gallery_thumbnail_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-100x100.jpg',
-            'gallery_thumbnail_src_w' => 100,
-            'gallery_thumbnail_src_h' => 100,
-            'thumb_src' => 'http://woo2.lan/wp-content/uploads/2021/07/pantalonELBA_HUPIT1-scaled-700x1050-1-300x300.jpg',
-            'thumb_src_w' => 300,
-            'thumb_src_h' => 300,
-            'src_w' => 600,
-            'src_h' => 900,
-          ),
-          'image_id' => 33,
-          'is_downloadable' => false,
-          'is_in_stock' => true,
-          'is_purchasable' => false,
-          'is_sold_individually' => 'no',
-          'is_virtual' => false,
-          'max_qty' => '',
-          'min_qty' => 1,
-          'price_html' => '',
-          'sku' => '',
-          'variation_description' => '',
-          'variation_id' => 67,
-          'variation_is_active' => true,
-          'variation_is_visible' => true,
-          'weight' => '',
-          'weight_html' => 'N/A',
-        ),
-      ),
-      'operation' => 'UPDATE',
+      'id' => 40531276628161,
+      'product_id' => 6873203212481,
+      'title' => 's',
+      'price' => '1400.00',
+      'sku' => 'jeans-1',
+      'position' => 1,
+      'inventory_policy' => 'deny',
+      'compare_at_price' => '1200.00',
+      'fulfillment_service' => 'manual',
+      'inventory_management' => 'shopify',
+      'option1' => 's',
+      'option2' => NULL,
+      'option3' => NULL,
+      'created_at' => '2021-08-15T23:55:19+01:00',
+      'updated_at' => '2021-08-18T03:08:40+01:00',
+      'taxable' => true,
+      'barcode' => '',
+      'grams' => 2500,
+      'image_id' => 30537264890049,
+      'weight' => 2.5,
+      'weight_unit' => 'kg',
+      'inventory_item_id' => 42626399404225,
+      'inventory_quantity' => 51,
+      'old_inventory_quantity' => 51,
+      'requires_shipping' => true,
+      'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40531276628161',
+    ),
+    1 => 
+    array (
+      'id' => 40531276660929,
+      'product_id' => 6873203212481,
+      'title' => 'm',
+      'price' => '1450.00',
+      'sku' => 'jeans-2',
+      'position' => 2,
+      'inventory_policy' => 'deny',
+      'compare_at_price' => NULL,
+      'fulfillment_service' => 'manual',
+      'inventory_management' => 'shopify',
+      'option1' => 'm',
+      'option2' => NULL,
+      'option3' => NULL,
+      'created_at' => '2021-08-15T23:55:19+01:00',
+      'updated_at' => '2021-08-19T18:34:43+01:00',
+      'taxable' => true,
+      'barcode' => '',
+      'grams' => 2500,
+      'image_id' => NULL,
+      'weight' => 2.5,
+      'weight_unit' => 'kg',
+      'inventory_item_id' => 42626399436993,
+      'inventory_quantity' => 2,
+      'old_inventory_quantity' => 2,
+      'requires_shipping' => true,
+      'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40531276660929',
+    ),
+    2 => 
+    array (
+      'id' => 40531276693697,
+      'product_id' => 6873203212481,
+      'title' => 'l',
+      'price' => '1500.00',
+      'sku' => 'jeans-3',
+      'position' => 3,
+      'inventory_policy' => 'deny',
+      'compare_at_price' => '1200.00',
+      'fulfillment_service' => 'manual',
+      'inventory_management' => 'shopify',
+      'option1' => 'l',
+      'option2' => NULL,
+      'option3' => NULL,
+      'created_at' => '2021-08-15T23:55:19+01:00',
+      'updated_at' => '2021-08-15T23:55:19+01:00',
+      'taxable' => true,
+      'barcode' => '',
+      'grams' => 2500,
+      'image_id' => NULL,
+      'weight' => 2.5,
+      'weight_unit' => 'kg',
+      'inventory_item_id' => 42626399469761,
+      'inventory_quantity' => 6,
+      'old_inventory_quantity' => 6,
+      'requires_shipping' => true,
+      'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40531276693697',
     ),
   ),
-  'http_code' => 200,
-  'error' => '',
+  'options' => 
+  array (
+    0 => 
+    array (
+      'id' => 8822825484481,
+      'product_id' => 6873203212481,
+      'name' => 'Size',
+      'position' => 1,
+      'values' => 
+      array (
+        0 => 's',
+        1 => 'm',
+        2 => 'l',
+      ),
+    ),
+  ),
+  'images' => 
+  array (
+    0 => 
+    array (
+      'id' => 30537263513793,
+      'product_id' => 6873203212481,
+      'position' => 1,
+      'created_at' => '2021-08-15T23:57:52+01:00',
+      'updated_at' => '2021-08-15T23:58:20+01:00',
+      'alt' => NULL,
+      'width' => 653,
+      'height' => 650,
+      'src' => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/H925668575203425981d852dbc4b0779aN.jpg?v=1629068300',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/30537263513793',
+    ),
+    1 => 
+    array (
+      'id' => 30537264890049,
+      'product_id' => 6873203212481,
+      'position' => 2,
+      'created_at' => '2021-08-15T23:58:20+01:00',
+      'updated_at' => '2021-08-15T23:58:20+01:00',
+      'alt' => NULL,
+      'width' => 650,
+      'height' => 649,
+      'src' => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/H8d00a90b87844eb290a24734fa4fddfbO.jpg?v=1629068300',
+      'variant_ids' => 
+      array (
+        0 => 40531276628161,
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/30537264890049',
+    ),
+  ),
+  'image' => 
+  array (
+    'id' => 30537263513793,
+    'product_id' => 6873203212481,
+    'position' => 1,
+    'created_at' => '2021-08-15T23:57:52+01:00',
+    'updated_at' => '2021-08-15T23:58:20+01:00',
+    'alt' => NULL,
+    'width' => 653,
+    'height' => 650,
+    'src' => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/H925668575203425981d852dbc4b0779aN.jpg?v=1629068300',
+    'variant_ids' => 
+    array (
+    ),
+    'admin_graphql_api_id' => 'gid://shopify/ProductImage/30537263513793',
+  ),
 );

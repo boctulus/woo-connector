@@ -167,23 +167,14 @@ function test_create_wh(){
 	dd($ok);
 }
 
-function test(){
-	// Solo para testing:
-	global $base_url;
-	global $shop;
-	global $api_key;
-	global $api_secret;
-	global $api_ver;
-
-	include 'logs/dump_2.php';
+/*
+	Convierte la estructura de productos de Shopify a la de WooCommerce
+*/
+function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 
 	$pid = $a['id'];
 
-	$a['sku'] = $a['handle'];
-
 	$a['name'] = $a['title'];
-	unset($a['title']);
-
 	$a['description'] = $a['body_html'];
 
 	// Visibility ('hidden', 'visible', 'search' or 'catalog')
@@ -202,8 +193,8 @@ function test(){
 
 	if ($a['status'] == 'pending'){
 		$a['status'] = 'draft';
-	} elseif ($a['status'] == 'publish'){
-		$a['status'] = 'active';
+	} elseif ($a['status'] == 'active'){
+		$a['status'] = 'publish';
 	} elseif ($a['status'] == 'archived'){
 		$a['status'] = 'draft';
 	}
@@ -229,32 +220,155 @@ function test(){
 	$a['categories'] = [];
 
 	if (isset($a["product_type"]) && !empty($a["product_type"])){
-		$a['categories'] = 	$a["product_type"];
+		$a['categories'][] = 	$a["product_type"];
 	}
 
 	$a['categories'] = array_merge($a['categories'], getCollectionsByProductId($shop, $pid, $api_key, $api_secret, $api_ver));
 
-	dd($a);
- 
-	//$pid = Products::createProduct($row);
+	/*
+		Variations as simple products
+	*/
+
+	$vars = [];
+	foreach($a['variants'] as $k => $v){
+
+		// atributos
+
+		/*
+			Deben seguir la estructura de los atributos para productos simples de WooCommerce:
+
+				'attributes' => 
+				array (
+					'pa_talla' => 
+					array (
+					),
+					'pa_color' => 
+					array (
+					),
+				)
+		*/		
+		$attributes = [];
+
+		foreach ($a['options'] as $i => $op){
+			$name  = $op['name'];
+			$value = $v['option' . ($i +1)];
+			$term  = strtolower($name);
+
+			if ($term == 'size'){
+				$term = 'talla';
+			} elseif ($term == 'style'){
+				$term = 'estilo';
+			} elseif ($term == 'title'){
+				$term = 'titulo';
+			}
+
+			$term = 'pa_' . $term;
+
+			$attributes[ $term ] = [ $value ];
+		}
+
+		$vars[$k] = [
+			'type'				=> 'simple',
+			'name'       		=> $a['name'] . ' - ' . $v['title'],
+			'description' 		=> $a['description'],
+			'visibility'  		=> $a['visibility'],
+			'status'      		=> $a['status'],
+			'tags'        		=> $a['tags'],
+			'categories'  		=> $a['categories'],
+			'regular_price'		=> $v['price'],
+			'sale_price'  		=> $v['compare_at_price'],
+			'sku'         		=> $v['sku'],
+			'weight'	  		=> $v['weight'],
+			'stock_quantity' 	=> $v['inventory_quantity'],
+			//'tax_status'		=> $v['taxable'] ? 'taxable' : 'none',
+			'attributes' 		=> $attributes
+		];
+
+		foreach ($a['images'] as $img){
+			foreach ($img['variant_ids'] as $vid){
+				if ($vid == $v['id']){
+					//dd("La variante {$v['id']} tiene la imágen {$img['src']}");
+					$vars[$k]['image'][0] = $img['src'];
+					$vars[$k]['image'][1] = $img['width'];
+					$vars[$k]['image'][2] = $img['height'];
+					break 2;
+				}
+			}
+		}
+		
+	}
+
+	
+	return $vars;
 }
 
 
-//test();
+include 'logs/response2.php';
 
+$rows = adaptToShopify($a, $shop, $api_key, $api_secret, $api_ver);
 
-include __DIR__ . '/logs/response.php';
+$row = $rows[0];
+#dd($row); //
+#exit; /////////////////
 
-$data = $res['data'];
+/*
+$row = 
+array (
+    'type' => 'simple',
+    'name' => 'Doble complejidad - Azul / M / Europeo',
+    'description' => 'Bla bla bla x2',
+    'visibility' => 'visible',
+    'status' => 'publish',
+    'tags' => 
+    array (
+      0 => '',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+    ),
+    'regular_price' => '0.00',
+    'sale_price' => NULL,
+    'sku' => 'x2-2.100' . rand(9999,999999),
+    'weight' => 0.0,
+    'stock_quantity' => 0,
+    'attributes' => 
+    array (
+      'pa_color' => 
+      array (
+        0 => 'Azul',
+        1 => 'Negro',
+      ),
+      'pa_talla' => 
+      array (
+        0 => 'M',
+        1 => 'L',
+      ),
+      'pa_estilo' => 
+      array (
+        0 => 'Americano',
+        1 => 'Europeo',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cea.vtexassets.com/arquivos/ids/11449113-800-auto?width=800&height=auto&aspect=true',
+      1 => 500,
+      2 => 500,
+    ),
+  );
+*/
 
-$row = $data[0];
 $sku = $row['sku'];
 
 $pid = wc_get_product_id_by_sku($sku);
 
-
 if (!empty($pid)){
+	dd("Actualizando...");
 	Products::updateProductBySku($row);
 } else {
 	$pid = Products::createProduct($row);
 }
+
+dd($pid);

@@ -172,9 +172,9 @@ class Products
             return;
         }
 
-        $attach_id = static::getAttachmentIdFromSrc($imageurl);
-        if ( $attach_id !== null){
-            return $attach_id;
+        $att_id = static::getAttachmentIdFromSrc($imageurl);
+        if ( $att_id !== null){
+            return $att_id;
         }
 
         $size = getimagesize($imageurl)['mime'];
@@ -211,18 +211,18 @@ class Products
             'caption'        => $caption
         );
 
-        $attach_id = wp_insert_attachment( $attachment, $uploadfile );
+        $att_id = wp_insert_attachment( $attachment, $uploadfile );
 
-        if (empty($attach_id)){
+        if (empty($att_id)){
             return;
         }
 
-        $imagenew = get_post( $attach_id );
+        $imagenew = get_post( $att_id );
         $fullsizepath = get_attached_file( $imagenew->ID );
-        $attach_data = wp_generate_attachment_metadata( $attach_id, $fullsizepath );
-        wp_update_attachment_metadata( $attach_id, $attach_data ); 
+        $attach_data = wp_generate_attachment_metadata( $att_id, $fullsizepath );
+        wp_update_attachment_metadata( $att_id, $attach_data ); 
 
-        return $attach_id;
+        return $att_id;
     }
 
     static function setDefaultImage($pid, $image_id){
@@ -398,7 +398,7 @@ class Products
         // Attributes et default attributes
         
         if( isset( $args['attributes'] ) ){
-            $attr = static::createProductAttributes($args['attributes'], true);
+            $attr = static::createProductAttributes($args['attributes'], ($args['type'] == 'variable'));
             $product->set_attributes($attr);
         }
             
@@ -407,8 +407,14 @@ class Products
                 'pa_talla' => 'l',
             ]
         */
-        if( !isset($args['default_attributes']) || empty($args['default_attributes'])){           
+        if( isset($args['attributes']) && !isset($args['default_attributes']) || empty($args['default_attributes'])){   
+            $args['default_attributes'] = [];
+
             foreach ($args['attributes'] as $key => $at){
+                if (count($at) == 0){
+                    continue;
+                }
+
                 $term_names = isset($at['term_names']) ? $at['term_names'] : $at;
 
                 if ($key == 'pa_talla' && in_array('m', $term_names)){
@@ -417,6 +423,7 @@ class Products
                     $args['default_attributes'][$key] = $term_names[0];
                 }                
             }
+            
         }
 
         $product->set_default_attributes( $args['default_attributes'] );
@@ -451,24 +458,24 @@ class Products
         // Images and Gallery
     
         if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
-            $attach_ids = [];
+            $att_ids = [];
             foreach ($args['gallery_images'] as $img){
                 $img_url      = $img[0];
                 $att_id = static::uploadImage($img_url);
 
                 if (!empty($att_id)){
-                    $attach_ids[] = $att_id;
+                    $att_ids[] = $att_id;
                 }                
             }
 
-            static::setImagesForPost($pid, $attach_ids); 
-            static::setDefaultImage($pid, $attach_ids[0]);        
+            static::setImagesForPost($pid, $att_ids); 
+            static::setDefaultImage($pid, $att_ids[0]);        
         } elseif (isset($args['image'])) {
             $img = is_array($args['image']) ? $args['image'][0] : $args['image'];
-            $attach_id = static::uploadImage($img);
-            if (!empty($attach_id)){
-                static::setImagesForPost($pid, [$attach_id]); 
-                static::setDefaultImage($pid, $attach_id);
+            $att_id = static::uploadImage($img);
+            if (!empty($att_id)){
+                static::setImagesForPost($pid, [$att_id]); 
+                static::setDefaultImage($pid, $att_id);
             }             
         }
 
@@ -537,13 +544,18 @@ class Products
             $attribute->set_name( $taxonomy );
             $attribute->set_options( $term_ids );
             $attribute->set_position( $position );
-            $attribute->set_visible( $visibility );
+
+            if (isset($visibilit)){
+                $attribute->set_visible( $visibility );
+            }            
+            
             $attribute->set_variation($for_variation);
 
             $data[$taxonomy] = $attribute; // Set in an array
 
             $position++; // Increase position
         }
+
         return $data;
     }
 
@@ -664,12 +676,36 @@ class Products
         // Attributes et default attributes
         
         if( isset( $args['attributes'] ) ){
-            $attr = static::createProductAttributes($args['attributes'], true);
+            $attr = static::createProductAttributes($args['attributes'], ($args['type'] == 'variable'));
             $product->set_attributes($attr);
         }
             
-        if( isset( $args['default_attributes'] ) )
-            $product->set_default_attributes( $args['default_attributes'] ); // Needs a special formatting
+        
+/*
+            'default_attributes' => [
+                'pa_talla' => 'l',
+            ]
+        */
+        if( isset($args['attributes']) && !isset($args['default_attributes']) || empty($args['default_attributes'])){   
+            $args['default_attributes'] = [];
+
+            foreach ($args['attributes'] as $key => $at){
+                if (count($at) == 0){
+                    continue;
+                }
+
+                $term_names = isset($at['term_names']) ? $at['term_names'] : $at;
+
+                if ($key == 'pa_talla' && in_array('m', $term_names)){
+                    $args['default_attributes'][$key] = 'm';
+                } else {
+                    $args['default_attributes'][$key] = $term_names[0];
+                }                
+            }
+            
+        }
+
+        $product->set_default_attributes( $args['default_attributes'] ); 
 
 
         // Reviews, purchase note and menu order
@@ -702,21 +738,22 @@ class Products
         // Images and Gallery
     
         if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
-            $attach_ids = [];
+            $att_ids = [];
             foreach ($args['gallery_images'] as $img){
                 $img_url = $img[0];
 
                 $att_id = static::uploadImage($img_url);
 
                 if (!empty($att_id)){
-                    $attach_ids[] = $att_id;
+                    $att_ids[] = $att_id;
                 }  
             }
 
-            static::setImagesForPost($pid, $attach_ids); 
-            static::setDefaultImage($pid, $attach_ids[0]);        
+            static::setImagesForPost($pid, $att_ids); 
+            static::setDefaultImage($pid, $att_ids[0]);        
         } elseif (isset($args['image'])) {
-            $att_id = static::uploadImage($args['image']);
+            $img = is_array($args['image']) ? $args['image'][0] : $args['image'];
+            $att_id = static::uploadImage($img);
 
             if (!empty($att_id)){
                 static::setImagesForPost($pid, [$att_id]); 
@@ -861,11 +898,11 @@ class Products
             $alt = $args['image']['alt'] ?? '';
             $caption = $args['image']['caption'] ?? '';
 
-            $attach_id = static::uploadImage($url, $title, $alt, $caption );
+            $att_id = static::uploadImage($url, $title, $alt, $caption );
             
-            if (!empty($attach_id)){
-                static::setImagesForPost($variation_id, [$attach_id]); 
-                static::setDefaultImage($variation_id, $attach_id);  
+            if (!empty($att_id)){
+                static::setImagesForPost($variation_id, [$att_id]); 
+                static::setDefaultImage($variation_id, $att_id);  
             }
         }
 
