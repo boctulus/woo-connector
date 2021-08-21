@@ -109,17 +109,7 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	return true;
 }
 
-
-
-$base_url   = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
-
-$shop       = 'act-and-beee';
-$api_key    = 'f2eefde7fca44c9f26abf7f913dba303';
-$api_secret = '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';
-$api_ver    = '2021-07';
-
-
-function test_create_wh($shop, $api_key, $api_secret, $api_ver){
+function test_create_webooks($shop, $api_key, $api_secret, $api_ver){
 	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver);
 	dd($ok);
 
@@ -130,7 +120,19 @@ function test_create_wh($shop, $api_key, $api_secret, $api_ver){
 	dd($ok);
 }
 
-test_create_wh($shop, $api_key, $api_secret, $api_ver);
+
+
+
+$base_url   = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
+
+$shop       = 'act-and-beee';
+$api_key    = 'f2eefde7fca44c9f26abf7f913dba303';
+$api_secret = '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';
+$api_ver    = '2021-07';
+
+
+
+test_create_webooks($shop, $api_key, $api_secret, $api_ver);
 
 
 /*

@@ -4,7 +4,7 @@ namespace connector\libs;
 
 
 if ( ! function_exists( 'wp_crop_image' ) ) {
-    include( __DIR__ . '/../../../../wp-admin/includes/image.php' );
+    include_once ( __DIR__ . '/../../../../wp-admin/includes/image.php' );
 }
 
 class Products

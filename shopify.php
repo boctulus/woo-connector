@@ -220,7 +220,8 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 function insert_or_update_products(){
     $config = include __DIR__ . '/config/config.php';
 
-    $data     = file_get_contents('php://input');    
+    $data = file_get_contents('php://input');  
+    $arr  = json_decode($data, true);  
    
     $headers  = Request::apache_request_headers();
 
@@ -234,8 +235,6 @@ function insert_or_update_products(){
     $shop = substr($shop_url, 0, strlen($shop_url) - strlen('.myshopify.com'));
     
     $api  = Connector::getApiKeys(null, $shop);
-
-    $arr  = json_decode($data, true);
 
     $rows = adaptToShopify($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
 
@@ -281,7 +280,180 @@ function webhook_products_delete(){
     $data = file_get_contents('php://input');  
 }
 
+
+
+function getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
+	static $webhooks = [];
+
+	if (empty($webhooks)){
+		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
+
+		$res = Url::consume_api($endpoint, 'GET');
+
+		if (empty($res)){
+			return;
+		}
+
+		if (!isset($res["data"]["webhooks"])){
+			return;
+		}
+
+		$webhooks = $res["data"]["webhooks"];
+	}
+
+	$topic    = "$entity/$operation";
+
+	foreach ($webhooks as $wh){
+		if ($wh["topic"] == $topic){
+			return $wh;
+		}
+	}
+
+	return false;
+}
+
+function webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
+	$wh = getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver);
+	return !empty($wh);
+}
+
+function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $check_before = true){
+	global $wpdb;
+
+	if ($check_before && webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver)){
+		return;
+	}
+
+	$topic    = "$entity/$operation";
+	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
+
+
+	$body = [
+			"webhook" => [
+			"topic"   => $topic,
+			"address" => home_url() . "/index.php/wp-json/connector/v1/webhooks/{$entity}_{$operation}",
+			"format"  => "json"
+			]
+	];
+
+	$res = Url::consume_api($endpoint, 'POST', $body, [
+		$api_key => $api_secret
+	]);
+
+	if (empty($res)){
+		dd("Error al crear WebHook para $topic");
+		return;
+	}
+
+	if (!isset($res['data']['webhook']) || isset($data['id'])){
+		dd($res, 'response');
+		dd("Error en la respuesta al crear WebHook para $topic");
+		return;
+	}
+
+    /*
+	$data = $res['data']['webhook'];
+
+	$sql = "INSERT INTO `{$wpdb->prefix}shopi_webhooks` (`shop`, `topic`, `api_version`, `address`, `remote_id`, `created_at`) 
+	VALUES ('$shop', '{$data['topic']}', '{$data['api_version']}', '{$data['address']}' , '{$data['id']}', '{$data['created_at']}')";
+
+	$ok = $wpdb->query($sql);
+
+	if (!$ok){
+		dd("Error al almacenar WebHook");
+		return;
+	}
+    */
+
+	return true;
+}
+
+function test_create_webooks(){
+    $config = include __DIR__ . '/config/config.php';
+
+    $data = file_get_contents('php://input');  
+    $arr  = json_decode($data, true);  
+
+    $shop = $arr['shop'];
+
+    $api  = Connector::getApiKeys(null, $shop);
+    
+    $shop       = $api['shop'];
+    $api_key    = $api['api_key'];
+    $api_secret = $api['api_secret'];
+    $api_ver    = $api['api_ver'];
+
+
+    $res = [];
+
+	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver);
+	$res['weboook_product_create'] = $ok;
+
+	$ok = createWebhook($shop, 'products', 'update', $api_key, $api_secret, $api_ver);
+	$res['weboook_product_update'] = $ok;
+
+	$ok = createWebhook($shop, 'products', 'delete', $api_key, $api_secret, $api_ver);
+	$res['weboook_product_delete'] = $ok;
+
+    return $res;
+}
+
+
+/*
+    /index.php/wp-json/connector/v1/shops
+*/
+function get_shops(){
+    $vendors = Sync::getVendors(true);
+
+    $arr = [];
+
+    foreach ($vendors as $vendor){
+        // el único donde ocupo WebHooks
+        if ($vendor['cms'] == 'shopi'){
+            $vendor_slug = $vendor['slug'];
+
+            $api = Connector::getApiKeys($vendor_slug);
+            
+            $arr[] = [ 
+                'vendor' => $vendor,
+                'shop'   => $api['shop']
+            ];
+        }
+    }
+
+    /*
+        [
+            {
+                "vendor": {
+                    "url": "https://f920c96f987d.ngrok.io",
+                    "slug": "hupit",
+                    "cms": "shopi",
+                    "enabled": true
+                },
+                "shop": "act-and-beee"
+            }
+        ]
+    */        
+
+    return $arr;
+}
+
+
 add_action( 'rest_api_init', function () {
+    register_rest_route( 'connector/v1', '/shops', array(
+		'methods' => 'GET',
+		'callback' => 'get_shops',
+        'permission_callback' => '__return_true'
+	) );
+
+
+    register_rest_route( 'connector/v1', '/webhooks/register', array(
+		'methods' => 'POST',
+		'callback' => 'test_create_webooks',
+        'permission_callback' => '__return_true'
+	) );
+
+
     #	GET /index.php/wp-json/connector/v1/webhooks/products_create
 	register_rest_route( 'connector/v1', '/webhooks/products_create', array(
 		'methods' => 'POST',
