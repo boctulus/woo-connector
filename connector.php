@@ -50,33 +50,22 @@ register_activation_hook(__file__, 'connector_installer');
 */
 
 /*  
-    Includes
+    Enqueues
 */
 
-function enqueues() 
-{  
-     #wp_register_script('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js');
+add_action( 'admin_enqueue_scripts', function($hook) {
 	wp_register_script('bootstrap', Files::get_rel_path(). 'assets/js/bootstrap/bootstrap.bundle.min.js');
     wp_enqueue_script('bootstrap');
 
 	wp_register_style('bootstrap', Files::get_rel_path() . 'assets/css/bootstrap/bootstrap.min.css');
-    #wp_register_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
     wp_enqueue_style('bootstrap');
 
-	#wp_register_script('fontawesome', 'https://kit.fontawesome.com/813f54acc9.js');
 	wp_register_script('fontawesome', Files::get_rel_path(). 'assets/js/fontawesome-5.js');
     wp_enqueue_script('fontawesome');
 
-	wp_register_style('cotizo', Files::get_rel_path() . 'assets/css/cotizo.css');
-    wp_enqueue_style('cotizo');
-
-
-	wp_register_script('connector_js', Files::get_rel_path(). 'assets/js/connector.js');
+	wp_register_script('connector_js', Files::get_rel_path(). 'assets/js/main.js');
     wp_enqueue_script('connector_js');
-}
-
-add_action( '\admin_enqueue_scripts', 'enqueues');
-
+} );
 
 
 
@@ -105,138 +94,27 @@ function generate_grab_product_page() {
     }
 
     ?>
-    <script>
-        //  Mover de acá 
+        <div class="container-fluid mt-3">
+            <h3>WebHooks</h3>
+            
+            <div class="row">
+                <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4">
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById("wh_connector_form").addEventListener('submit', function(event){
-				register_webhooks();
-				event.preventDefault();
-				return;
-			});
-        });
+                    <div class="alert alert-secondary mt-3" role="alert">
+                        Es necesario actualizar luego de agregar una nueva tienda de Shopify para registrar los WebHooks correspondientes y así habilitar los eventos.
+                    </div>
 
-        function register_webhooks(){
-            /*
-			jQuery(document).ajaxSend(function() {
-				jQuery("#overlay").fadeIn(300);　
-			});		
-            */			
-					
-			let url = '/index.php/wp-json/connector/v1/shops'; 
+                    <form id="wh_connector_form" class="mt-3 mb-3">
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </form>
 
-			var settings = {
-                "url": url,
-                "method": "GET",
-                "timeout": 0,
-                "headers": {
-                    "Content-Type": "text/plain"
-                }
-			};
+                    <div id="connector_webhooks"></div>                    
+                </div>
+            </div>
 
-			jQuery.ajax(settings)
-			.done(function (response) {
-
-                //console.log(response);
-
-                /*
-                    [
-                        {
-                            "vendor": {
-                                "url": "https://f920c96f987d.ngrok.io",
-                                "slug": "hupit",
-                                "cms": "shopi",
-                                "enabled": true
-                            },
-                            "shop": "act-and-beee"
-                        }
-                    ]
-                */
-
-                for (var i=0; i<response.length; i++){
-                    let shop   = response[i]['shop']; // "act-and-beee"
-                    let vendor = response[i]['vendor']['slug']; 
-
-                    let url = '/index.php/wp-json/connector/v1/webhooks/register'; 
-
-                    let data = JSON.stringify({ shop : shop });
-
-                    var settings = {
-                        "url": url,
-                        "method": "POST",
-                        "timeout": 0,
-                        "headers": {
-                            "Content-Type": "text/plain"
-                        },
-				        "data": data
-                    };
-
-                    jQuery.ajax(settings)
-                    .done(function (response) {
-                        console.log(response);
-
-                        /*
-                            {
-                                "weboook_product_create": null,
-                                "weboook_product_update": null,
-                                "weboook_product_delete": null
-                            }
-                        */
-
-                        if (response["weboook_product_create"] != null){
-                            console.log("WebHook para 'product create' listo para " + vendor);
-                        } 
-
-                        if (response["weboook_product_update"] != null){
-                            console.log("WebHook para 'product update' listo para " + vendor);
-                        } 
-
-                        if (response["weboook_product_delete"] != null){
-                            console.log("WebHook para 'product delete' listo para " + vendor);
-                        } 
-
-                    })
-                    .fail(function (jqXHR, textStatus) {
-                        console.log(jqXHR);
-                        console.log(textStatus);
-                        //addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
-                    });
-
-                }
-
-
-                /*
-				setTimeout(function(){
-					jQuery("#overlay").fadeOut(300);
-				},500);
-                */			
-			})
-			.fail(function (jqXHR, textStatus) {
-				console.log(jqXHR);
-				console.log(textStatus);
-				//addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
-			});
-		}
-    </script>
-
-
-        <h3>WebHooks</h3>
-
-        <form id="wh_connector_form">
-            <button type="submit" class="btn btn-primary">Actualizar</button>
-        </form>
-
-        <p></p>
-
-        <div id="connector_webhooks">
-            <?php
-                
-
-                //dd(, 'VENDORS');
-                //dd();
-            ?>
-
+            
         </div>
+       
     <?php
 }
 
