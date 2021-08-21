@@ -5,6 +5,7 @@ namespace connector;
 use connector\libs\Debug;
 use connector\libs\Url;
 use connector\libs\Products;
+use connector\libs\Strings;
 
 
 ini_set('display_errors', 1);
@@ -12,10 +13,11 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-require __DIR__ . '/libs/Url.php';
-require __DIR__ . '/libs/Products.php';
+require_once __DIR__ . '/libs/Url.php';
+require_once __DIR__ . '/libs/Strings.php';
+require_once __DIR__ . '/libs/Products.php';
 
-include __DIR__ . '/../../../wp-load.php';
+include_once __DIR__ . '/../../../wp-load.php';
 
 
 ini_set('display_errors', 1);
@@ -58,7 +60,7 @@ function webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	return !empty($wh);
 }
 
-function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $base_url, $check_before = true){
+function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $check_before = true){
 	global $wpdb;
 
 	if ($check_before && webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver)){
@@ -68,10 +70,11 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	$topic    = "$entity/$operation";
 	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
 
+
 	$body = [
 			"webhook" => [
 			"topic"   => $topic,
-			"address" => $base_url . "/index.php/wp-json/connector/v1/webhooks/{$entity}_{$operation}",
+			"address" => home_url() . "/index.php/wp-json/connector/v1/webhooks/{$entity}_{$operation}",
 			"format"  => "json"
 			]
 	];
@@ -86,6 +89,7 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	}
 
 	if (!isset($res['data']['webhook']) || isset($data['id'])){
+		dd($res, 'response');
 		dd("Error en la respuesta al crear WebHook para $topic");
 		return;
 	}
@@ -115,25 +119,21 @@ $api_secret = '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';
 $api_ver    = '2021-07';
 
 
-function test_create_wh(){
-	// Solo para testing:
-	global $base_url;
-	global $shop;
-	global $api_key;
-	global $api_secret;
-	global $api_ver;
-
-	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver, $base_url);
+function test_create_wh($shop, $api_key, $api_secret, $api_ver){
+	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver);
 	dd($ok);
 
-	$ok = createWebhook($shop, 'products', 'update', $api_key, $api_secret, $api_ver, $base_url);
+	$ok = createWebhook($shop, 'products', 'update', $api_key, $api_secret, $api_ver);
 	dd($ok);
 
-	$ok = createWebhook($shop, 'products', 'delete', $api_key, $api_secret, $api_ver, $base_url);
+	$ok = createWebhook($shop, 'products', 'delete', $api_key, $api_secret, $api_ver);
 	dd($ok);
 }
 
-//ok
+test_create_wh($shop, $api_key, $api_secret, $api_ver);
+
+
+/*
 $rows = array (
     0 => 
     array (
@@ -174,4 +174,4 @@ if (!empty($pid)){
 }
 
 dd($pid);
-
+*/

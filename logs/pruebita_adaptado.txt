@@ -34,6 +34,12 @@ array (
         0 => 'azul',
       ),
     ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
+      1 => 500,
+      2 => 500,
+    ),
   ),
   1 => 
   array (
@@ -358,11 +364,5 @@ array (
       1 => 500,
       2 => 500,
     ),
-  ),
-  'image' => 
-  array (
-    0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
-    1 => 500,
-    2 => 500,
   ),
 )

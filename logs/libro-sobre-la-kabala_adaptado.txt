@@ -16,7 +16,7 @@ array (
 </div>
 </div>',
     'visibility' => 'visible',
-    'status' => 'draft',
+    'status' => 'publish',
     'tags' => 
     array (
       0 => 'De moda',

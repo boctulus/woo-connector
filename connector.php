@@ -37,11 +37,50 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 }	
 
 
+/*
+    Installer
+*/
 function connector_installer(){
     include('installer.php');
 }
 
 register_activation_hook(__file__, 'connector_installer');
+
+
+/*
+    Panel administraitivo
+*/
+if ( is_admin() ) {
+    add_action( 'admin_menu', 'connector\add_products_menu_entry', 100 );
+}
+
+
+function add_products_menu_entry() {
+    add_submenu_page(
+        'edit.php?post_type=product',
+        __( 'Product Grabber' ),
+        __( 'Grab New' ),
+        'manage_woocommerce', // Required user capability
+        'ddg-product',
+        'connector\generate_grab_product_page'
+    );
+}
+
+function generate_grab_product_page() {
+    if (!current_user_can('administrator'))  {
+        wp_die( __('Su usuario no tiene permitido acceder') );
+    }
+
+    ?>
+        <h3>WebHooks</h3>
+
+        <button>Actualizar</button>
+        <p></p>
+
+        <div id="connector_webhooks"></div>
+    <?php
+}
+
 
 
 class Connector
