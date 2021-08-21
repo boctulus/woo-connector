@@ -1,3 +1,5 @@
+<?php
+
 array (
   'data' => 
   array (
@@ -40,7 +42,7 @@ array (
       'image' => 
       array (
         0 => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo4-683x1024.jpg',
-        1 => 683,
+        1 => 683, 
         2 => 1024,
         3 => true,
       ),
@@ -75,4 +77,4 @@ array (
   ),
   'http_code' => 200,
   'error' => '',
-)
+);

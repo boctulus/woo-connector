@@ -9,12 +9,14 @@ use connector\libs\Debug;
 use connector\libs\Files;
 use connector\libs\Request;
 use connector\libs\Strings;
+use connector\Sync;
 
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Products.php';
 require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Request.php';
+require_once __DIR__ . '/sync.php';
 
 
 if (!function_exists('dd')){
@@ -152,9 +154,15 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 			$attributes[ $term ] = [ $value ];
 		}
 
+        $name = $a['name'];
+
+        if ($v['title'] != 'Default Title'){
+            $name = $name . ' - ' . $v['title'];
+        }
+
 		$vars[$k] = [
 			'type'				=> 'simple',
-			'name'       		=> $a['name'] . ' - ' . $v['title'],
+			'name'       		=> $name,
 			'description' 		=> $a['description'],
 			'visibility'  		=> $a['visibility'],
 			'status'      		=> $a['status'],
@@ -169,21 +177,29 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 			//'tax_status'		=> $v['taxable'] ? 'taxable' : 'none',
 			'attributes' 		=> $attributes
 		];
+       
 
-		foreach ($a['images'] as $img){
-			foreach ($img['variant_ids'] as $vid){
-				if ($vid == $v['id']){
-					//dd("La variante {$v['id']} tiene la imágen {$img['src']}");
-					$vars[$k]['image'][0] = $img['src'];
-					$vars[$k]['image'][1] = $img['width'];
-					$vars[$k]['image'][2] = $img['height'];
-					break 2;
-				}
-			}
-		}
-		
+        foreach ($a['images'] as $img){
+            foreach ($img['variant_ids'] as $vid){
+                if ($vid == $v['id']){
+                    $vars[$k]['image'][0] = $img['src'];
+                    $vars[$k]['image'][1] = $img['width'];
+                    $vars[$k]['image'][2] = $img['height'];
+                    break 2;
+                }
+            }
+        }
+
 	}
 
+    // si es un producto "simple"
+    if (isset($a['image'])){            
+        $vars[0]['image'] = [
+            $img['src'],
+            $img['width'],
+            $img['height']
+        ];
+    }
 	
 	return $vars;
 }
@@ -202,9 +218,12 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 */
 
 function insert_or_update_products(){
-    $data = file_get_contents('php://input');
-    
+    $config = include __DIR__ . '/config/config.php';
+
+    $data     = file_get_contents('php://input');    
+   
     $headers  = Request::apache_request_headers();
+
     $shop_url = $headers['X-SHOPIFY-SHOP-DOMAIN'] ?? null;
 
     if (!Strings::endsWith('.myshopify.com', $shop_url)){
@@ -217,9 +236,18 @@ function insert_or_update_products(){
     $api  = Connector::getApiKeys(null, $shop);
 
     $arr  = json_decode($data, true);
-    Files::dump($arr, 'arr.txt');  //////////
 
     $rows = adaptToShopify($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
+
+    if (empty($rows)){
+        Files::logger("Error al recibir datos para shop $shop");
+    }
+
+    if ($config['test_mode']){
+        Files::dump($arr, $arr['handle'] . '.txt'); 
+        Files::dump($rows, $arr['handle'] . '_adaptado.txt'); 
+    }
+
 
     foreach ($rows as $row){
         $sku = $row['sku'];
@@ -231,6 +259,8 @@ function insert_or_update_products(){
         } else {
             $pid = Products::createProduct($row);
         }
+
+        Sync::updateVendor($api['slug'], $pid);
     }   
 }
 

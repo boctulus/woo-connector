@@ -15,10 +15,10 @@ use connector\libs\Strings;
 use connector\libs\Products;
 
 
-require __DIR__ . '/libs/Url.php';
-require __DIR__ . '/libs/Products.php';
+require_once __DIR__ . '/libs/Url.php';
+require_once __DIR__ . '/libs/Products.php';
 
-include __DIR__ . '/../../../wp-load.php';
+include_once __DIR__ . '/../../../wp-load.php';
 
 
 if (!function_exists('dd')){
@@ -28,12 +28,11 @@ if (!function_exists('dd')){
 }
 
 if (php_sapi_name() != "cli") {
-    #echo "Error: acceso solo desde la terminal<p/>";
-    #exit;
+    return;
 }
 
-if (!defined('WC_PRODUCT_VENDORS_TAXONOMY')){
-    define( 'WC_PRODUCT_VENDORS_TAXONOMY', 'wcpv_product_vendors' );
+if (!defined('MY_PRODUCT_VENDORS_TAXONOMY')){
+    define( 'MY_PRODUCT_VENDORS_TAXONOMY', 'wcpv_product_vendors' );
 }
 
 
@@ -112,7 +111,7 @@ class Sync
         Devuelve el vendor_slug del post o NULL en caso contrario
     */
     static function getCurrentVendor($post_id){
-        return wp_get_object_terms( [$post_id], WC_PRODUCT_VENDORS_TAXONOMY );
+        return wp_get_object_terms( [$post_id], MY_PRODUCT_VENDORS_TAXONOMY );
     }
     
     static function updateVendor($vendor_slug, $pid){
@@ -127,7 +126,7 @@ class Sync
             }
         }
 
-        wp_set_object_terms( $pid, $vendor_slug, WC_PRODUCT_VENDORS_TAXONOMY, false );
+        wp_set_object_terms( $pid, $vendor_slug, MY_PRODUCT_VENDORS_TAXONOMY, false );
     }
     
     static function updateCount($vendor){

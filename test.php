@@ -133,23 +133,33 @@ function test_create_wh(){
 	dd($ok);
 }
 
+//ok
+$rows = array (
+    0 => 
+    array (
+      'id' => 63,
+      'type' => 'simple',
+      'name' => 'Ooooo 212',
+      'slug' => 'ooooo',
+      'status' => 'publish',
+      'featured' => false,
+      'catalog_visibility' => 'visible',
+      'description' => 'oooooo',
+      'short_description' => 'short',
+      'sku' => 'ooo-212',
+      'price' => '888',
+      'regular_price' => '',
+	  'attributes' => [],
+      'image' => 
+      array (
+        0 => 'http://woo2.lan/wp-content/uploads/2021/07/pocketpantswhite_mariamalo4-683x1024.jpg',
+        1 => 683, 
+        2 => 1024,
+        3 => true,
+	  )
+    ),
+  );  
 
-
-/*
-	array (
-		'slug' => 'hupit',
-		'api_key' => 'f2eefde7fca44c9f26abf7f913dba303',
-		'api_secret' => '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',
-		'api_ver' => '2021-07',
-		'shop' => 'act-and-beee',
-	)
-*/
-$api = Connector::getApiKeys('hupit');
-
-
-include 'logs/response2.php';
-
-$rows = adaptToShopify($a, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
 
 $row = $rows[0];
 $sku = $row['sku'];

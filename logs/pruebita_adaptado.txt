@@ -1,0 +1,368 @@
+array (
+  0 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - m / azul',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '705.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-3',
+    'weight' => 1.0,
+    'stock_quantity' => 115,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'm',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'azul',
+      ),
+    ),
+  ),
+  1 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - m / celeste',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-4',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'm',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'celeste',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/camisa-oxford-celeste-talle-50.jpg?v=1629064633',
+      1 => 520,
+      2 => 520,
+    ),
+  ),
+  2 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - m / turquesa',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '708.99',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-5',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'm',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'turquesa',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
+      1 => 500,
+      2 => 500,
+    ),
+  ),
+  3 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - l / azul',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-6',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'l',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'azul',
+      ),
+    ),
+  ),
+  4 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - l / celeste',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-7',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'l',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'celeste',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/camisa-oxford-celeste-talle-50.jpg?v=1629064633',
+      1 => 520,
+      2 => 520,
+    ),
+  ),
+  5 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - l / turquesa',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-8',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'l',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'turquesa',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
+      1 => 500,
+      2 => 500,
+    ),
+  ),
+  6 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - xl / azul',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-9',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'xl',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'azul',
+      ),
+    ),
+  ),
+  7 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - xl / celeste',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '700.00',
+    'sale_price' => '500.00',
+    'sku' => 'camisa-10',
+    'weight' => 1.0,
+    'stock_quantity' => 49,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'xl',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'celeste',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/camisa-oxford-celeste-talle-50.jpg?v=1629064633',
+      1 => 520,
+      2 => 520,
+    ),
+  ),
+  8 => 
+  array (
+    'type' => 'simple',
+    'name' => 'PruebitaaaaAaa12 - xl / turquesa',
+    'description' => 'bla bla bla bla',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+      1 => 'Otro tag',
+    ),
+    'categories' => 
+    array (
+      0 => 'Informal',
+      1 => 'Verano',
+      2 => 'Camisas',
+    ),
+    'regular_price' => '701.00',
+    'sale_price' => '502.00',
+    'sku' => 'camisa-11',
+    'weight' => 1.0,
+    'stock_quantity' => 80,
+    'manage_stock' => false,
+    'attributes' => 
+    array (
+      'pa_talla' => 
+      array (
+        0 => 'xl',
+      ),
+      'pa_color' => 
+      array (
+        0 => 'turquesa',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
+      1 => 500,
+      2 => 500,
+    ),
+  ),
+  'image' => 
+  array (
+    0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/Camisa-Manga-Larga-Columbia-Silver-Ridge-Trekking-Hombre-Carbon-AM7453-469.jpg?v=1629064633',
+    1 => 500,
+    2 => 500,
+  ),
+)

@@ -1,0 +1,48 @@
+array (
+  0 => 
+  array (
+    'type' => 'simple',
+    'name' => 'Libro sobre la Kabalaaaaa!!!!',
+    'description' => '<p>kkkkk kabalaaaaaaa </p>
+<div id="gtx-anchor" style="position: absolute; visibility: hidden; left: 138.75px; top: 10px; width: 133.538px; height: 15.6px;"></div>
+<div class="jfk-bubble gtx-bubble" role="alertdialog" aria-describedby="bubble-2" style="visibility: visible; left: 191px; top: 36px; opacity: 1;">
+<div class="jfk-bubble-content-id" id="bubble-2">
+<div id="gtx-host" style="min-width: 200px; max-width: 400px;"></div>
+</div>
+<div class="jfk-bubble-closebtn-id jfk-bubble-closebtn" aria-label="Close" role="button" tabindex="0"></div>
+<div class="jfk-bubble-arrow-id jfk-bubble-arrow jfk-bubble-arrowup" style="left: 197.75px;">
+<div class="jfk-bubble-arrowimplbefore"></div>
+<div class="jfk-bubble-arrowimplafter"></div>
+</div>
+</div>',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+    ),
+    'categories' => 
+    array (
+      0 => 'Libros',
+    ),
+    'regular_price' => '1200.00',
+    'sale_price' => '1100.00',
+    'sku' => 'kaba',
+    'weight' => 1.0,
+    'stock_quantity' => 15,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_titulo' => 
+      array (
+        0 => 'Default Title',
+      ),
+    ),
+    'image' => 
+    array (
+      0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/libros-digitales.jpg?v=1629125955',
+      1 => 1080,
+      2 => 1080,
+    ),
+  ),
+)

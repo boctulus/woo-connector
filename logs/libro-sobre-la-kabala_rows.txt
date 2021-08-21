@@ -1,0 +1,36 @@
+array (
+  0 => 
+  array (
+    'type' => 'simple',
+    'name' => 'Libro sobre la KabalaaaaaAaaaa',
+    'description' => '<p>kkkkk kabalaaaaaaa aa a @Aaaaaa !!</p>',
+    'visibility' => 'visible',
+    'status' => 'draft',
+    'tags' => 
+    array (
+      0 => 'De moda',
+    ),
+    'categories' => 
+    array (
+    ),
+    'regular_price' => '1200.00',
+    'sale_price' => '1100.00',
+    'sku' => 'kaba',
+    'weight' => 1.0,
+    'stock_quantity' => 0,
+    'manage_stock' => true,
+    'attributes' => 
+    array (
+      'pa_titulo' => 
+      array (
+        0 => 'Default Title',
+      ),
+    ),
+  ),
+  'image' => 
+  array (
+    0 => 'https://cdn.shopify.com/s/files/1/0592/7046/3681/products/libros-digitales.jpg?v=1629125955',
+    1 => 1080,
+    2 => 1080,
+  ),
+)
