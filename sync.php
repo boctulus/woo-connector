@@ -155,8 +155,8 @@ class Sync
             $vendor_cms  = strtolower($vendor['cms']);
 
             // Para otros CMS se trabaja con Webhooks así que es innecesario pedir datos
-            if ($vendor_cms != 'wc' || $vendor_cms != 'woocommerce'){
-                return;
+            if ($vendor_cms != 'wc' && $vendor_cms != 'woocommerce'){
+                continue;
             }
 
             $vendor_url  = $vendor['url'];
@@ -164,7 +164,10 @@ class Sync
 
             $config = self::getConfig();
 
-            $full_url = $vendor_url . '/index.php/wp-json/connector/v1/products?api_key=' . $config['API_KEY'];
+            $api_info = Connector::getApiKeys($vendor_slug);
+            $api_key  = $api_info['api_key'];
+
+            $full_url = $vendor_url . '/index.php/wp-json/connector/v1/products?api_key=' . $api_key;
 		    $res = Url::consume_api($full_url, 'GET');
 
             if ($res['http_code'] != 200){
@@ -184,7 +187,7 @@ class Sync
                         
 
             // cache ---------- solo pruebas
-            //  Files::dump($res, 'response_woo_simple.php'); 
+            Files::dump($res, 'response_x.php'); 
             //dd($res);
             //include __DIR__ . '/logs/response.php';
 

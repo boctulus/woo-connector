@@ -6,6 +6,8 @@ Version: 1.0.0
 Author: boctulus@gmail.com <Pablo>
 */
 
+namespace connector;
+
 use connector\libs\Debug;
 use connector\libs\Files;
 use connector\libs\Strings;
@@ -63,7 +65,7 @@ class Connector
             $row = [
                 'slug'           => $fields[0],
                 'api_key'        => $fields[1],
-                'api_secret'     => $fields[2],
+                'api_secret'     => $fields[2] ?? null,
                 'api_ver'        => $fields[3] ?? null,
                 'shop'           => $fields[4] ?? null
             ];

@@ -42,11 +42,6 @@ class Products
         return $new_product;
     }
     
-    
-    static function updateTagsByProductId($pid, $tags){
-        wp_set_object_terms($pid, $tags, 'product_tag');
-    }
-
 
     /**
      * Method to delete Woo Product
@@ -236,10 +231,20 @@ class Products
     }
 
     static function setProductCategoryNames($pid, Array $categos){
+        if (count($categos) >0 && is_array($categos[0])){
+            dd($categos, 'CATEGORIES');
+            throw new \InvalidArgumentException("Categorias no pueden ser array de array");
+        }
+
         wp_set_object_terms($pid, $categos, 'product_cat');
     }
 
     static function setProductTagNames($pid, Array $names){
+        if (count($names) >0 && is_array($names[0])){
+            dd($names, 'TAGS');
+            throw new \InvalidArgumentException("Categorias no pueden ser array de array");
+        }
+
         wp_set_object_terms($pid, $names, 'product_tag');
     }
 
@@ -447,12 +452,12 @@ class Products
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            $names = isset($args['categories']['name']) ? array_column($args['categories'], 'name') : $args['categories'];
+            $names = isset($args['categories'][0]['name']) ? array_column($args['categories'], 'name') : $args['categories'];
             static::setProductCategoryNames($pid, $names);
         }        
 
         if( isset( $args['tags'] ) ){
-            $names = isset($args['tags']['name']) ? array_column($args['tags'], 'name') : $args['tags'];
+            $names = isset($args['tags'][0]['name']) ? array_column($args['tags'], 'name') : $args['tags'];
             static::setProductTagNames($pid, $names);
         }
             
@@ -528,6 +533,11 @@ class Products
             foreach( $values as $term_name ){
                 if ($term_name == ''){
                     continue; //*
+                }
+
+                if (is_array($term_name)){
+                    dd($term_name, '$term_name');
+                    throw new \Exception("\$term_name debe ser un string");
                 }
 
                 if( term_exists( $term_name, $taxonomy ) ){
@@ -727,12 +737,12 @@ class Products
 
         // Product categories and Tags
         if( isset( $args['categories'] ) ){
-            $names = isset($args['categories']['name']) ? array_column($args['categories'], 'name') : $args['categories'];
+            $names = isset($args['categories'][0]['name']) ? array_column($args['categories'], 'name') : $args['categories'];
             static::setProductCategoryNames($pid, $names);
         }        
 
         if( isset( $args['tags'] ) ){
-            $names = isset($args['tags']['name']) ? array_column($args['tags'], 'name') : $args['tags'];
+            $names = isset($args['tags'][0]['name']) ? array_column($args['tags'], 'name') : $args['tags'];
             static::setProductTagNames($pid, $names);
         }
             
@@ -824,6 +834,11 @@ class Products
                             'rewrite' => array( 'slug' => sanitize_title($attribute) ), // The base slug
                         ),
                     );
+                }
+
+                if (is_array($term_name)){
+                    dd($term_name, '$term_name');
+                    throw new \Exception("\$term_name debe ser un string");
                 }
 
                 // Check if the Term name exist and if not we create it.

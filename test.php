@@ -1,10 +1,12 @@
 <?php
 
+namespace connector;
+
 use connector\libs\Debug;
 use connector\libs\Url;
+use connector\libs\Products;
 use connector\libs\Files;
 use connector\libs\Strings;
-use connector\libs\Products;
 
 
 ini_set('display_errors', 1);

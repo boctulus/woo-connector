@@ -2,7 +2,8 @@
 
 hupit                   f2eefde7fca44c9f26abf7f913dba303    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  2021-07     act-and-beee
 otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx                               
-
+act-and-be              9cbe0ce48e8c9FX
+azul-marino-casi-negro  9cbe0ce48e8c9FX
 
 ;
 ;  Aclaraciones para Shopify:
@@ -15,3 +16,9 @@ otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx
 ;
 ;  Evite confundir el vendor_slug (manejado por el plugin de vendors) con el subdominio de Shopify
 ;
+;
+;  Aclaraciones para WooCommerce:
+;
+;  1) Para sincronizar con WooCommerce se debe instalar el plugin Reactor en el vendor 
+;
+;  2) No se utiliza api_secret sino solamente api_key
