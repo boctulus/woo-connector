@@ -7,11 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function register_webhooks(){
+    //console.log ("********************************");
+
     /*
     jQuery(document).ajaxSend(function() {
         jQuery("#overlay").fadeIn(300);　
     });		
-    */			
+    */		
             
     let url = '/index.php/wp-json/connector/v1/shops'; 
 
@@ -63,7 +65,7 @@ function register_webhooks(){
 
             jQuery.ajax(settings)
             .done(function (response) {
-                console.log(response);
+                //console.log(response);
 
                 /*
                     {
@@ -74,36 +76,40 @@ function register_webhooks(){
                 */
 
                 if (response["weboook_product_create"] != null){
-                    console.log("WebHook para 'product create' listo para " + vendor);
+                    addNotice("WebHook para 'product create' listo para " + vendor, 'success');
                 } 
 
                 if (response["weboook_product_update"] != null){
-                    console.log("WebHook para 'product update' listo para " + vendor);
+                    setTimeout(function(){
+                        addNotice("WebHook para 'product update' listo para " + vendor, 'success');
+                    },500);
                 } 
 
                 if (response["weboook_product_delete"] != null){
-                    console.log("WebHook para 'product delete' listo para " + vendor);
+                    setTimeout(function(){
+                        addNotice("WebHook para 'product delete' listo para " + vendor, 'success');
+                    },1000);
                 } 
-
+               
             })
             .fail(function (jqXHR, textStatus) {
                 console.log(jqXHR);
                 console.log(textStatus);
-                //addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
+                addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
             });
 
         }
 
-
         /*
         setTimeout(function(){
             jQuery("#overlay").fadeOut(300);
-        },500);
-        */			
+        },700);
+        */
+        		
     })
     .fail(function (jqXHR, textStatus) {
         console.log(jqXHR);
         console.log(textStatus);
-        //addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
+        addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
     });
 }

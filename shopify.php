@@ -9,14 +9,14 @@ use connector\libs\Debug;
 use connector\libs\Files;
 use connector\libs\Request;
 use connector\libs\Strings;
-use connector\Sync;
+use connector\libs\Sync;
 
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Products.php';
 require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Request.php';
-require_once __DIR__ . '/sync.php';
+require_once __DIR__ . '/libs/Sync.php';
 
 
 if (!function_exists('dd')){
@@ -234,7 +234,7 @@ function insert_or_update_products(){
 
     $shop = substr($shop_url, 0, strlen($shop_url) - strlen('.myshopify.com'));
     
-    $api  = Connector::getApiKeys(null, $shop);
+    $api  = Sync::getApiKeys(null, $shop);
 
     $rows = adaptToShopify($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
 
@@ -368,6 +368,42 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	return true;
 }
 
+function delete_all_webhooks(){
+    $shops = get_shops();
+
+    foreach ($shops as $vendors_obj){
+        $shop = $vendors_obj['shop'];
+
+        $api  = Sync::getApiKeys(null, $shop);
+    
+        $shop       = $api['shop'];
+        $api_key    = $api['api_key'];
+        $api_secret = $api['api_secret'];
+        $api_ver    = $api['api_ver'];
+
+        $operations = ['create', 'update', 'delete'];
+
+        foreach ($operations as $operation){
+            $wh = getWebHook($shop, 'products', $operation, $api_key, $api_secret, $api_ver);
+            
+            if ($wh != null && isset($wh['id'])){
+                // DELETE /admin/api/2021-07/webhooks/1056452214977.json
+
+                $id = $wh['id'];
+                $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks/{$id}.json";
+
+	            $res = Url::consume_api($endpoint, 'DELETE');
+                dd($res);
+            }
+        }
+    
+        
+    }
+
+    
+}
+
+
 function test_create_webooks(){
     $config = include __DIR__ . '/config/config.php';
 
@@ -376,7 +412,7 @@ function test_create_webooks(){
 
     $shop = $arr['shop'];
 
-    $api  = Connector::getApiKeys(null, $shop);
+    $api  = Sync::getApiKeys(null, $shop);
     
     $shop       = $api['shop'];
     $api_key    = $api['api_key'];
@@ -412,7 +448,7 @@ function get_shops(){
         if ($vendor['cms'] == 'shopi'){
             $vendor_slug = $vendor['slug'];
 
-            $api = Connector::getApiKeys($vendor_slug);
+            $api = Sync::getApiKeys($vendor_slug);
             
             $arr[] = [ 
                 'vendor' => $vendor,

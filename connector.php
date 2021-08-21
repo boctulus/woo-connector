@@ -65,6 +65,12 @@ add_action( 'admin_enqueue_scripts', function($hook) {
 
 	wp_register_script('connector_js', Files::get_rel_path(). 'assets/js/main.js');
     wp_enqueue_script('connector_js');
+
+    wp_register_script('notices_js', Files::get_rel_path(). 'assets/js/boostrap_notices.js');
+    wp_enqueue_script('notices_js');
+
+    wp_register_style('loading', Files::get_rel_path() . 'assets/css/ajax.css');
+    wp_enqueue_style('loading');
 } );
 
 
@@ -98,17 +104,23 @@ function generate_grab_product_page() {
             <h3>WebHooks</h3>
             
             <div class="row">
-                <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4">
+                <div class="col-xs-12 col-sm-9 col-md-6">
 
                     <div class="alert alert-secondary mt-3" role="alert">
                         Es necesario actualizar luego de agregar una nueva tienda de Shopify para registrar los WebHooks correspondientes y así habilitar los eventos.
                     </div>
 
                     <form id="wh_connector_form" class="mt-3 mb-3">
-                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                        <button type="submit" class="btn btn-primary mt-1">Actualizar</button>
                     </form>
 
-                    <div id="connector_webhooks"></div>                    
+                    <div id="overlay">
+                        <div class="cv-spinner">
+                            <span class="spinner"></span>
+                        </div>
+                    </div>  
+
+                    <div id="alert_container"></div>                    
                 </div>
             </div>
 
@@ -116,53 +128,6 @@ function generate_grab_product_page() {
         </div>
        
     <?php
-}
-
-
-class Connector
-{
-    static function getApiKeys($vendor_slug = null, $shop = null){
-        $list  = file_get_contents(__DIR__ . '/config/api_keys.txt');
-        $lines = explode(PHP_EOL, $list);
-    
-        $arr = [];
-        foreach ($lines as $line){
-            $line = trim($line);
-    
-            if (empty($line) || $line[0] == '#' || $line[0] == ';'){
-                continue;
-            }
-    
-            $line   = str_replace("\t", " ", $line);
-            $line   = preg_replace('!\s+!', ' ', $line);
-            $fields = explode(' ', $line);
-    
-            $row = [
-                'slug'           => $fields[0],
-                'api_key'        => $fields[1],
-                'api_secret'     => $fields[2] ?? null,
-                'api_ver'        => $fields[3] ?? null,
-                'shop'           => $fields[4] ?? null
-            ];
-
-            if ($vendor_slug != null){
-                if ($row['slug'] == $vendor_slug){
-                    return $row;
-                }
-            }
-
-            if ($shop != null){
-                if ($row['shop'] == $shop){
-                    return $row;
-                }
-            }
-
-            $arr[] = $row;
-        }
-    
-        return $arr;
-    }
-
 }
 
 

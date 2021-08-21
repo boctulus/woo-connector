@@ -25,103 +25,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 
-function getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
-	static $webhooks = [];
-
-	if (empty($webhooks)){
-		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
-
-		$res = Url::consume_api($endpoint, 'GET');
-
-		if (empty($res)){
-			return;
-		}
-
-		if (!isset($res["data"]["webhooks"])){
-			return;
-		}
-
-		$webhooks = $res["data"]["webhooks"];
-	}
-
-	$topic    = "$entity/$operation";
-
-	foreach ($webhooks as $wh){
-		if ($wh["topic"] == $topic){
-			return $wh;
-		}
-	}
-
-	return false;
-}
-
-function webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
-	$wh = getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver);
-	return !empty($wh);
-}
-
-function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $check_before = true){
-	global $wpdb;
-
-	if ($check_before && webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver)){
-		return;
-	}
-
-	$topic    = "$entity/$operation";
-	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
-
-
-	$body = [
-			"webhook" => [
-			"topic"   => $topic,
-			"address" => home_url() . "/index.php/wp-json/connector/v1/webhooks/{$entity}_{$operation}",
-			"format"  => "json"
-			]
-	];
-
-	$res = Url::consume_api($endpoint, 'POST', $body, [
-		$api_key => $api_secret
-	]);
-
-	if (empty($res)){
-		dd("Error al crear WebHook para $topic");
-		return;
-	}
-
-	if (!isset($res['data']['webhook']) || isset($data['id'])){
-		dd($res, 'response');
-		dd("Error en la respuesta al crear WebHook para $topic");
-		return;
-	}
-
-	$data = $res['data']['webhook'];
-
-	$sql = "INSERT INTO `{$wpdb->prefix}shopi_webhooks` (`shop`, `topic`, `api_version`, `address`, `remote_id`, `created_at`) 
-	VALUES ('$shop', '{$data['topic']}', '{$data['api_version']}', '{$data['address']}' , '{$data['id']}', '{$data['created_at']}')";
-
-	$ok = $wpdb->query($sql);
-
-	if (!$ok){
-		dd("Error al almacenar WebHook");
-		return;
-	}
-
-	return true;
-}
-
-function test_create_webooks($shop, $api_key, $api_secret, $api_ver){
-	$ok = createWebhook($shop, 'products', 'create', $api_key, $api_secret, $api_ver);
-	dd($ok);
-
-	$ok = createWebhook($shop, 'products', 'update', $api_key, $api_secret, $api_ver);
-	dd($ok);
-
-	$ok = createWebhook($shop, 'products', 'delete', $api_key, $api_secret, $api_ver);
-	dd($ok);
-}
-
-
-
 
 $base_url   = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
 
@@ -132,7 +35,7 @@ $api_ver    = '2021-07';
 
 
 
-test_create_webooks($shop, $api_key, $api_secret, $api_ver);
+//test_create_webooks($shop, $api_key, $api_secret, $api_ver);
 
 
 /*
@@ -177,3 +80,6 @@ if (!empty($pid)){
 
 dd($pid);
 */
+
+
+delete_all_webhooks();

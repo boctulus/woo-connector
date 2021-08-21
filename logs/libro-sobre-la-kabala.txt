@@ -1,6 +1,6 @@
 array (
   'id' => 6873918472385,
-  'title' => 'Libro sobre la Kabalaaaaa!!!!',
+  'title' => 'Libro sobre la Kabalaaaaa!!!! ~',
   'body_html' => '<p>kkkkk kabalaaaaaaa </p>
 <div id="gtx-anchor" style="position: absolute; visibility: hidden; left: 138.75px; top: 10px; width: 133.538px; height: 15.6px;"></div>
 <div class="jfk-bubble gtx-bubble" role="alertdialog" aria-describedby="bubble-2" style="visibility: visible; left: 191px; top: 36px; opacity: 1;">
@@ -17,7 +17,7 @@ array (
   'product_type' => '',
   'created_at' => '2021-08-16T15:59:13+01:00',
   'handle' => 'libro-sobre-la-kabala',
-  'updated_at' => '2021-08-21T15:10:56+01:00',
+  'updated_at' => '2021-08-21T23:03:40+01:00',
   'published_at' => '2021-08-21T15:10:56+01:00',
   'template_suffix' => '',
   'status' => 'active',
@@ -42,7 +42,7 @@ array (
       'option2' => NULL,
       'option3' => NULL,
       'created_at' => '2021-08-16T15:59:13+01:00',
-      'updated_at' => '2021-08-21T15:10:56+01:00',
+      'updated_at' => '2021-08-21T23:03:40+01:00',
       'taxable' => true,
       'barcode' => '',
       'grams' => 1000,
