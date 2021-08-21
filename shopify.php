@@ -165,6 +165,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 			'sku'         		=> $v['sku'],
 			'weight'	  		=> $v['weight'],
 			'stock_quantity' 	=> $v['inventory_quantity'],
+            'manage_stock'      => $v['inventory_management'] !== NULL,
 			//'tax_status'		=> $v['taxable'] ? 'taxable' : 'none',
 			'attributes' 		=> $attributes
 		];
@@ -216,6 +217,7 @@ function insert_or_update_products(){
     $api  = Connector::getApiKeys(null, $shop);
 
     $arr  = json_decode($data, true);
+    Files::dump($arr, 'arr.txt');  //////////
 
     $rows = adaptToShopify($arr, $api['shop'], $api['api_key'], $api['api_secret'], $api['api_ver']);
 
@@ -246,8 +248,7 @@ function webhook_products_update(){
     https://community.shopify.com/c/Shopify-Apps/product-delete-webhook-not-working/td-p/574094/highlight/false
 */
 function webhook_products_delete(){
-    $data = file_get_contents('php://input');
-    Files::dump($data, 'product_delete.txt');  
+    $data = file_get_contents('php://input');  
 }
 
 add_action( 'rest_api_init', function () {

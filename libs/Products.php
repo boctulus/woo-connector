@@ -143,9 +143,6 @@ class Products
         }        
     }
 
-    /*De
-        Advertencia: no está restringido por post_type a posts
-    */
     static function deleteAllGaleryImages()
     {
         global $wpdb;
