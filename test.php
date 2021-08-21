@@ -5,8 +5,6 @@ namespace connector;
 use connector\libs\Debug;
 use connector\libs\Url;
 use connector\libs\Products;
-use connector\libs\Files;
-use connector\libs\Strings;
 
 
 ini_set('display_errors', 1);
@@ -24,12 +22,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-if (!function_exists('dd')){
-	function dd($val, $msg = null, $pre_cond = null){
-		Debug::dd($val, $msg, $pre_cond);
-	}
-}
 
 function getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver){
 	static $webhooks = [];
@@ -114,34 +106,6 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 }
 
 
-function getCollectionsByProductId($shop, $product_id, $api_key, $api_secret, $api_ver)
-{
-	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/collects.json?product_id=$product_id";
-
-	$res = Url::consume_api($endpoint, 'GET');
-
-	if (!isset($res['data']["collects"])){
-		return;
-	}
-	
-	$col_ids = array_column($res['data']["collects"], "collection_id");
-
-	$coll_names = [];
-	foreach ($col_ids as $col_id){
-		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/custom_collections/$col_id.json";
-
-		$res = Url::consume_api($endpoint, 'GET');
-		$obj = $res['data']["custom_collection"];
-
-		if ($obj['handle'] != "frontpage"){
-			$coll_names[] = $obj['title'];
-		}
-	}
-
-	return $coll_names;
-}
-
-
 
 $base_url   = 'https://f920c96f987d.ngrok.io'; // Ojo: cambia
 
@@ -169,140 +133,6 @@ function test_create_wh(){
 	dd($ok);
 }
 
-/*
-	Convierte la estructura de productos de Shopify a la de WooCommerce
-*/
-function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
-
-	$pid = $a['id'];
-
-	$a['name'] = $a['title'];
-	$a['description'] = $a['body_html'];
-
-	// Visibility ('hidden', 'visible', 'search' or 'catalog')
-	if ($a['published_scope'] == 'web'){
-		$a['visibility'] = 'visible';
-	} else {
-		$a['visibility'] = 'hidden';
-	}	
-
-	/*
-		status
-
-		En WooCommerce puede ser publish, draft, pending
-		En Shopify serían active, draft, archived
-	*/
-
-	if ($a['status'] == 'pending'){
-		$a['status'] = 'draft';
-	} elseif ($a['status'] == 'active'){
-		$a['status'] = 'publish';
-	} elseif ($a['status'] == 'archived'){
-		$a['status'] = 'draft';
-	}
-	
-	/*
-		tags
-
-		En WooCommerce es un array
-		En Shopify están separados por ", "
-	*/
-
-	$tags = explode(',', $a['tags']);
-	
-	foreach ($tags as $k => $tag){
-		$tags[$k] = trim($tag);
-	}
-
-	$a['tags'] = $tags;
-
-
-	// Categories
-
-	$a['categories'] = [];
-
-	if (isset($a["product_type"]) && !empty($a["product_type"])){
-		$a['categories'][] = 	$a["product_type"];
-	}
-
-	$a['categories'] = array_merge($a['categories'], getCollectionsByProductId($shop, $pid, $api_key, $api_secret, $api_ver));
-
-	/*
-		Variations as simple products
-	*/
-
-	$vars = [];
-	foreach($a['variants'] as $k => $v){
-
-		// atributos
-
-		/*
-			Deben seguir la estructura de los atributos para productos simples de WooCommerce:
-
-				'attributes' => 
-				array (
-					'pa_talla' => 
-					array (
-					),
-					'pa_color' => 
-					array (
-					),
-				)
-		*/		
-		$attributes = [];
-
-		foreach ($a['options'] as $i => $op){
-			$name  = $op['name'];
-			$value = $v['option' . ($i +1)];
-			$term  = strtolower($name);
-
-			if ($term == 'size'){
-				$term = 'talla';
-			} elseif ($term == 'style'){
-				$term = 'estilo';
-			} elseif ($term == 'title'){
-				$term = 'titulo';
-			}
-
-			$term = 'pa_' . $term;
-
-			$attributes[ $term ] = [ $value ];
-		}
-
-		$vars[$k] = [
-			'type'				=> 'simple',
-			'name'       		=> $a['name'] . ' - ' . $v['title'],
-			'description' 		=> $a['description'],
-			'visibility'  		=> $a['visibility'],
-			'status'      		=> $a['status'],
-			'tags'        		=> $a['tags'],
-			'categories'  		=> $a['categories'],
-			'regular_price'		=> $v['price'],
-			'sale_price'  		=> $v['compare_at_price'],
-			'sku'         		=> $v['sku'],
-			'weight'	  		=> $v['weight'],
-			'stock_quantity' 	=> $v['inventory_quantity'],
-			//'tax_status'		=> $v['taxable'] ? 'taxable' : 'none',
-			'attributes' 		=> $attributes
-		];
-
-		foreach ($a['images'] as $img){
-			foreach ($img['variant_ids'] as $vid){
-				if ($vid == $v['id']){
-					//dd("La variante {$v['id']} tiene la imágen {$img['src']}");
-					$vars[$k]['image'][0] = $img['src'];
-					$vars[$k]['image'][1] = $img['width'];
-					$vars[$k]['image'][2] = $img['height'];
-					break 2;
-				}
-			}
-		}
-		
-	}
-
-	
-	return $vars;
-}
 
 
 /*

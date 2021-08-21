@@ -46,7 +46,7 @@ register_activation_hook(__file__, 'connector_installer');
 
 class Connector
 {
-    static function getApiKeys($vendor_slug = null){
+    static function getApiKeys($vendor_slug = null, $shop = null){
         $list  = file_get_contents(__DIR__ . '/config/api_keys.txt');
         $lines = explode(PHP_EOL, $list);
     
@@ -72,6 +72,12 @@ class Connector
 
             if ($vendor_slug != null){
                 if ($row['slug'] == $vendor_slug){
+                    return $row;
+                }
+            }
+
+            if ($shop != null){
+                if ($row['shop'] == $shop){
                     return $row;
                 }
             }

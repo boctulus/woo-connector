@@ -232,7 +232,7 @@ class Products
 
     static function setProductCategoryNames($pid, Array $categos){
         if (count($categos) >0 && is_array($categos[0])){
-            dd($categos, 'CATEGORIES');
+            //dd($categos, 'CATEGORIES');
             throw new \InvalidArgumentException("Categorias no pueden ser array de array");
         }
 
@@ -241,7 +241,7 @@ class Products
 
     static function setProductTagNames($pid, Array $names){
         if (count($names) >0 && is_array($names[0])){
-            dd($names, 'TAGS');
+            //dd($names, 'TAGS');
             throw new \InvalidArgumentException("Categorias no pueden ser array de array");
         }
 
@@ -536,7 +536,7 @@ class Products
                 }
 
                 if (is_array($term_name)){
-                    dd($term_name, '$term_name');
+                    //dd($term_name, '$term_name');
                     throw new \Exception("\$term_name debe ser un string");
                 }
 
@@ -837,7 +837,7 @@ class Products
                 }
 
                 if (is_array($term_name)){
-                    dd($term_name, '$term_name');
+                    //dd($term_name, '$term_name');
                     throw new \Exception("\$term_name debe ser un string");
                 }
 

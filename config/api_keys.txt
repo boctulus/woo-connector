@@ -5,6 +5,7 @@ otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx
 act-and-be              9cbe0ce48e8c9FX
 azul-marino-casi-negro  9cbe0ce48e8c9FX
 
+
 ;
 ;  Aclaraciones para Shopify:
 ;

@@ -187,7 +187,7 @@ class Sync
                         
 
             // cache ---------- solo pruebas
-            Files::dump($res, 'response_x.php'); 
+            //Files::dump($res, 'response_x.php'); 
             //dd($res);
             //include __DIR__ . '/logs/response.php';
 
