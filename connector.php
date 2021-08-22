@@ -54,6 +54,10 @@ register_activation_hook(__file__, 'connector_installer');
 */
 
 add_action( 'admin_enqueue_scripts', function($hook) {
+    /*
+        Restringir la carga solo a este plugin en base a $hook
+    */
+
 	wp_register_script('bootstrap', Files::get_rel_path(). 'assets/js/bootstrap/bootstrap.bundle.min.js');
     wp_enqueue_script('bootstrap');
 
@@ -89,19 +93,19 @@ function add_products_menu_entry() {
         __( 'Product syncronizer' ),
         __( 'Connector' ),
         'manage_woocommerce', // Required user capability
-        'ddg-product',
-        'connector\generate_grab_product_page'
+        'woo-connector',
+        'connector\connector_admin_panel'
     );
 }
 
-function generate_grab_product_page() {
+function connector_admin_panel() {
     if (!current_user_can('administrator'))  {
         wp_die( __('Su usuario no tiene permitido acceder') );
     }
 
     ?>
         <div class="container-fluid mt-3">
-            <h3>WebHooks</h3>
+            <h3>Connector</h3>
             
             <div class="row">
                 <div class="col-xs-12 col-sm-9 col-md-6">
