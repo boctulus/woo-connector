@@ -124,7 +124,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 		/*
 			Deben seguir la estructura de los atributos para productos simples de WooCommerce:
 
-				'attributes' => 
+			'attributes' => 
 				array (
 					'pa_talla' => 
 					array (
@@ -219,6 +219,10 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 
 function insert_or_update_products(){
     $config = include __DIR__ . '/config/config.php';
+
+	if ($config['test_mode']){
+		Files::logger("Shopify WebHook fired");
+	}
 
     $data = file_get_contents('php://input');  
     $arr  = json_decode($data, true);  
@@ -393,11 +397,9 @@ function delete_all_webhooks(){
                 $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks/{$id}.json";
 
 	            $res = Url::consume_api($endpoint, 'DELETE');
-                dd($res);
+                dd($res, $shop);
             }
         }
-    
-        
     }
 
     

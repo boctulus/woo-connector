@@ -1,0 +1,10 @@
+2021-08-22 14:19:53	HOOK 'product_page_woo-connector'
+2021-08-22 14:34:09	Shopify WebHook fired
+2021-08-22 14:34:09	WebHook reporta url de tienda de Shopify inválida 
+2021-08-22 14:42:23	Shopify WebHook fired
+2021-08-22 14:42:35	Shopify WebHook fired
+2021-08-22 14:54:22	Shopify WebHook fired
+2021-08-22 14:55:31	Shopify WebHook fired
+2021-08-22 14:57:41	Shopify WebHook fired
+2021-08-22 14:59:48	Shopify WebHook fired
+2021-08-22 15:05:01	Shopify WebHook fired

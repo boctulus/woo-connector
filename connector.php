@@ -55,8 +55,12 @@ register_activation_hook(__file__, 'connector_installer');
 
 add_action( 'admin_enqueue_scripts', function($hook) {
     /*
-        Restringir la carga solo a este plugin en base a $hook
+        Restrinjo la carga solo a este plugin
     */
+
+    if ($hook != 'product_page_woo-connector'){
+        return;
+    }
 
 	wp_register_script('bootstrap', Files::get_rel_path(). 'assets/js/bootstrap/bootstrap.bundle.min.js');
     wp_enqueue_script('bootstrap');
@@ -64,19 +68,20 @@ add_action( 'admin_enqueue_scripts', function($hook) {
 	wp_register_style('bootstrap', Files::get_rel_path() . 'assets/css/bootstrap/bootstrap.min.css');
     wp_enqueue_style('bootstrap');
 
-	wp_register_script('fontawesome', Files::get_rel_path(). 'assets/js/fontawesome-5.js');
-    wp_enqueue_script('fontawesome');
+	#wp_register_script('fontawesome', Files::get_rel_path(). 'assets/js/fontawesome-5.js');
+    #wp_enqueue_script('fontawesome');
 
 	wp_register_script('connector_js', Files::get_rel_path(). 'assets/js/main.js');
     wp_enqueue_script('connector_js');
-
-    wp_register_script('notices_js', Files::get_rel_path(). 'assets/js/boostrap_notices.js');
-    wp_enqueue_script('notices_js');
 
     wp_register_style('loading', Files::get_rel_path() . 'assets/css/ajax.css');
     wp_enqueue_style('loading');
 } );
 
+add_action( 'admin_enqueue_scripts', function($hook) {
+    wp_register_script('notices_js', Files::get_rel_path(). 'assets/js/notices.js');
+    wp_enqueue_script('notices_js');
+});
 
 
 /*
