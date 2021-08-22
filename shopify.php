@@ -407,12 +407,24 @@ function delete_all_webhooks(){
 function test_create_webooks(){
     $config = include __DIR__ . '/config/config.php';
 
-    $data = file_get_contents('php://input');  
+    $data = file_get_contents('php://input');
     $arr  = json_decode($data, true);  
+
+	if ($arr == null || $arr['shop'] == null){
+		return [];
+	}
+
+	//dd($data);
+	//dd($arr);
 
     $shop = $arr['shop'];
 
     $api  = Sync::getApiKeys(null, $shop);
+
+	if (empty($api)){
+		// si hay error y no se puede traer las keys aborto
+		return [];
+	}
     
     $shop       = $api['shop'];
     $api_key    = $api['api_key'];

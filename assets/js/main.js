@@ -7,14 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function register_webhooks(){
-    //console.log ("********************************");
-
-    /*
-    jQuery(document).ajaxSend(function() {
-        jQuery("#overlay").fadeIn(300);　
-    });		
-    */		
-            
+              
     let url = '/index.php/wp-json/connector/v1/shops'; 
 
     var settings = {
@@ -48,6 +41,8 @@ function register_webhooks(){
         for (var i=0; i<response.length; i++){
             let shop   = response[i]['shop']; // "act-and-beee"
             let vendor = response[i]['vendor']['slug']; 
+
+            console.log({vendor: vendor, shop : shop});
 
             let url = '/index.php/wp-json/connector/v1/webhooks/register'; 
 
@@ -95,21 +90,15 @@ function register_webhooks(){
             .fail(function (jqXHR, textStatus) {
                 console.log(jqXHR);
                 console.log(textStatus);
-                addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
+                addNotice('Error desconocido', 'danger', 'alert_container', true);
             });
 
         }
-
-        /*
-        setTimeout(function(){
-            jQuery("#overlay").fadeOut(300);
-        },700);
-        */
         		
     })
     .fail(function (jqXHR, textStatus) {
         console.log(jqXHR);
         console.log(textStatus);
-        addNotice('Error desconocido', 'danger', 'warning', 'alert_container', true);
+        addNotice('Error desconocido', 'danger',  'alert_container', true);
     });
 }
