@@ -4,7 +4,8 @@ hupit                   f2eefde7fca44c9f26abf7f913dba303    shppa_52970e96cdddca
 otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx                               
 act-and-be              9cbe0ce48e8c9FX
 azul-marino-casi-negro  9cbe0ce48e8c9FX
-otrooo                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  2021-01     otro-shop
+otrooo                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  2021-07     otro-shop
+azul-marino-casi-negro  c8c94608482a3525f96e2d954b82f170    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  2021-07     testercamp
 
 
 ;

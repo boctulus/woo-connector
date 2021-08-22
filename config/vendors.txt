@@ -1,8 +1,9 @@
-# url                          vendor_slug             cms         enabled?
+# url                                   endor_slug             cms         enabled?
 
-http://woo2.lan                act-and-be              wc          yes
-http://otrovendor.com          otro-vendor             shopi       no  
-https://miserastral.com        asdf-vendor             wc          no
-http://woo3.lan                azul-marino-casi-negro  wc          no
-https://f920c96f987d.ngrok.io  hupit                   shopi       yes
+http://woo2.lan                      act-and-be              wc          yes
+http://otrovendor.com                   otro-vendor             shopi       no  
+https://miserastral.com               asdf-vendor             wc          no
+http://woo3.lan                      xxxxxxxx                wc          no
+https://f920c96f987d.ngrok.io       hupit                   shopi       yes
+https://testercamp.myshopify.com       azul-marino-casi-negro  shopi       yes
 
