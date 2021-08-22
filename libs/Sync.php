@@ -107,7 +107,7 @@ class Sync
             ),
         )
     */
-    static function getVendors($only_active = false){
+    static function getVendors($only_active = false, $cms = null){
         $list  = file_get_contents(__DIR__ . '/../config/vendors.txt');
         $lines = explode(PHP_EOL, $list);
     
@@ -127,6 +127,27 @@ class Sync
     
             if ($only_active && !$enabled){
                 continue;
+            }
+
+            if ($cms != null){
+                if (is_array($cms)){
+                    $_cms = strtolower($fields[2]);
+
+                    $found = false;
+                    foreach ($cms as $item){
+                        if (strtolower($item) == $_cms){
+                            $found = true;
+                            break;
+                        }
+                    }   
+                    if (!$found){
+                        continue;
+                    }                 
+                } else {
+                    if (strtolower($fields[2]) != strtolower($cms)){
+                        continue;
+                    }
+                }
             }
     
             $arr[] = [
@@ -179,16 +200,28 @@ class Sync
         return $wpdb->query($sql);
     }
 
+    // HACER ***
+    static function getDataFromShopify(){
 
-    static function getData(){
-        $vendors = Sync::getVendors(true);
+    }
 
-        foreach ($vendors as $vendor){
-            $vendor_cms  = strtolower($vendor['cms']);
 
-            // Para otros CMS se trabaja con Webhooks así que es innecesario pedir datos
-            if ($vendor_cms != 'wc' && $vendor_cms != 'woocommerce'){
-                continue;
+    static function getDataFromWooCommerce(){
+        $vendors = Sync::getVendors(true, ['wc', 'woocommerce']);
+
+        foreach ($vendors as $vendor){           
+            if (!isset($vendor['url'])){
+                $msg = "Error: la url no está presente para un vendor!";
+
+                Files::logger($msg);
+                dd($msg);
+            }
+
+            if (!isset($vendor['slug'])){
+                $msg = "Error: el vendor_slug no está presente para un vendor!";
+
+                Files::logger($msg);
+                dd($msg);
             }
 
             $vendor_url  = $vendor['url'];

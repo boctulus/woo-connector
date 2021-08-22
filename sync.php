@@ -16,7 +16,7 @@ if (php_sapi_name() != "cli") {
     return;
 }
 
-Sync::getData();
+Sync::getDataFromWooCommerce();
 
 
 

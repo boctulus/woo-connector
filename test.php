@@ -6,6 +6,7 @@ use connector\libs\Debug;
 use connector\libs\Url;
 use connector\libs\Products;
 use connector\libs\Strings;
+use connector\libs\Sync;
 
 
 ini_set('display_errors', 1);
@@ -16,6 +17,7 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Products.php';
+require_once __DIR__ . '/libs/Sync.php';
 
 include_once __DIR__ . '/../../../wp-load.php';
 
@@ -82,4 +84,6 @@ dd($pid);
 */
 
 
-delete_all_webhooks();
+//delete_all_webhooks();
+
+//dd(Sync::getVendors(true, 'WC'));
