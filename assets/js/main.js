@@ -21,6 +21,10 @@ function register_webhooks(){
 
     jQuery.ajax(settings)
     .done(function (response) {
+        if (typeof response['error'] != 'undefined' && response['error'] != null){
+            addNotice(response['error'], 'danger', 'alert_container', true);
+            return;
+        }
 
         //console.log(response);
 
@@ -39,10 +43,21 @@ function register_webhooks(){
         */
 
         for (var i=0; i<response.length; i++){
+            if (response[i]['shop'] == null || typeof response[i]['shop'] == 'undefined'){
+
+                if (response[i]['vendor']['slug'] == null || typeof response[i]['vendor']['slug'] == 'undefined'){
+                    addNotice("Varios posibles errores en el archivo de api keys", 'danger');
+                } else {
+                    addNotice(`No se encontró el 'shop' para el vendor '${response[i]['vendor']['slug']}'. Posible error en el archivo de api keys`, 'danger');
+                }
+                
+                return;
+            }
+
             let shop   = response[i]['shop']; // "act-and-beee"
             let vendor = response[i]['vendor']['slug']; 
 
-            console.log({vendor: vendor, shop : shop});
+            //console.log({vendor: vendor, shop : shop});
 
             let url = '/index.php/wp-json/connector/v1/webhooks/register'; 
 
@@ -90,7 +105,7 @@ function register_webhooks(){
             .fail(function (jqXHR, textStatus) {
                 console.log(jqXHR);
                 console.log(textStatus);
-                addNotice('Error desconocido', 'danger', 'alert_container', true);
+                addNotice('Error desconocido', 'danger');
             });
 
         }

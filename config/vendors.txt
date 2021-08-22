@@ -6,7 +6,7 @@ https://miserastral.com             asdf-vendor             wc          no
 http://woo3.lan                     nxyz-vendor             wc          no
 xxxxxx                              hupit                   shopi       yes
 xxxxxx                              azul-marino-casi-negro  shopi       yes
-
+xxxxxx                              vendor-x                shopi       no
 
 ;
 ; Para vendors en WooCommerce es necesaria la url de la tienda pero para vendors en Shopify no.

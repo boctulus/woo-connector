@@ -461,6 +461,18 @@ function get_shops(){
             $vendor_slug = $vendor['slug'];
 
             $api = Sync::getApiKeys($vendor_slug);
+
+			if (empty($api)){
+				return [
+					'error' => "No se encontró la api key para el vendor $vendor_slug"
+				];
+			}
+
+			if (!isset($api['shop'])){
+				return [
+					'error' => "No se encontró el 'shop' para el vendor $vendor_slug"
+				];
+			}
             
             $arr[] = [ 
                 'vendor' => $vendor,

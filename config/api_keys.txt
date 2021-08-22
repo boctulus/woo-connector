@@ -7,7 +7,6 @@ otrooo                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxx
 azul-marino-casi-negro  c8c94608482a3525f96e2d954b82f170    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  2021-07     testercamp
 
 
-
 ;
 ;  Aclaraciones para Shopify:
 ;
