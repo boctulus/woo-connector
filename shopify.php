@@ -110,7 +110,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 		$a['categories'][] = 	$a["product_type"];
 	}
 
-	$a['categories'] = array_merge($a['categories'], getCollectionsByProductId($shop, $pid, $api_key, $api_secret, $api_ver));
+	$a['categories'] = array_merge($a['categories'], getCollectionsByProductId($shop, $pid, $api_key, $api_secret, $api_ver) ?? []);
 
 	/*
 		Variations as simple products
@@ -268,7 +268,7 @@ function insert_or_update_products(){
 			if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
 				$row['status'] = $config['status_at_creation'];
 			}
-			
+
             $pid = Products::createProduct($row);
         }
 
@@ -381,9 +381,9 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 	return true;
 }
 
-function delete_all_webhooks(){
-    $shops = get_shops();
-
+function delete_all_webhooks($vendor = null){
+	$shops = get_shops($vendor);
+	
     foreach ($shops as $vendors_obj){
         $shop = $vendors_obj['shop'];
 
@@ -398,7 +398,7 @@ function delete_all_webhooks(){
 
         foreach ($operations as $operation){
             $wh = getWebHook($shop, 'products', $operation, $api_key, $api_secret, $api_ver);
-            
+
             if ($wh != null && isset($wh['id'])){
                 // DELETE /admin/api/2021-07/webhooks/1056452214977.json
 
@@ -424,9 +424,6 @@ function test_create_webooks(){
 	if ($arr == null || $arr['shop'] == null){
 		return [];
 	}
-
-	//dd($data);
-	//dd($arr);
 
     $shop = $arr['shop'];
 
@@ -461,9 +458,9 @@ function test_create_webooks(){
 /*
     /index.php/wp-json/connector/v1/shops
 */
-function get_shops(){
-    $vendors = Sync::getVendors(true);
-
+function get_shops($vendor_slug = null){
+    $vendors = Sync::getVendors(true, null, $vendor_slug);
+	
     $arr = [];
 
     foreach ($vendors as $vendor){
@@ -504,13 +501,31 @@ function get_shops(){
                 "shop": "act-and-beee"
             }
         ]
-    */        
+    */       
 
     return $arr;
 }
 
+function get_shopi_products(){
+	$vendor_slug = $_GET['vendor'] ?? null;
+
+	if ($vendor_slug == null){
+		throw new \Exception("El vendor es requerido");
+	}
+
+	return Sync::getDataFromShopify($vendor_slug);
+}
+
 
 add_action( 'rest_api_init', function () {
+	# GET /index.php/wp-json/connector/v1/shopify/products
+	register_rest_route( 'connector/v1', '/shopify/products', array(
+		'methods' => 'GET',
+		'callback' => 'get_shopi_products',
+        'permission_callback' => '__return_true'
+	) );
+
+
     register_rest_route( 'connector/v1', '/shops', array(
 		'methods' => 'GET',
 		'callback' => 'get_shops',

@@ -107,7 +107,7 @@ class Sync
             ),
         )
     */
-    static function getVendors($only_active = false, $cms = null){
+    static function getVendors($only_active = false, $cms = null, $slug = null){
         $list  = file_get_contents(__DIR__ . '/../config/vendors.txt');
         $lines = explode(PHP_EOL, $list);
     
@@ -150,12 +150,18 @@ class Sync
                 }
             }
     
-            $arr[] = [
+            $row = [
                 'url'       => $fields[0],
                 'slug'      => $fields[1],
                 'cms'       => $fields[2],
                 'enabled'   => $enabled
             ];
+
+            if ($fields[1] == $slug){
+                return [ $row ];
+            }
+
+            $arr[] = $row;
         }
     
         return $arr;
@@ -238,7 +244,8 @@ class Sync
 
         $regs  = [];
 
-        $count = 0;
+        $created = 0;
+        $count   = 0;
         while(true){
             if (isset($max) && !empty($max) && ($count >= $max/$limit)){
                 break;
@@ -252,7 +259,10 @@ class Sync
 
     
             if ($res['http_code'] != 200){
-                dd($res['error'], 'ERROR', function(){ die; });
+                //dd($res['error'], 'ERROR', function(){ die; });
+                return [
+                    'error' => $res['error']
+                ];
             }
     
             $data     = $res['data']; 
@@ -266,43 +276,42 @@ class Sync
                 $product_id = $product['id'];
                 $slug       = $product['handle'];
 
-                foreach ($sku_arr as $sku){
+                $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
+
+                if (empty($rows)){
+                    $msg = "Error al decodificar para shop $shop para producto con hanlde '$slug'";
+                    //Files::logger($msg");
+                    
+                    return [
+                        'error' => $msg
+                    ];
+                }                        
+
+                foreach ($rows as $row){
+                    $sku = $row['sku'];
+
                     $pid = \wc_get_product_id_by_sku($sku);
 
-                    dd($pid, "SKU $sku");
+                    //dd("HANDLE $slug | SKU $sku  | PID $pid "); continue;
+                                    
+                    if (empty($pid)){   
+                        
+                        if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                            $row['status'] = $config['status_at_creation'];
+                        }
 
-                    // Si no existe,...
-                    if (empty($pid)){
-                        $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
-
-                        if (empty($rows)){
-                            Files::logger("Error al decodificar para shop $shop");
-                        }                        
-
-                        foreach ($rows as $row){
-                            $sku = $row['sku'];
-                                         
-                            if (empty($pid)){   
-                                
-                                if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
-                                    $row['status'] = $config['status_at_creation'];
-                                }
-                                
-                                $pid = Products::createProduct($row);
-                                
-                                if ($pid != null){
-                                    echo "Producto para shop $shop con SKU = $sku creado \r\n";
-                                }
-                            }
-                    
-                            Sync::updateVendor($vendor_slug, $pid);
-                        }  
+                        $pid = Products::createProduct($row);
+                        
+                        if ($pid != null){
+                            //echo "Producto para shop $shop con SKU = $sku creado \r\n";
+                            $created++;
+                        }
                     }
-                }
-                
+            
+                    Sync::updateVendor($vendor_slug, $pid);
+                }  
+                   
             }
-
-            //dd(count($products), 'COUNT PRODUCTS');
 
             if (count($products) != $limit){
                 break;
@@ -311,7 +320,12 @@ class Sync
             $count++;            
         }    
 
-        //dd($count, 'PAGINAS');        
+       
+        return [
+            'data' => [
+                'created_count' => $created
+            ]
+        ];
     }
 
 

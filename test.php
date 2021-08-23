@@ -84,12 +84,13 @@ dd($pid);
 */
 
 
-//delete_all_webhooks();
+delete_all_webhooks('hupit');
 
 //dd(Sync::getVendors(true, 'WC'));
 
 
-Sync::getDataFromShopify('vendor-xyz');
+#$res = Sync::getDataFromShopify('vendor-xyz');
+#dd($res);
 
 /*
 $sku = '102064';
