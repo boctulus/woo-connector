@@ -61,48 +61,6 @@ function register_webhooks(){
 
 
             /*
-                Para cada vendor registrado hago la carga inicial de productos
-            */
-
-            let _url = '/index.php/wp-json/connector/v1/shopify/products?vendor=' + vendor;
-            //console.log(_url);
-
-
-            var settings = {
-                "url": _url,
-                "method": "GET",
-                "timeout": 0,
-                "headers": {
-                    "Content-Type": "text/plain"
-                }
-            };
-
-            jQuery.ajax(settings)
-            .done(function (response) {
-                //console.log(response); 
-                
-                if (typeof response['error'] != 'undefined'){
-                    addNotice(response['error'], 'danger');
-                    return;
-                }
-
-                if (typeof response['data'] == 'undefined'){
-                    addNotice('Error desconocido', 'danger');
-                    return;
-                }
-
-                let created = response['data']["created_count"];
-                
-                addNotice(`${created} productos sincronizados de ${vendor}`, 'info');
-
-            })
-            .fail(function (jqXHR, textStatus) {
-                console.log(jqXHR);
-                console.log(textStatus);
-                addNotice('Error desconocido', 'danger');
-            });
-
-            /*
                 Para cada vendo registro todos los WebHooks
             */
 
@@ -135,6 +93,49 @@ function register_webhooks(){
 
                 if (response["weboook_product_create"] != null){
                     addNotice("WebHook para 'product create' listo para " + vendor, 'success');
+
+                    /*
+                        Carga inicial de productos
+                    */
+
+                    let _url = '/index.php/wp-json/connector/v1/shopify/products?vendor=' + vendor;
+                    //console.log(_url);
+
+
+                    var settings = {
+                        "url": _url,
+                        "method": "POST",
+                        "timeout": 0,
+                        "headers": {
+                            "Content-Type": "text/plain"
+                        }
+                    };
+
+                    jQuery.ajax(settings)
+                    .done(function (response) {
+                        //console.log(response); 
+                        
+                        if (typeof response['error'] != 'undefined'){
+                            addNotice(response['error'], 'danger');
+                            return;
+                        }
+
+                        if (typeof response['data'] == 'undefined'){
+                            addNotice('Error desconocido', 'danger');
+                            return;
+                        }
+
+                        let created = response['data']["created_count"];
+                        
+                        addNotice(`${created} productos sincronizados de ${vendor}`, 'info');
+
+                    })
+                    .fail(function (jqXHR, textStatus) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        addNotice('Error desconocido', 'danger');
+                    });
+
                 } 
 
                 if (response["weboook_product_update"] != null){

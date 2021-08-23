@@ -84,6 +84,8 @@ dd($pid);
 */
 
 
+//Products::deleteAllProducts();
+
 delete_all_webhooks('hupit');
 
 //dd(Sync::getVendors(true, 'WC'));

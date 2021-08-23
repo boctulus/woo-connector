@@ -507,6 +507,7 @@ function get_shops($vendor_slug = null){
 }
 
 function get_shopi_products(){
+	// debería recibir el vendor en el body
 	$vendor_slug = $_GET['vendor'] ?? null;
 
 	if ($vendor_slug == null){
@@ -518,9 +519,9 @@ function get_shopi_products(){
 
 
 add_action( 'rest_api_init', function () {
-	# GET /index.php/wp-json/connector/v1/shopify/products
+	# POST /index.php/wp-json/connector/v1/shopify/products
 	register_rest_route( 'connector/v1', '/shopify/products', array(
-		'methods' => 'GET',
+		'methods' => 'POST',
 		'callback' => 'get_shopi_products',
         'permission_callback' => '__return_true'
 	) );
