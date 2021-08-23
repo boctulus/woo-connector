@@ -217,6 +217,8 @@ class Sync
         Solo inserta o ignora 
     */
     static function getDataFromShopify($vendor_slug){
+        set_time_limit(3600);
+
         $config   = self::getConfig();
 
         $api_info = self::getApiKeys($vendor_slug);
@@ -229,9 +231,9 @@ class Sync
         // usar since_id para "paginar"
         $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/products.json";
 
-        $limit    = 5;  // 100
+        $limit    = 100;  // 100
         $last_id  = 0;
-        $max      = 20;  // null
+        $max      = null;  // null
         $query_fn = function($limit, $last_id){ return "limit=$limit&since_id=$last_id"; };
 
         $regs  = [];
@@ -264,10 +266,10 @@ class Sync
                 $product_id = $product['id'];
                 $slug       = $product['handle'];
 
-                  foreach ($sku_arr as $sku){
+                foreach ($sku_arr as $sku){
                     $pid = \wc_get_product_id_by_sku($sku);
 
-                    //dd($pid, "SKU $sku");
+                    dd($pid, "SKU $sku");
 
                     // Si no existe,...
                     if (empty($pid)){
@@ -280,11 +282,16 @@ class Sync
                         foreach ($rows as $row){
                             $sku = $row['sku'];
                                          
-                            if (empty($pid)){                
+                            if (empty($pid)){   
+                                
+                                if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                                    $row['status'] = $config['status_at_creation'];
+                                }
+                                
                                 $pid = Products::createProduct($row);
                                 
                                 if ($pid != null){
-                                    echo "Producto con SKU = $sku creado \r\n";
+                                    echo "Producto para shop $shop con SKU = $sku creado \r\n";
                                 }
                             }
                     
@@ -353,11 +360,6 @@ class Sync
                 continue;
             }
                         
-
-            // cache ---------- solo pruebas
-            //Files::dump($res, 'response_x.php'); 
-            //dd($res);
-            //include __DIR__ . '/logs/response.php';
 
             $data = $res['data'];
             

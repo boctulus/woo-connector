@@ -88,4 +88,11 @@ dd($pid);
 
 //dd(Sync::getVendors(true, 'WC'));
 
+
 Sync::getDataFromShopify('vendor-xyz');
+
+/*
+$sku = '102064';
+$pid = wc_get_product_id_by_sku($sku);
+dd($pid);
+*/

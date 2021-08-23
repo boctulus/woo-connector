@@ -253,6 +253,10 @@ function insert_or_update_products(){
 
 
     foreach ($rows as $row){
+		if (!isset($row['sku']) || empty($row['sku'])){
+			continue;
+		} 
+
         $sku = $row['sku'];
 
         $pid = wc_get_product_id_by_sku($sku);
@@ -260,6 +264,11 @@ function insert_or_update_products(){
         if (!empty($pid)){
             Products::updateProductBySku($row);
         } else {
+
+			if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+				$row['status'] = $config['status_at_creation'];
+			}
+			
             $pid = Products::createProduct($row);
         }
 
