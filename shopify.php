@@ -146,7 +146,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 			} elseif ($term == 'style'){
 				$term = 'estilo';
 			} elseif ($term == 'title'){
-				$term = 'titulo';
+				continue;
 			}
 
 			$term = 'pa_' . $term;
@@ -193,7 +193,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 	}
 
     // si es un producto "simple"
-    if (isset($a['image']) && $vars[0]['title'] == 'Default Title'){            
+    if (isset($a['image']) && $a['variants'][0]['title'] == 'Default Title'){            
         $vars[0]['image'] = [
             $img['src'],
             $img['width'],

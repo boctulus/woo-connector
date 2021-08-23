@@ -8,7 +8,7 @@ use connector\libs\Url;
 use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
-
+use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
 
 require_once __DIR__ . '/Url.php';
 require_once __DIR__ . '/Debug.php';
@@ -200,16 +200,119 @@ class Sync
         return $wpdb->query($sql);
     }
 
-    // HACER ***
-    static function getDataFromShopify(){
 
+    /*
+        Agregar o borrar variantes dispara el WebHook para UPDATE -- ok
+
+        El problema está en si se borra el producto como tal
+
+        Buscar solo los 'handle' con ?fields=handle para verificar si algún handle ya no existe,
+        tiene el mismo costo en tiempo que traerse todos los registros (paginados claro)
+    */
+
+
+    /*
+        Asumo el vendor si es de una tienda de Shopify
+
+        Solo inserta o ignora 
+    */
+    static function getDataFromShopify($vendor_slug){
+        $config   = self::getConfig();
+
+        $api_info = self::getApiKeys($vendor_slug);
+
+        $api_key     = $api_info['api_key'];
+        $api_secret  = $api_info['api_secret'];
+        $api_ver     = $api_info['api_ver'];
+        $shop        = $api_info['shop'];
+
+        // usar since_id para "paginar"
+        $endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/products.json";
+
+        $limit    = 5;  // 100
+        $last_id  = 0;
+        $max      = 20;  // null
+        $query_fn = function($limit, $last_id){ return "limit=$limit&since_id=$last_id"; };
+
+        $regs  = [];
+
+        $count = 0;
+        while(true){
+            if (isset($max) && !empty($max) && ($count >= $max/$limit)){
+                break;
+            }
+    
+            //dd("Q=" . $query_fn($limit, $last_id));
+
+            $file = __DIR__ . "../logs/req-" . $query_fn($limit, $last_id) . "-products.json";
+
+            $res = Url::consume_api("$endpoint?".$query_fn($limit, $last_id), 'GET');
+
+    
+            if ($res['http_code'] != 200){
+                dd($res['error'], 'ERROR', function(){ die; });
+            }
+    
+            $data     = $res['data']; 
+
+            $products = $data["products"];
+
+            $last_id  = max(array_column($products, 'id'));
+
+            foreach ($products as $product){
+                $sku_arr    = array_column($product["variants"], 'sku');
+                $product_id = $product['id'];
+                $slug       = $product['handle'];
+
+                  foreach ($sku_arr as $sku){
+                    $pid = \wc_get_product_id_by_sku($sku);
+
+                    //dd($pid, "SKU $sku");
+
+                    // Si no existe,...
+                    if (empty($pid)){
+                        $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
+
+                        if (empty($rows)){
+                            Files::logger("Error al decodificar para shop $shop");
+                        }                        
+
+                        foreach ($rows as $row){
+                            $sku = $row['sku'];
+                                         
+                            if (empty($pid)){                
+                                $pid = Products::createProduct($row);
+                                
+                                if ($pid != null){
+                                    echo "Producto con SKU = $sku creado \r\n";
+                                }
+                            }
+                    
+                            Sync::updateVendor($vendor_slug, $pid);
+                        }  
+                    }
+                }
+                
+            }
+
+            //dd(count($products), 'COUNT PRODUCTS');
+
+            if (count($products) != $limit){
+                break;
+            }
+
+            $count++;            
+        }    
+
+        //dd($count, 'PAGINAS');        
     }
 
 
     static function getDataFromWooCommerce(){
         $vendors = Sync::getVendors(true, ['wc', 'woocommerce']);
 
-        foreach ($vendors as $vendor){           
+        foreach ($vendors as $vendor)
+        {           
             if (!isset($vendor['url'])){
                 $msg = "Error: la url no está presente para un vendor!";
 
@@ -315,7 +418,7 @@ class Sync
             //Files::dump($res, 'response.txt');
         }
 
-        dd("La sincronización ha terminado");
+        dd("La sincronización de WooCommerce ha terminado");
     }
 }
 

@@ -1,0 +1,30 @@
+array (
+  0 => 
+  array (
+    'type' => 'simple',
+    'name' => 'CESTO 3L NEWICON MATT STEEL FINGERPRINT BRABANTIA',
+    'description' => '<br>',
+    'visibility' => 'visible',
+    'status' => 'publish',
+    'tags' => 
+    array (
+      0 => '',
+    ),
+    'categories' => 
+    array (
+    ),
+    'regular_price' => '18490.00',
+    'sale_price' => NULL,
+    'sku' => '112164',
+    'weight' => 0.0,
+    'stock_quantity' => 0,
+    'manage_stock' => false,
+    'attributes' => 
+    array (
+      'pa_titulo' => 
+      array (
+        0 => 'Default Title',
+      ),
+    ),
+  ),
+)

@@ -4,9 +4,10 @@ http://woo2.lan                     act-and-be              wc          yes
 http://otrovendor.com               otro-vendor             shopi       no  
 https://miserastral.com             asdf-vendor             wc          no
 http://woo3.lan                     nxyz-vendor             wc          no
-xxxxxx                              hupit                   shopi       yes
-xxxxxx                              azul-marino-casi-negro  shopi       yes
-xxxxxx                              vendor-x                shopi       no
+--                                  azul-marino-casi-negro  shopi       no
+--                                  hupit                   shopi       yes
+--                                  testercamp              shopi       yes
+--                                  vendor-xyz              shopi       yes
 
 ;
 ; Para vendors en WooCommerce es necesaria la url de la tienda pero para vendors en Shopify no.

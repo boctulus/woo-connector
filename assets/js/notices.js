@@ -50,7 +50,7 @@ function addWpNotice(message, type = 'info', container = '#alert_container', aft
     div = document.createElement('div');
     
     div.innerHTML = `
-    <div class="notice notice-${type} is-dismissible" id="${id_notice}" style="min-height:30px">
+    <div class="notice notice-${type} is-dismissible" id="${id_notice}" style="min-height:30px;">
         <p>${message}</p>
     </div>`;
 

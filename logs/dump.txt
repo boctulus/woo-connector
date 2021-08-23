@@ -1,0 +1,492 @@
+array (
+  0 => 
+  array (
+    'id' => 6965603762328,
+    'title' => 'CESTO 3L NEWICON MATT STEEL FINGERPRINT BRABANTIA',
+    'body_html' => '<br>',
+    'vendor' => 'vendor-xyz',
+    'product_type' => '',
+    'created_at' => '2021-08-23T11:39:45-03:00',
+    'handle' => 'cesto-3l-newicon-matt-steel-fingerprint-brabantia-ref-112164',
+    'updated_at' => '2021-08-23T11:39:45-03:00',
+    'published_at' => '2021-08-23T11:39:45-03:00',
+    'template_suffix' => NULL,
+    'status' => 'active',
+    'published_scope' => 'web',
+    'tags' => '',
+    'admin_graphql_api_id' => 'gid://shopify/Product/6965603762328',
+    'variants' => 
+    array (
+      0 => 
+      array (
+        'id' => 40765373251736,
+        'product_id' => 6965603762328,
+        'title' => 'Default Title',
+        'price' => '18490.00',
+        'sku' => '112164',
+        'position' => 1,
+        'inventory_policy' => 'deny',
+        'compare_at_price' => NULL,
+        'fulfillment_service' => 'manual',
+        'inventory_management' => NULL,
+        'option1' => 'Default Title',
+        'option2' => NULL,
+        'option3' => NULL,
+        'created_at' => '2021-08-23T11:39:45-03:00',
+        'updated_at' => '2021-08-23T11:39:45-03:00',
+        'taxable' => true,
+        'barcode' => NULL,
+        'grams' => 0,
+        'image_id' => NULL,
+        'weight' => 0.0,
+        'weight_unit' => 'kg',
+        'inventory_item_id' => 42860656722072,
+        'inventory_quantity' => 0,
+        'old_inventory_quantity' => 0,
+        'requires_shipping' => true,
+        'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40765373251736',
+      ),
+    ),
+    'options' => 
+    array (
+      0 => 
+      array (
+        'id' => 8929965506712,
+        'product_id' => 6965603762328,
+        'name' => 'Title',
+        'position' => 1,
+        'values' => 
+        array (
+          0 => 'Default Title',
+        ),
+      ),
+    ),
+    'images' => 
+    array (
+      0 => 
+      array (
+        'id' => 32372446888088,
+        'product_id' => 6965603762328,
+        'position' => 1,
+        'created_at' => '2021-08-23T11:39:45-03:00',
+        'updated_at' => '2021-08-23T11:39:45-03:00',
+        'alt' => NULL,
+        'width' => 700,
+        'height' => 700,
+        'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/112041_3.jpg?v=1629729585',
+        'variant_ids' => 
+        array (
+        ),
+        'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372446888088',
+      ),
+    ),
+    'image' => 
+    array (
+      'id' => 32372446888088,
+      'product_id' => 6965603762328,
+      'position' => 1,
+      'created_at' => '2021-08-23T11:39:45-03:00',
+      'updated_at' => '2021-08-23T11:39:45-03:00',
+      'alt' => NULL,
+      'width' => 700,
+      'height' => 700,
+      'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/112041_3.jpg?v=1629729585',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372446888088',
+    ),
+  ),
+  1 => 
+  array (
+    'id' => 6965604319384,
+    'title' => 'CESTO 3L NEWICON MATT STEEL FINGERPRINT BRABANTIA',
+    'body_html' => '<br>',
+    'vendor' => 'vendor-xyz',
+    'product_type' => '',
+    'created_at' => '2021-08-23T11:40:03-03:00',
+    'handle' => 'cesto-3l-newicon-matt-steel-fingerprint-brabantia-ref-112165',
+    'updated_at' => '2021-08-23T11:40:03-03:00',
+    'published_at' => '2021-08-23T11:40:03-03:00',
+    'template_suffix' => NULL,
+    'status' => 'active',
+    'published_scope' => 'web',
+    'tags' => '',
+    'admin_graphql_api_id' => 'gid://shopify/Product/6965604319384',
+    'variants' => 
+    array (
+      0 => 
+      array (
+        'id' => 40765377413272,
+        'product_id' => 6965604319384,
+        'title' => 'Default Title',
+        'price' => '18490.00',
+        'sku' => '112164',
+        'position' => 1,
+        'inventory_policy' => 'deny',
+        'compare_at_price' => NULL,
+        'fulfillment_service' => 'manual',
+        'inventory_management' => NULL,
+        'option1' => 'Default Title',
+        'option2' => NULL,
+        'option3' => NULL,
+        'created_at' => '2021-08-23T11:40:03-03:00',
+        'updated_at' => '2021-08-23T11:40:03-03:00',
+        'taxable' => true,
+        'barcode' => NULL,
+        'grams' => 0,
+        'image_id' => NULL,
+        'weight' => 0.0,
+        'weight_unit' => 'kg',
+        'inventory_item_id' => 42860660883608,
+        'inventory_quantity' => 0,
+        'old_inventory_quantity' => 0,
+        'requires_shipping' => true,
+        'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40765377413272',
+      ),
+    ),
+    'options' => 
+    array (
+      0 => 
+      array (
+        'id' => 8929966194840,
+        'product_id' => 6965604319384,
+        'name' => 'Title',
+        'position' => 1,
+        'values' => 
+        array (
+          0 => 'Default Title',
+        ),
+      ),
+    ),
+    'images' => 
+    array (
+      0 => 
+      array (
+        'id' => 32372456554648,
+        'product_id' => 6965604319384,
+        'position' => 1,
+        'created_at' => '2021-08-23T11:40:03-03:00',
+        'updated_at' => '2021-08-23T11:40:03-03:00',
+        'alt' => NULL,
+        'width' => 700,
+        'height' => 700,
+        'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/112041_3_c114fbb4-aaee-49a8-bc7b-1bc5ad992662.jpg?v=1629729603',
+        'variant_ids' => 
+        array (
+        ),
+        'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372456554648',
+      ),
+    ),
+    'image' => 
+    array (
+      'id' => 32372456554648,
+      'product_id' => 6965604319384,
+      'position' => 1,
+      'created_at' => '2021-08-23T11:40:03-03:00',
+      'updated_at' => '2021-08-23T11:40:03-03:00',
+      'alt' => NULL,
+      'width' => 700,
+      'height' => 700,
+      'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/112041_3_c114fbb4-aaee-49a8-bc7b-1bc5ad992662.jpg?v=1629729603',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372456554648',
+    ),
+  ),
+  2 => 
+  array (
+    'id' => 6965604548760,
+    'title' => 'CESTO 3L NEWICON BRILLANT STEEL BRABANTIA',
+    'body_html' => '<br>',
+    'vendor' => 'vendor-xyz',
+    'product_type' => '',
+    'created_at' => '2021-08-23T11:40:07-03:00',
+    'handle' => 'cesto-3l-newicon-brillant-steel-brabantia-ref-113147',
+    'updated_at' => '2021-08-23T11:40:07-03:00',
+    'published_at' => '2021-08-23T11:40:07-03:00',
+    'template_suffix' => NULL,
+    'status' => 'active',
+    'published_scope' => 'web',
+    'tags' => '',
+    'admin_graphql_api_id' => 'gid://shopify/Product/6965604548760',
+    'variants' => 
+    array (
+      0 => 
+      array (
+        'id' => 40765378265240,
+        'product_id' => 6965604548760,
+        'title' => 'Default Title',
+        'price' => '17490.00',
+        'sku' => '113147',
+        'position' => 1,
+        'inventory_policy' => 'deny',
+        'compare_at_price' => NULL,
+        'fulfillment_service' => 'manual',
+        'inventory_management' => NULL,
+        'option1' => 'Default Title',
+        'option2' => NULL,
+        'option3' => NULL,
+        'created_at' => '2021-08-23T11:40:07-03:00',
+        'updated_at' => '2021-08-23T11:40:07-03:00',
+        'taxable' => true,
+        'barcode' => NULL,
+        'grams' => 0,
+        'image_id' => NULL,
+        'weight' => 0.0,
+        'weight_unit' => 'kg',
+        'inventory_item_id' => 42860661735576,
+        'inventory_quantity' => 0,
+        'old_inventory_quantity' => 0,
+        'requires_shipping' => true,
+        'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40765378265240',
+      ),
+    ),
+    'options' => 
+    array (
+      0 => 
+      array (
+        'id' => 8929966456984,
+        'product_id' => 6965604548760,
+        'name' => 'Title',
+        'position' => 1,
+        'values' => 
+        array (
+          0 => 'Default Title',
+        ),
+      ),
+    ),
+    'images' => 
+    array (
+      0 => 
+      array (
+        'id' => 32372461928600,
+        'product_id' => 6965604548760,
+        'position' => 1,
+        'created_at' => '2021-08-23T11:40:07-03:00',
+        'updated_at' => '2021-08-23T11:40:07-03:00',
+        'alt' => NULL,
+        'width' => 700,
+        'height' => 700,
+        'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113147_1.jpg?v=1629729607',
+        'variant_ids' => 
+        array (
+        ),
+        'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372461928600',
+      ),
+    ),
+    'image' => 
+    array (
+      'id' => 32372461928600,
+      'product_id' => 6965604548760,
+      'position' => 1,
+      'created_at' => '2021-08-23T11:40:07-03:00',
+      'updated_at' => '2021-08-23T11:40:07-03:00',
+      'alt' => NULL,
+      'width' => 700,
+      'height' => 700,
+      'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113147_1.jpg?v=1629729607',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372461928600',
+    ),
+  ),
+  3 => 
+  array (
+    'id' => 6965604679832,
+    'title' => 'CESTO 3L NEWICON PLATINUM BRABANTIA',
+    'body_html' => '<br>',
+    'vendor' => 'vendor-xyz',
+    'product_type' => '',
+    'created_at' => '2021-08-23T11:40:11-03:00',
+    'handle' => 'cesto-3l-newicon-platinum-brabantia-ref-113246',
+    'updated_at' => '2021-08-23T11:40:11-03:00',
+    'published_at' => '2021-08-23T11:40:11-03:00',
+    'template_suffix' => NULL,
+    'status' => 'active',
+    'published_scope' => 'web',
+    'tags' => '',
+    'admin_graphql_api_id' => 'gid://shopify/Product/6965604679832',
+    'variants' => 
+    array (
+      0 => 
+      array (
+        'product_id' => 6965604679832,
+        'id' => 40765380427928,
+        'title' => 'Default Title',
+        'price' => '16490.00',
+        'sku' => '113246',
+        'position' => 1,
+        'inventory_policy' => 'deny',
+        'compare_at_price' => NULL,
+        'fulfillment_service' => 'manual',
+        'inventory_management' => NULL,
+        'option1' => 'Default Title',
+        'option2' => NULL,
+        'option3' => NULL,
+        'created_at' => '2021-08-23T11:40:11-03:00',
+        'updated_at' => '2021-08-23T11:40:11-03:00',
+        'taxable' => true,
+        'barcode' => NULL,
+        'grams' => 0,
+        'image_id' => NULL,
+        'weight' => 0.0,
+        'weight_unit' => 'kg',
+        'inventory_item_id' => 42860663373976,
+        'inventory_quantity' => 0,
+        'old_inventory_quantity' => 0,
+        'requires_shipping' => true,
+        'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40765380427928',
+      ),
+    ),
+    'options' => 
+    array (
+      0 => 
+      array (
+        'product_id' => 6965604679832,
+        'id' => 8929966620824,
+        'name' => 'Title',
+        'position' => 1,
+        'values' => 
+        array (
+          0 => 'Default Title',
+        ),
+      ),
+    ),
+    'images' => 
+    array (
+      0 => 
+      array (
+        'product_id' => 6965604679832,
+        'id' => 32372463567000,
+        'position' => 1,
+        'created_at' => '2021-08-23T11:40:11-03:00',
+        'updated_at' => '2021-08-23T11:40:11-03:00',
+        'alt' => NULL,
+        'width' => 700,
+        'height' => 700,
+        'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113246_1.jpg?v=1629729611',
+        'variant_ids' => 
+        array (
+        ),
+        'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372463567000',
+      ),
+    ),
+    'image' => 
+    array (
+      'product_id' => 6965604679832,
+      'id' => 32372463567000,
+      'position' => 1,
+      'created_at' => '2021-08-23T11:40:11-03:00',
+      'updated_at' => '2021-08-23T11:40:11-03:00',
+      'alt' => NULL,
+      'width' => 700,
+      'height' => 700,
+      'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113246_1.jpg?v=1629729611',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372463567000',
+    ),
+  ),
+  4 => 
+  array (
+    'id' => 6965604778136,
+    'title' => 'CESTO 3L NEWICON METALLIC GREY BRABANTIA',
+    'body_html' => '<br>',
+    'vendor' => 'vendor-xyz',
+    'product_type' => '',
+    'created_at' => '2021-08-23T11:40:14-03:00',
+    'handle' => 'cesto-3l-newicon-metallic-grey-brabantia-ref-113260',
+    'updated_at' => '2021-08-23T11:40:15-03:00',
+    'published_at' => '2021-08-23T11:40:14-03:00',
+    'template_suffix' => NULL,
+    'status' => 'active',
+    'published_scope' => 'web',
+    'tags' => '',
+    'admin_graphql_api_id' => 'gid://shopify/Product/6965604778136',
+    'variants' => 
+    array (
+      0 => 
+      array (
+        'id' => 40765381017752,
+        'product_id' => 6965604778136,
+        'title' => 'Default Title',
+        'price' => '16490.00',
+        'sku' => '113260',
+        'position' => 1,
+        'inventory_policy' => 'deny',
+        'compare_at_price' => NULL,
+        'fulfillment_service' => 'manual',
+        'inventory_management' => NULL,
+        'option1' => 'Default Title',
+        'option2' => NULL,
+        'option3' => NULL,
+        'created_at' => '2021-08-23T11:40:15-03:00',
+        'updated_at' => '2021-08-23T11:40:15-03:00',
+        'taxable' => true,
+        'barcode' => NULL,
+        'grams' => 0,
+        'image_id' => NULL,
+        'weight' => 0.0,
+        'weight_unit' => 'kg',
+        'inventory_item_id' => 42860664488088,
+        'inventory_quantity' => 0,
+        'old_inventory_quantity' => 0,
+        'requires_shipping' => true,
+        'admin_graphql_api_id' => 'gid://shopify/ProductVariant/40765381017752',
+      ),
+    ),
+    'options' => 
+    array (
+      0 => 
+      array (
+        'id' => 8929966719128,
+        'product_id' => 6965604778136,
+        'name' => 'Title',
+        'position' => 1,
+        'values' => 
+        array (
+          0 => 'Default Title',
+        ),
+      ),
+    ),
+    'images' => 
+    array (
+      0 => 
+      array (
+        'id' => 32372464255128,
+        'product_id' => 6965604778136,
+        'position' => 1,
+        'created_at' => '2021-08-23T11:40:15-03:00',
+        'updated_at' => '2021-08-23T11:40:15-03:00',
+        'alt' => NULL,
+        'width' => 700,
+        'height' => 700,
+        'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113260_1.jpg?v=1629729615',
+        'variant_ids' => 
+        array (
+        ),
+        'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372464255128',
+      ),
+    ),
+    'image' => 
+    array (
+      'id' => 32372464255128,
+      'product_id' => 6965604778136,
+      'position' => 1,
+      'created_at' => '2021-08-23T11:40:15-03:00',
+      'updated_at' => '2021-08-23T11:40:15-03:00',
+      'alt' => NULL,
+      'width' => 700,
+      'height' => 700,
+      'src' => 'https://cdn.shopify.com/s/files/1/0588/3989/2120/products/113260_1.jpg?v=1629729615',
+      'variant_ids' => 
+      array (
+      ),
+      'admin_graphql_api_id' => 'gid://shopify/ProductImage/32372464255128',
+    ),
+  ),
+)

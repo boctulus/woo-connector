@@ -87,3 +87,5 @@ dd($pid);
 //delete_all_webhooks();
 
 //dd(Sync::getVendors(true, 'WC'));
+
+Sync::getDataFromShopify('vendor-xyz');
