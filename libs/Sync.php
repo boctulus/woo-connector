@@ -8,7 +8,7 @@ use connector\libs\Url;
 use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
-use ParagonIE\Sodium\Core\Curve25519\Ge\P2;
+
 
 require_once __DIR__ . '/Url.php';
 require_once __DIR__ . '/Debug.php';
@@ -252,8 +252,6 @@ class Sync
             }
     
             //dd("Q=" . $query_fn($limit, $last_id));
-
-            $file = __DIR__ . "../logs/req-" . $query_fn($limit, $last_id) . "-products.json";
 
             $res = Url::consume_api("$endpoint?".$query_fn($limit, $last_id), 'GET');
 

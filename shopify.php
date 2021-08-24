@@ -10,6 +10,7 @@ use connector\libs\Files;
 use connector\libs\Request;
 use connector\libs\Strings;
 use connector\libs\Sync;
+use connector\libs\SSE;
 
 require_once __DIR__ . '/libs/Url.php';
 require_once __DIR__ . '/libs/Products.php';
@@ -17,6 +18,7 @@ require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/libs/Request.php';
 require_once __DIR__ . '/libs/Sync.php';
+require_once __DIR__ . '/libs/SSE.php';
 
 
 if (!function_exists('dd')){
