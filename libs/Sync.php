@@ -8,18 +8,17 @@ use connector\libs\Url;
 use connector\libs\Files;
 use connector\libs\Strings;
 use connector\libs\Products;
+use connector\libs\WCPV_utils;
 
 
 require_once __DIR__ . '/Url.php';
 require_once __DIR__ . '/Debug.php';
 require_once __DIR__ . '/Products.php';
+require_once __DIR__ . '/WCPV_utils.php';
+require_once __DIR__ . '/WCFM_utils.php';
 
 include_once __DIR__ . '/../../../../wp-load.php';
 
-
-if (!defined('MY_PRODUCT_VENDORS_TAXONOMY')){
-    define( 'MY_PRODUCT_VENDORS_TAXONOMY', 'wcpv_product_vendors' );
-}
 
 if (!function_exists('dd')){
 	function dd($val, $msg = null, $pre_cond = null){
@@ -39,6 +38,46 @@ class Sync
 		self::$config = include __DIR__ . '/../config/config.php';
 		return self::$config;
 	}
+
+    /*
+        Asumo solo puede estar activo
+    */
+    static function getVendorPlugin(){
+        if (WCFM_utils::is_active()){
+            return 'WCFM';
+        }
+
+        if (WCPV_utils::is_active()){
+            return 'WCPV';
+        } 
+
+        return null;
+    }
+
+    static function getCurrentVendor($post_id){
+        if (self::getVendorPlugin() == 'WCFM'){
+            return WCFM_utils::getCurrentVendor($post_id);
+        }
+
+        if (self::getVendorPlugin() == 'WCPV'){
+            return WCPV_utils::getCurrentVendor($post_id);
+        }
+
+        return false;
+    }
+
+    static function updateVendor($vendor_slug, $pid){
+        if (WCFM_utils::is_active()){
+            return WCFM_utils::updateVendor($vendor_slug, $pid);
+        } 
+
+        if (WCPV_utils::is_active()){
+            return WCPV_utils::updateVendor($vendor_slug, $pid);
+        } 
+
+        throw new \Exception("No hay plugin multi-vendor vendor definido");
+    }
+
 
     static function getApiKeys($vendor_slug = null, $shop = null){
         $list  = file_get_contents(__DIR__ . '/../config/api_keys.txt');
@@ -165,45 +204,6 @@ class Sync
         }
     
         return $arr;
-    }
-
-    /*
-        Devuelve el vendor_slug del post o NULL en caso contrario
-    */
-    static function getCurrentVendor($post_id){
-        return wp_get_object_terms( [$post_id], MY_PRODUCT_VENDORS_TAXONOMY );
-    }
-    
-    static function updateVendor($vendor_slug, $pid){
-        if (!isset($pid)){
-            return;
-        }
-
-        if (class_exists(\WC_Product_Vendors_Utils::class)){
-            if (! \WC_Product_Vendors_Utils::is_valid_vendor($vendor_slug)){
-                dd("[ Advertencia ] El vendor $vendor_slug no existe.");
-                return;
-            }
-        }
-
-        wp_set_object_terms( $pid, $vendor_slug, MY_PRODUCT_VENDORS_TAXONOMY, false );
-    }
-    
-    static function updateCount($vendor){
-        global $wpdb;
-    
-        $sql = "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '$vendor'";
-        $vendor_id = $wpdb->get_var($sql);
-    
-        $sql = "SELECT COUNT(*) as count FROM `wp_term_relationships` as TR 
-        INNER JOIN `wp_term_taxonomy` as TT ON TT.term_taxonomy_id = TR.term_taxonomy_id 
-        INNER JOIN `wp_terms` as T ON T.term_id = TT.term_id
-        WHERE slug='$vendor';";
-    
-        $count = $wpdb->get_var($sql);
-    
-        $sql = "UPDATE  `wp_term_taxonomy` SET count = $count WHERE term_id = $vendor_id";
-        return $wpdb->query($sql);
     }
 
 
@@ -375,12 +375,15 @@ class Sync
 
             $data = $res['data'];
             
-            
             foreach ($data as $row){
                 #dd($row, 'ROW'); ///
 
                 $sku = $row['sku'];
                 $operation = $row['operation'];
+
+                if ($config['test_mode']){
+                    Files::dump($data, "$vendor_slug.$sku.txt");
+                }
                 
                 $pid = \wc_get_product_id_by_sku($sku);
 

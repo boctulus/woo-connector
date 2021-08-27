@@ -9,5 +9,5 @@
 #
 return [
 	'status_at_creation' => 'draft',
-	'test_mode' => false
+	'test_mode' => true
 ];

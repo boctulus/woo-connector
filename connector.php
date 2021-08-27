@@ -27,6 +27,7 @@ require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Files.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/shopify.php';
+#require_once __DIR__ . '/widget.php';
 
 
 /**
@@ -36,6 +37,30 @@ if ( !in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', 
 	return;
 }	
 
+
+/*
+    Debug del vendor para WCFM
+
+*/
+add_action('admin_init', 'connector\in_admin_header_product_page_edit');
+
+function in_admin_header_product_page_edit() {
+    $config = include (__DIR__ . '/config/config.php');
+
+    if (!$config['test_mode']){
+        return;
+    }
+
+    $action = $_GET['action'] ?? null;
+
+    if ($_SERVER['SCRIPT_NAME'] == '/wp-admin/post.php' && $action == 'edit'){
+        ?>
+            <script>
+                console.log('Aca mostrar vendor_slug');
+            </script>
+        <?php
+    }    
+}
 
 /*
     Installer
