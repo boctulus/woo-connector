@@ -259,6 +259,11 @@ function insert_or_update_products(){
 			continue;
 		} 
 
+		// ya fue convertido
+		if ($row['status'] != 'publish'  && !$config['insert_unpublished']){
+			continue;
+		}
+
         $sku = $row['sku'];
 
         $pid = wc_get_product_id_by_sku($sku);

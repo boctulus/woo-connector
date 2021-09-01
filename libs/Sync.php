@@ -414,6 +414,8 @@ class Sync
     static function processInitialDataFromShopify(){
         set_time_limit(0);
 
+        $config = self::getConfig();
+
         try {
             $sse = new SSE('shopify_sync');
 
@@ -465,7 +467,13 @@ class Sync
                     $sku_arr    = array_column($product["variants"], 'sku');
                     $product_id = $product['id'];
                     $slug       = $product['handle'];
-    
+
+                    /*
+                    if ($product['status'] != 'active'  && !$config['insert_unpublished']){
+                        continue;
+                    }
+                    */
+
                     $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
     
                     if (empty($rows)){
@@ -475,6 +483,10 @@ class Sync
                     }                        
     
                     foreach ($rows as $row){
+                        if (empty($row['sku'])){
+                            continue;
+                        }                        
+                      
                         $sku = $row['sku'];
     
                         $pid = \wc_get_product_id_by_sku($sku);
@@ -510,6 +522,8 @@ class Sync
 
     static function processInitialDataFromWooCommerce(){
         set_time_limit(0);
+
+        $config = self::getConfig();
 
         try {
             $sse = new SSE('wc_sync');
@@ -556,15 +570,26 @@ class Sync
                 foreach ($products as $product){
                     //dd($product);
 
+                    if (empty($product['sku'])){
+                        continue;
+                    }
+
+                    if ($product['status'] != 'publish'  && !$config['insert_unpublished']){
+                        continue;
+                    }
+
                     $sku = $product['sku'];
 
+                   
                     $pid = \wc_get_product_id_by_sku($sku);
                                     
                     if (empty($pid)){   
                         
+                        /*
                         if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
                             $product['status'] = $config['status_at_creation'];
                         }
+                        */
 
                         $pid = Products::createProduct($product);
                         
@@ -589,6 +614,8 @@ class Sync
     static function getUpdatedDataFromWooCommerce(){
         $vendors = Sync::getVendors(true, ['wc', 'woocommerce']);
 
+        $config = self::getConfig();
+
         foreach ($vendors as $vendor)
         {           
             if (!isset($vendor['url'])){
@@ -607,8 +634,6 @@ class Sync
 
             $vendor_url  = $vendor['url'];
             $vendor_slug = $vendor['slug'];
-
-            $config = self::getConfig();
 
             $api_info = self::getApiKeys($vendor_slug);
             $api_key  = $api_info['api_key'];
@@ -636,9 +661,18 @@ class Sync
             
             foreach ($data as $row){
                 #dd($row, 'ROW'); ///
+               
+                if (empty($row['sku'])){
+                    continue;
+                }
 
-                $sku = $row['sku'];
+                if ($row['status'] != 'publish' && !$config['insert_unpublished']){
+                    continue;
+                }
+
+                $sku       = $row['sku'];
                 $operation = $row['operation'];
+               
 
                 if ($config['test_mode']){
                     Files::dump($data, "$vendor_slug.$sku.txt");
