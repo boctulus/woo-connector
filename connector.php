@@ -70,7 +70,7 @@ function connector_installer(){
     include('installer.php');
 }
 
-register_activation_hook(__file__, 'connector_installer');
+register_activation_hook(__file__, 'connector\connector_installer');
 
 
 /*  

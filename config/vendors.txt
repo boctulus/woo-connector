@@ -6,8 +6,8 @@ https://miserastral.com             asdf-vendor             wc          no
 http://woo3.lan                     nxyz-vendor             wc          no
 --                                  azulmarinocasinegro     wc          no
 --                                  hupit                   shopi       no
---                                  testercamp              shopi       no
---                                  vendorxyz               shopi       yes
+--                                  vendorxyz               shopi       no
+--                                  testercamp1             shopi       yes
 
 ;
 ; Para vendors en WooCommerce es necesaria la url de la tienda pero para vendors en Shopify no.

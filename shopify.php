@@ -363,30 +363,17 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 		$api_key => $api_secret
 	]);
 
-	if (empty($res)){
-		dd("Error al crear WebHook para $topic");
-		return;
+	if (empty($res)){		
+		return [
+			'error' => "Error al crear WebHook para $topic"
+		];
 	}
 
-	if (!isset($res['data']['webhook']) || isset($data['id'])){
-		dd($res, 'response');
-		dd("Error en la respuesta al crear WebHook para $topic");
-		return;
+	if (!isset($res['data']['webhook']) /*|| isset($data['id']) */){
+		return [
+			'error' => "Error en la respuesta al crear WebHook para $topic"
+		];
 	}
-
-    /*
-	$data = $res['data']['webhook'];
-
-	$sql = "INSERT INTO `{$wpdb->prefix}shopi_webhooks` (`shop`, `topic`, `api_version`, `address`, `remote_id`, `created_at`) 
-	VALUES ('$shop', '{$data['topic']}', '{$data['api_version']}', '{$data['address']}' , '{$data['id']}', '{$data['created_at']}')";
-
-	$ok = $wpdb->query($sql);
-
-	if (!$ok){
-		dd("Error al almacenar WebHook");
-		return;
-	}
-    */
 
 	return true;
 }

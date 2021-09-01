@@ -85,7 +85,7 @@ if (!empty($pid)){
 dd($pid);
 */
 
-//delete_all_webhooks('vendor-xyz');
+delete_all_webhooks('testercamp1');
 
 //dd(Sync::getVendors(true, 'WC'));
 
@@ -110,7 +110,7 @@ dd($pid);
 //dd(Sync::processDataFromShopify());
 
 
-Products::deleteAllProducts();
+//Products::deleteAllProducts();
 
 
 //dd(Sync::getInitialDataFromWooCommerce('actandbe'));
