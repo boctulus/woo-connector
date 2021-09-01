@@ -3,6 +3,7 @@
 namespace connector;
 
 use connector\libs\Sync;
+use connector\libs\Files;
 
 
 ini_set('display_errors', 1);
@@ -11,15 +12,46 @@ error_reporting(E_ALL);
 
 
 require_once __DIR__ . '/libs/Sync.php';
+require_once __DIR__ . '/libs/Files.php';
 
 if (php_sapi_name() != "cli") {
     return;
 }
 
-Sync::getDataFromWooCommerce();
+
+global $wpdb;
+
+$sql  = "SELECT * FROM `{$wpdb->prefix}initial_load`";
+$data = $wpdb->get_results($sql);
+
+foreach ($data as $dato){
+    $cms    = $dato->cms;
+    $vendor = $dato->vendor_slug;
+
+    switch ($cms){
+        case 'wc': 
+            Sync::getInitialDataFromWooCommerce($vendor);            
+        break;
+
+        case 'shopi': 
+            Sync::getInitialDataFromShopify($vendor);
+        break;
+
+        default:
+            Files::logger("El cms '$cms' es desconocido");
+            continue 2;
+    }
+
+    $wpdb->query("DELETE FROM `{$wpdb->prefix}initial_load` WHERE cms = '$cms' AND vendor_slug = '$vendor'");
+}
+    
+
+Sync::processInitialDataFromShopify();
+Sync::processInitialDataFromWooCommerce();
 
 
-
+// Procesa periódicamente nuevos productos o actualizaciones
+Sync::getUpdatedDataFromWooCommerce();
 
 
 

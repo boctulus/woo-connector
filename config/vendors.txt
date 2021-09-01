@@ -5,8 +5,8 @@ http://otrovendor.com               otro-vendor             shopi       no
 https://miserastral.com             asdf-vendor             wc          no
 http://woo3.lan                     nxyz-vendor             wc          no
 --                                  azulmarinocasinegro     wc          no
---                                  hupit                   shopi       yes
---                                  testercamp              shopi       yes
+--                                  hupit                   shopi       no
+--                                  testercamp              shopi       no
 --                                  vendorxyz               shopi       yes
 
 ;

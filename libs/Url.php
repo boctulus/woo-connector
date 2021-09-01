@@ -39,7 +39,7 @@ class Url
     /*
         @author     Pablo Bozzolo   boctulus@gmail.com
     */
-    static function consume_api(string $url, string $http_verb, Array $body = null, Array $headers = null, Array $options = null)
+    static function consume_api(string $url, string $http_verb, Array $body = null, Array $headers = null, Array $options = null, $decode = true)
     {   
         $data = json_encode($body);
     
@@ -84,9 +84,11 @@ class Url
     
         curl_close($curl);
     
+
+        $data = $decode ? json_decode($response, true) : $response;
     
         $ret = [
-            'data'      => json_decode($response, true),
+            'data'      => $data,
             'http_code' => $http_code,
             'error'     => $err_msg
         ];

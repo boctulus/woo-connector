@@ -63,7 +63,11 @@ class Files
 	}
 
 	static function dump($object, $filename = 'dump.txt', $append = false){
-		$path = __DIR__ . '/../logs/'. $filename; 
+		if (!Strings::contains('/', $filename)){
+			$path = __DIR__ . '/../downloads/'. $filename; 
+		} else {
+			$path = $filename;
+		}
 
 		if ($append){
 			file_put_contents($path, var_export($object,  true) . "\n", FILE_APPEND);

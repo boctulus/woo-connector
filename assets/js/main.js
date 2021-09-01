@@ -1,19 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("wh_connector_form").addEventListener('submit', function(event){
+    let btn = document.getElementById("wh_connector_form");
+
+    btn.addEventListener('submit', function(event){
         register_webhooks();
+        btn.disabled = true;
         event.preventDefault();
         return;
     });
 });
 
 function register_webhooks(){
-              
-    let url = '/index.php/wp-json/connector/v1/shops'; 
+    let source = new EventSource("/index.php/wp-json/connector/v1/shopify/products/process"); 
+    let url = '/index.php/wp-json/connector/v1/shopify/shops'; 
 
     var settings = {
         "url": url,
         "method": "GET",
-        "timeout": 0,
+        "timeout": 0,   
         "headers": {
             "Content-Type": "text/plain"
         }
@@ -65,7 +68,7 @@ function register_webhooks(){
             */
 
 
-            let url = '/index.php/wp-json/connector/v1/webhooks/register'; 
+            let url = '/index.php/wp-json/connector/v1/shopify/webhooks/register'; 
 
             let data = JSON.stringify({ shop : shop });
 
@@ -112,23 +115,23 @@ function register_webhooks(){
                     };
 
                     jQuery.ajax(settings)
-                    .done(function (response) {
-                        //console.log(response); 
+                    .done(function (response) {                   
                         
                         if (typeof response['error'] != 'undefined'){
                             addNotice(response['error'], 'danger');
                             return;
                         }
 
-                        if (typeof response['data'] == 'undefined'){
-                            addNotice('Error desconocido', 'danger');
-                            return;
+                        if (typeof response['count'] != 'undefined'){                            
+                            addNotice('Hay productos de Shopify que se sincronizaran', 'info');
                         }
 
-                        let created = response['data']["created_count"];
-                        
-                        addNotice(`${created} productos sincronizados de ${vendor}`, 'info');
-
+                        // SSE
+     
+                        source.addEventListener("shopify_sync", function(e) {
+                            addNotice(e.data);
+                        }, false);
+                    
                     })
                     .fail(function (jqXHR, textStatus) {
                         console.log(jqXHR);

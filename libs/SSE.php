@@ -13,9 +13,14 @@ class SSE
 {
 	private $channel  = 'default';
 	private $interval = 1;
+	private $debug    = false;
 
 	function __construct(string $channel = null){
-		if (!headers_sent()) {
+		if (php_sapi_name() == "cli") {
+			$this->debug = true;
+		}
+		
+		if (!$this->debug && !headers_sent()) {
 			header("Content-Type: text/event-stream\n\n");
 		}
 
@@ -60,10 +65,12 @@ class SSE
 		
 		echo "\n\n";
 
-		ob_flush();
-		flush();
+		if (!$this->debug){
+			ob_flush();
+			flush();
 
-		sleep($this->interval);
+			sleep($this->interval);
+		}		
 	}
 
 	function sendError($data, $channel = null){
@@ -81,10 +88,12 @@ class SSE
 		
 		echo "\n\n";
 
-		ob_flush();
-		flush();
+		if(!$this->debug){
+			ob_flush();
+			flush();
 
-		sleep($this->interval);
+			sleep($this->interval);
+		}
 	}
 
 

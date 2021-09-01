@@ -278,11 +278,11 @@ function insert_or_update_products(){
     }   
 }
 
-function webhook_products_create(){
+function shopify_webhook_products_create(){
     insert_or_update_products();
 }
 
-function webhook_products_update(){
+function shopify_webhook_products_update(){
     insert_or_update_products();
 }
     
@@ -291,7 +291,7 @@ function webhook_products_update(){
 
     https://community.shopify.com/c/Shopify-Apps/product-delete-webhook-not-working/td-p/574094/highlight/false
 */
-function webhook_products_delete(){
+function shopify_webhook_products_delete(){
     $data = file_get_contents('php://input');  
 }
 
@@ -302,7 +302,7 @@ function getWebHook($shop, $entity, $operation, $api_key, $api_secret, $api_ver)
 
 	if (empty($webhooks)){
 		$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
-
+		
 		$res = Url::consume_api($endpoint, 'GET');
 
 		if (empty($res)){
@@ -335,13 +335,18 @@ function webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_v
 function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_ver, $check_before = true){
 	global $wpdb;
 
-	if ($check_before && webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver)){
+	if (!Strings::startsWith('https://', home_url())){
+		dd("La url callback para los webhooks debe ser https y es ". home_url());
+	}
+
+	$exists = webHookExists($shop, $entity, $operation, $api_key, $api_secret, $api_ver);
+
+	if ($check_before && $exists){
 		return;
 	}
 
 	$topic    = "$entity/$operation";
 	$endpoint = "https://$api_key:$api_secret@$shop.myshopify.com/admin/api/$api_ver/webhooks.json";
-
 
 	$body = [
 			"webhook" => [
@@ -350,6 +355,9 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 			"format"  => "json"
 			]
 	];
+
+	//dd($endpoint, 'ENDPOINT');
+	//dd($body, 'BODY');
 
 	$res = Url::consume_api($endpoint, 'POST', $body, [
 		$api_key => $api_secret
@@ -417,7 +425,7 @@ function delete_all_webhooks($vendor = null){
 }
 
 
-function test_create_webooks(){
+function shopify_test_create_webooks(){
     $config = include __DIR__ . '/config/config.php';
 
     $data = file_get_contents('php://input');
@@ -457,9 +465,10 @@ function test_create_webooks(){
 }
 
 
-/*
-    /index.php/wp-json/connector/v1/shops
-*/
+function shopify_get_shops($vendor_slug = null){
+	return get_shops($vendor_slug);
+}
+
 function get_shops($vendor_slug = null){
     $vendors = Sync::getVendors(true, null, $vendor_slug);
 	
@@ -508,7 +517,7 @@ function get_shops($vendor_slug = null){
     return $arr;
 }
 
-function get_shopi_products(){
+function shopify_get_products(){
 	// debería recibir el vendor en el body
 	$vendor_slug = $_GET['vendor'] ?? null;
 
@@ -516,49 +525,61 @@ function get_shopi_products(){
 		throw new \Exception("El vendor es requerido");
 	}
 
-	return Sync::getDataFromShopify($vendor_slug);
+	return Sync::getInitialDataFromShopify($vendor_slug);
+}
+
+function shopify_process_products(){
+	Sync::processInitialDataFromShopify();
 }
 
 
 add_action( 'rest_api_init', function () {
+	# GET /index.php/wp-json/connector/v1/shopify/products/process
+	register_rest_route( 'connector/v1', '/shopify/products/process', array(
+		'methods' => 'GET',
+		'callback' => 'shopify_process_products',
+        'permission_callback' => '__return_true'
+	) );
+
+
 	# POST /index.php/wp-json/connector/v1/shopify/products
 	register_rest_route( 'connector/v1', '/shopify/products', array(
 		'methods' => 'POST',
-		'callback' => 'get_shopi_products',
+		'callback' => 'shopify_get_products',
         'permission_callback' => '__return_true'
 	) );
 
 
-    register_rest_route( 'connector/v1', '/shops', array(
+    register_rest_route( 'connector/v1', '/shopify/shops', array(
 		'methods' => 'GET',
-		'callback' => 'get_shops',
+		'callback' => 'shopify_get_shops',
         'permission_callback' => '__return_true'
 	) );
 
 
-    register_rest_route( 'connector/v1', '/webhooks/register', array(
+    register_rest_route( 'connector/v1', '/shopify/webhooks/register', array(
 		'methods' => 'POST',
-		'callback' => 'test_create_webooks',
+		'callback' => 'shopify_test_create_webooks',
         'permission_callback' => '__return_true'
 	) );
 
 
-    #	GET /index.php/wp-json/connector/v1/webhooks/products_create
-	register_rest_route( 'connector/v1', '/webhooks/products_create', array(
+    #	GET /index.php/wp-json/connector/v1/shopify/webhooks/products_create
+	register_rest_route( 'connector/v1', '/shopify/webhooks/products_create', array(
 		'methods' => 'POST',
-		'callback' => 'webhook_products_create',
+		'callback' => 'shopify_webhook_products_create',
         'permission_callback' => '__return_true'
 	) );
 
-    register_rest_route( 'connector/v1', '/webhooks/products_update', array(
+    register_rest_route( 'connector/v1', '/shopify/webhooks/products_update', array(
 		'methods' => 'POST', 
-		'callback' => 'webhook_products_update',
+		'callback' => 'shopify_webhook_products_update',
         'permission_callback' => '__return_true'
 	) );
 
-    register_rest_route( 'connector/v1', '/webhooks/products_delete', array(
+    register_rest_route( 'connector/v1', '/shopify/webhooks/products_delete', array(
 		'methods' => 'POST',
-		'callback' => 'webhook_products_delete',
+		'callback' => 'shopify_webhook_products_delete',
         'permission_callback' => '__return_true'
 	) );
 } );

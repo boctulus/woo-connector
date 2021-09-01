@@ -2,7 +2,7 @@
 /*
 Plugin Name: Woo connector
 Description: API Rest alternativa
-Version: 1.0.0
+Version: 1.1
 Author: boctulus@gmail.com <Pablo>
 */
 
@@ -27,7 +27,7 @@ require_once __DIR__ . '/libs/Debug.php';
 require_once __DIR__ . '/libs/Files.php';
 require_once __DIR__ . '/libs/Strings.php';
 require_once __DIR__ . '/shopify.php';
-#require_once __DIR__ . '/widget.php';
+require_once __DIR__ . '/ajax_woo.php';
 
 
 /**
@@ -70,7 +70,7 @@ function connector_installer(){
     include('installer.php');
 }
 
-//register_activation_hook(__file__, 'connector_installer');
+register_activation_hook(__file__, 'connector_installer');
 
 
 /*  

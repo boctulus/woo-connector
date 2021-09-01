@@ -121,6 +121,16 @@ class Sync
         return $arr;
     }
 
+    static function getVendorFromApiKey(string $api_key){
+        $apis = self::getApiKeys();
+
+        foreach ($apis as $api){
+            if ($api['api_key'] == $api_key){
+                return $api['slug'];
+            }
+        }
+    }
+
     /*
         array (
             0 => 
@@ -206,6 +216,57 @@ class Sync
         return $arr;
     }
 
+    //check if it exists
+    static function is_vendor($only_active = false, $cms = null, $slug = null){
+        $list  = file_get_contents(__DIR__ . '/../config/vendors.txt');
+        $lines = explode(PHP_EOL, $list);
+
+        if (empty($cms) && empty($slug)){
+            throw new \Exception("CMS y SLUG no pueden ser ambos nulos");
+        }
+    
+        foreach ($lines as $line){
+            $line = trim($line);
+    
+            if (empty($line) || $line[0] == '#' || $line[0] == ';'){
+                continue;
+            }
+    
+            $line   = str_replace("\t", " ", $line);
+            $line   = preg_replace('!\s+!', ' ', $line);
+            $fields = explode(' ', $line);
+    
+            $enabled = !(isset($fields[3]) && $fields[3] == 'no');
+    
+            if ($only_active && !$enabled){
+                continue;
+            }
+
+            if ($cms != null){
+                if (is_array($cms)){
+                    $_cms = strtolower($fields[2]);
+
+                    foreach ($cms as $item){
+                        if (strtolower($item) == $_cms){
+                            return true;
+                        }
+                    }                  
+                } else {
+                    if (strtolower($fields[2]) != strtolower($cms)){
+                        continue;
+                    }
+                }
+            }
+
+            if ($fields[1] == $slug){
+                return true;
+            }
+        }
+    
+        return false;
+    }
+
+
 
     /*
         Agregar o borrar variantes dispara el WebHook para UPDATE -- ok
@@ -219,14 +280,11 @@ class Sync
 
     /*
         Asumo el vendor si es de una tienda de Shopify
-
-        Solo inserta o ignora 
     */
-    static function getDataFromShopify($vendor_slug){
-        set_time_limit(3600);
-
+    static function getInitialDataFromShopify($vendor_slug){
+        set_time_limit(0);
+        
         $config   = self::getConfig();
-
         $api_info = self::getApiKeys($vendor_slug);
 
         $api_key     = $api_info['api_key'];
@@ -244,8 +302,8 @@ class Sync
 
         $regs  = [];
 
-        $created = 0;
-        $count   = 0;
+        // número de páginas
+        $count   = 0; 
         while(true){
             if (isset($max) && !empty($max) && ($count >= $max/$limit)){
                 break;
@@ -253,7 +311,7 @@ class Sync
     
             //dd("Q=" . $query_fn($limit, $last_id));
 
-            $res = Url::consume_api("$endpoint?".$query_fn($limit, $last_id), 'GET');
+            $res = Url::consume_api("$endpoint?".$query_fn($limit, $last_id), 'GET', null, null, null, false);
 
     
             if ($res['http_code'] != 200){
@@ -263,53 +321,14 @@ class Sync
                 ];
             }
     
-            $data     = $res['data']; 
+            $data     = json_decode($res['data'], true); 
 
             $products = $data["products"];
 
-            $last_id  = max(array_column($products, 'id'));
 
-            foreach ($products as $product){
-                $sku_arr    = array_column($product["variants"], 'sku');
-                $product_id = $product['id'];
-                $slug       = $product['handle'];
-
-                $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
-
-                if (empty($rows)){
-                    $msg = "Error al decodificar para shop $shop para producto con hanlde '$slug'";
-                    //Files::logger($msg");
-                    
-                    return [
-                        'error' => $msg
-                    ];
-                }                        
-
-                foreach ($rows as $row){
-                    $sku = $row['sku'];
-
-                    $pid = \wc_get_product_id_by_sku($sku);
-
-                    //dd("HANDLE $slug | SKU $sku  | PID $pid "); continue;
-                                    
-                    if (empty($pid)){   
-                        
-                        if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
-                            $row['status'] = $config['status_at_creation'];
-                        }
-
-                        $pid = Products::createProduct($row);
-                        
-                        if ($pid != null){
-                            //echo "Producto para shop $shop con SKU = $sku creado \r\n";
-                            $created++;
-                        }
-                    }
+            file_put_contents(__DIR__ . '/../downloads/shopify.' . $vendor_slug . '.' . $limit . '.' . $last_id . '.json', $res['data']);
             
-                    Sync::updateVendor($vendor_slug, $pid);
-                }  
-                   
-            }
+            $last_id  = max(array_column($products, 'id'));
 
             if (count($products) != $limit){
                 break;
@@ -318,16 +337,256 @@ class Sync
             $count++;            
         }    
 
-       
         return [
-            'data' => [
-                'created_count' => $created
-            ]
+            'count' => $count
         ];
     }
 
 
-    static function getDataFromWooCommerce(){
+    static function getInitialDataFromWooCommerce($vendor_slug){
+        set_time_limit(0);
+        
+        $config   = self::getConfig();
+        $api_info = self::getApiKeys($vendor_slug);
+
+        $api_key     = $api_info['api_key'];
+        $api_secret  = $api_info['api_secret'];
+
+
+        $vendor = Sync::getVendors(null, null, $vendor_slug)[0];
+        $vendor_url = $vendor['url'];
+
+        // usar since_id para "paginar"
+        $endpoint = $vendor_url . '/index.php/wp-json/connector/v1/products/all?api_key=' . $api_key;
+
+        $limit    = 3;  // 100
+        $last_id  = 0;
+        $max      = null;  // null
+        $query_fn = function($limit, $last_id){ return "limit=$limit&since_id=$last_id"; };
+
+        $regs  = [];
+
+        // número de páginas
+        $count   = 0; 
+        while(true){
+            if (isset($max) && !empty($max) && ($count >= $max/$limit)){
+                break;
+            }
+    
+            //dd("Q=" . $query_fn($limit, $last_id));
+
+            $url = "$endpoint&".$query_fn($limit, $last_id);
+            $res = Url::consume_api($url, 'GET', null, null, null, false);
+
+    
+            if ($res['http_code'] != 200){
+                //dd($res['error'], 'ERROR', function(){ die; });
+                return [
+                    'error' => $res['error']
+                ];
+            }
+
+    
+            $data     = json_decode($res['data'], true);
+
+            if (empty($data)){
+                break;
+            }    
+
+            $products = $data;
+
+            file_put_contents(__DIR__ . '/../downloads/wc.' . $vendor_slug . '.' . $limit . '.' . $last_id . '.json', $res['data']);
+            
+            $last_id  = max(array_column($products, 'id'));
+
+            if (count($products) != $limit){
+                break;
+            }
+
+            $count++;            
+        }    
+
+        return [
+            'count' => $count
+        ];
+    }
+
+    static function processInitialDataFromShopify(){
+        set_time_limit(0);
+
+        try {
+            $sse = new SSE('shopify_sync');
+
+            foreach (new \DirectoryIterator(__DIR__ . '/../downloads') as $fileInfo) {
+                if($fileInfo->isDot()){
+                    continue;
+                } 
+    
+                $filename =  $fileInfo->getFilename();
+    
+                if ($filename === null || $fileInfo->getExtension() != 'json' || !Strings::startsWith('shopify.', $filename)){
+                    continue;
+                }
+    
+                // proceso
+    
+                $path = $fileInfo->getPathname();
+                $file = file_get_contents($path);
+                    
+                $data = json_decode($file, true);
+    
+                if ($data === null){
+                    $sse->sendError("Error al decodificar $path");
+                }
+    
+       
+                $products = $data['products'];
+    
+                $f = explode('.', $filename);
+                
+                if (!isset($f[1])){
+                    $sse->sendError("El archivo $filename no tiene un nombre acorde.");
+                    continue;
+                } else {
+                    $vendor_slug = $f[1];
+                }
+    
+                $api_info = self::getApiKeys($vendor_slug);
+    
+                $api_key     = $api_info['api_key'];
+                $api_secret  = $api_info['api_secret'];
+                $api_ver     = $api_info['api_ver'];
+                $shop        = $api_info['shop'];
+    
+                $created = 0;
+                foreach ($products as $product){
+                    //dd($product);
+    
+                    $sku_arr    = array_column($product["variants"], 'sku');
+                    $product_id = $product['id'];
+                    $slug       = $product['handle'];
+    
+                    $rows = adaptToShopify($product, $shop, $api_key, $api_secret, $api_ver);
+    
+                    if (empty($rows)){
+                        $msg = "Error al decodificar para shop $shop para producto con hanlde '$slug'";
+                        $sse->sendError($msg);
+                        //Files::logger($msg");
+                    }                        
+    
+                    foreach ($rows as $row){
+                        $sku = $row['sku'];
+    
+                        $pid = \wc_get_product_id_by_sku($sku);
+    
+                        //dd("HANDLE $slug | SKU $sku  | PID $pid "); continue;
+                                        
+                        if (empty($pid)){   
+                            
+                            if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                                $row['status'] = $config['status_at_creation'];
+                            }
+    
+                            $pid = Products::createProduct($row);
+                            
+                            if ($pid != null){
+                                $sse->send("Producto para shop $shop con SKU = $sku creado");
+                                $created++;
+                            }
+                        }
+                
+                        Sync::updateVendor($vendor_slug, $pid);
+                    }                     
+                }
+    
+                unlink($path);
+            }
+
+        } catch (\Exception $e) {
+            Files::logger($e->getMessage());
+        }        
+    }
+
+
+    static function processInitialDataFromWooCommerce(){
+        set_time_limit(0);
+
+        try {
+            $sse = new SSE('wc_sync');
+
+            foreach (new \DirectoryIterator(__DIR__ . '/../downloads') as $fileInfo) {
+                if($fileInfo->isDot()){
+                    continue;
+                } 
+    
+                $filename =  $fileInfo->getFilename();
+    
+                if ($filename === null || $fileInfo->getExtension() != 'json' || !Strings::startsWith('wc.', $filename)){
+                    continue;
+                }
+    
+                // proceso
+    
+                $path = $fileInfo->getPathname();
+                $file = file_get_contents($path);
+                    
+                $data = json_decode($file, true);
+    
+                if ($data === null){
+                    $sse->sendError("Error al decodificar $path");
+                }
+    
+                $products = $data;
+    
+                $f = explode('.', $filename);
+                
+                if (!isset($f[1])){
+                    $sse->sendError("El archivo $filename no tiene un nombre acorde.");
+                    continue;
+                } else {
+                    $vendor_slug = $f[1];
+                }
+    
+                $api_info = self::getApiKeys($vendor_slug);
+    
+                $api_key     = $api_info['api_key'];
+                $api_secret  = $api_info['api_secret'];
+
+                $created = 0;
+                foreach ($products as $product){
+                    //dd($product);
+
+                    $sku = $product['sku'];
+
+                    $pid = \wc_get_product_id_by_sku($sku);
+                                    
+                    if (empty($pid)){   
+                        
+                        if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                            $product['status'] = $config['status_at_creation'];
+                        }
+
+                        $pid = Products::createProduct($product);
+                        
+                        if ($pid != null){
+                            $sse->send("Producto para $vendor_slug con SKU = $sku creado");
+                            $created++;
+                        }
+                    }
+                        
+                    Sync::updateVendor($vendor_slug, $pid);
+                }
+    
+                unlink($path);
+            }
+
+        } catch (\Exception $e) {
+            Files::logger($e->getMessage());
+        }        
+    }
+
+
+    static function getUpdatedDataFromWooCommerce(){
         $vendors = Sync::getVendors(true, ['wc', 'woocommerce']);
 
         foreach ($vendors as $vendor)

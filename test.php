@@ -85,16 +85,9 @@ if (!empty($pid)){
 dd($pid);
 */
 
-
-//Products::deleteAllProducts();
-
-//delete_all_webhooks('hupit');
+//delete_all_webhooks('vendor-xyz');
 
 //dd(Sync::getVendors(true, 'WC'));
-
-
-#$res = Sync::getDataFromShopify('vendor-xyz');
-#dd($res);
 
 /*
 $sku = '102064';
@@ -106,7 +99,19 @@ dd($pid);
 //dd(WCFM_utils::is_active());
 //dd(WCFM_utils::is_wcfm_active());
 
-dd(Sync::getVendorPlugin());
-dd(Sync::getCurrentVendor(77));
+#dd(Sync::getVendorPlugin());
+#dd(Sync::getCurrentVendor(77));
 
 
+
+//$res = Sync::getDataFromShopify('vendorxyz');
+//dd($res);
+
+//dd(Sync::processDataFromShopify());
+
+
+Products::deleteAllProducts();
+
+
+//dd(Sync::getInitialDataFromWooCommerce('actandbe'));
+//Sync::processInitialDataFromWooCommerce();
