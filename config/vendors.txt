@@ -7,7 +7,7 @@ http://woo3.lan                     nxyz-vendor             wc          no
 --                                  azulmarinocasinegro     wc          no
 --                                  hupit                   shopi       no
 --                                  vendorxyz               shopi       yes
---                                  testercamp1             shopi       yes
+
 
 ;
 ; Para vendors en WooCommerce es necesaria la url de la tienda pero para vendors en Shopify no.

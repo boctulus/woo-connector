@@ -85,7 +85,7 @@ if (!empty($pid)){
 dd($pid);
 */
 
-delete_all_webhooks('testercamp1');
+delete_all_webhooks();
 
 //dd(Sync::getVendors(true, 'WC'));
 
