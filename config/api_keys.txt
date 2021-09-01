@@ -4,7 +4,7 @@ hupit                   f2eefde7fca44c9f26abf7f913dba303    shppa_52970e96cdddca
 otro_vendor             xxxxxxxxxxxxxxxxxxxxxxxxx           xxxxxxxxxx                               
 actandbe                9cbe0ce48e8c9FX
 otrooo                  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  2021-07     otro-shop
-azul-marino-casi-negro  cccccccccccccccccccccccccccccccc    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  2021-07     azulmarino
+azulmarinocasinegro     asdf01010102202
 vendorxyz               879023de21f5d5c2f55a5718533a20f7    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  2021-07     vendor-xyz
 testercamp1             06d648cbf3ddacf3a2943f0fd89194b1    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  2021-07     testercamp
 

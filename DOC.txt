@@ -1,0 +1,13 @@
+DOCUMENTACIÓN
+
+# Tareas programadas
+
+El plugin requiere de una tarea programaba que puede programarse por ejemplo para que se ejecute dos veces al día.
+
+Ejemplo de crontab:
+
+0 1,13 * * * /usr/bin/php /home/admin/web/xxx.com/public_html/wp-content/plugins/connector/sync.php >/dev/null 2>&1
+
+
+
+

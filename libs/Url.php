@@ -8,6 +8,13 @@ namespace connector\libs;
 
 class Url 
 {    
+    static function has_ssl( $domain ) {
+        $ssl_check = @fsockopen( 'ssl://' . $domain, 443, $errno, $errstr, 30 );
+        $res = !! $ssl_check;
+        if ( $ssl_check ) { fclose( $ssl_check ); }
+        return $res;
+    }
+
     static function getQueryParam(string $url, string $param){
         $query = parse_url($url, PHP_URL_QUERY);
 

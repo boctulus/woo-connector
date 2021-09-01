@@ -1,10 +1,9 @@
 # url                               vendor_slug             cms         enabled?
 
 http://woo2.lan                     actandbe                wc          yes
+http://woo3.lan                     azulmarinocasinegro     wc          yes
 http://otrovendor.com               otro-vendor             shopi       no  
 https://miserastral.com             asdf-vendor             wc          no
-http://woo3.lan                     nxyz-vendor             wc          no
---                                  azulmarinocasinegro     wc          no
 --                                  hupit                   shopi       no
 --                                  vendorxyz               shopi       yes
 

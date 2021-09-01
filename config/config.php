@@ -9,5 +9,6 @@
 #
 return [
 	'status_at_creation' => 'draft',
-	'test_mode' => true
+	'test_mode' => false,
+	'use_http_referer' => false
 ];

@@ -19,6 +19,25 @@ if (php_sapi_name() != "cli") {
 }
 
 
+/*
+    Si ya hay otra instancia corriendo abortar
+*/
+
+$ps    = shell_exec("ps ax -o pid,cmd | grep 'php sync.php' | cut -d' ' -f2-");
+$cmds  = explode(PHP_EOL, $ps);
+
+$instances = 0;
+foreach ($cmds as $cmd){
+    if ($cmd == "php sync.php"){
+        $instances++;
+    }
+}
+
+if ($instances > 1){
+    exit;
+}
+
+
 global $wpdb;
 
 $sql  = "SELECT * FROM `{$wpdb->prefix}initial_load`";
