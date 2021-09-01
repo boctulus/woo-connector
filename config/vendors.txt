@@ -6,7 +6,7 @@ https://miserastral.com             asdf-vendor             wc          no
 http://woo3.lan                     nxyz-vendor             wc          no
 --                                  azulmarinocasinegro     wc          no
 --                                  hupit                   shopi       no
---                                  vendorxyz               shopi       no
+--                                  vendorxyz               shopi       yes
 --                                  testercamp1             shopi       yes
 
 ;

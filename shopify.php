@@ -350,8 +350,8 @@ function createWebhook($shop, $entity, $operation, $api_key, $api_secret, $api_v
 
 	$body = [
 			"webhook" => [
-			"topic"   => $topic,
-			"address" => home_url() . "/index.php/wp-json/connector/v1/webhooks/{$entity}_{$operation}",
+			"topic"   => $topic,  
+			"address" => home_url() . "/index.php/wp-json/connector/v1/shopify/webhooks/{$entity}_{$operation}",
 			"format"  => "json"
 			]
 	];
