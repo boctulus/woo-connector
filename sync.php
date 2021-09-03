@@ -4,6 +4,7 @@ namespace connector;
 
 use connector\libs\Sync;
 use connector\libs\Files;
+use connector\libs\Strings;
 
 
 ini_set('display_errors', 1);
@@ -12,6 +13,7 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/libs/Sync.php';
 require_once __DIR__ . '/libs/Files.php';
+require_once __DIR__ . '/libs/Strings.php';
 
 //if (php_sapi_name() != "cli") {
 //    return;
@@ -28,7 +30,7 @@ $cmds  = explode(PHP_EOL, $ps);
 
 $instances = 0;
 foreach ($cmds as $cmd){
-    if ($cmd == "php sync.php"){
+    if ($cmd == "php sync.php" || Strings::endsWith('/php sync.php', $cmd)){
         $instances++;
     }
 }
