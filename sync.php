@@ -25,15 +25,7 @@ set_time_limit(0);
     Si ya hay otra instancia corriendo abortar
 */
 
-$ps    = shell_exec("ps ax -o pid,cmd | grep 'php sync.php' | cut -d' ' -f2-");
-$cmds  = explode(PHP_EOL, $ps);
-
-$instances = 0;
-foreach ($cmds as $cmd){
-    if ($cmd == "php sync.php" || Strings::endsWith('/php sync.php', $cmd)){
-        $instances++;
-    }
-}
+$instances    = shell_exec("ps ax -o pid,cmd | egrep 'php sync.php$' | wc -l");
 
 if ($instances > 1){
     exit;
