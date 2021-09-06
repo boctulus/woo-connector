@@ -80,13 +80,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 		En Shopify serían active, draft, archived
 	*/
 
-	if ($a['status'] == 'pending'){
-		$a['status'] = 'draft';
-	} elseif ($a['status'] == 'active'){
-		$a['status'] = 'publish';
-	} elseif ($a['status'] == 'archived'){
-		$a['status'] = 'draft';
-	}
+	$a['status'] = Products::convertStatusFromShopifyToWooCommerce($a['status']);
 	
 	/*
 		tags

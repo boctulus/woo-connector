@@ -9,6 +9,49 @@ if ( ! function_exists( 'wp_crop_image' ) ) {
 
 class Products
 {    
+    /*
+		Status
+
+		En WooCommerce puede ser publish, draft, pending
+		En Shopify serían active, draft, archived
+	*/
+    static function convertStatusFromShopifyToWooCommerce(string $status, bool $strict = false){
+        $arr = [
+            'active'   => 'publish',
+            'archived' => 'draft',
+            'draft'    => 'draft' 
+        ];
+
+        if (in_array($status, $arr)){
+            return $arr[$status];
+        }
+
+        if ($strict){
+            throw new \InvalidArgumentException("Status $status no válido para Shopify");
+        }
+
+        return $status;
+    }
+
+    static function convertStatusFromWooCommerceToShopify(string $status, bool $strict = false){
+        $arr = [
+            'publish' => 'active',
+            'draft'   => 'draft', 
+            'pending' => 'draft'
+        ];
+
+        if (in_array($status, $arr)){
+            return $arr[$status];
+        }
+
+        if ($strict){
+            throw new \InvalidArgumentException("Status $status no válido para Shopify");
+        }
+
+        return $status;
+    }
+
+
     function getTagsByPid($pid){
 		global $wpdb;
 

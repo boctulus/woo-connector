@@ -1,13 +1,14 @@
---2021-08-17 09:11:16--  https://img.youtube.com/vi/n2srjdz5mdA/maxresdefault.jpg
-Resolving img.youtube.com (img.youtube.com)... 142.250.187.238, 142.250.200.46, 172.217.169.46, ...
-Connecting to img.youtube.com (img.youtube.com)|142.250.187.238|:443... connected.
+--2021-09-05 08:55:08--  https://img.youtube.com/vi/IB-7FInyxXg/maxresdefault.jpg
+Resolving img.youtube.com (img.youtube.com)... 172.217.173.206, 172.217.173.46, 172.217.172.14, ...
+Connecting to img.youtube.com (img.youtube.com)|172.217.173.206|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 138837 (136K) [image/jpeg]
-Saving to: ‘/home/feli/Downloads/trx/n2srjdz5mdA.jpg’
+Length: 203529 (199K) [image/jpeg]
+Saving to: ‘/home/feli/Downloads/trx/IB-7FInyxXg.jpg’
 
-     0K .......... .......... .......... .......... .......... 36%  655K 0s
-    50K .......... .......... .......... .......... .......... 73%  215K 0s
-   100K .......... .......... .......... .....                100%  173K=0,5s
+     0K .......... .......... .......... .......... .......... 25%  385K 0s
+    50K .......... .......... .......... .......... .......... 50%  757K 0s
+   100K .......... .......... .......... .......... .......... 75% 1,05M 0s
+   150K .......... .......... .......... .......... ........  100% 1,77M=0,3s
 
-2021-08-17 09:11:18 (264 KB/s) - ‘/home/feli/Downloads/trx/n2srjdz5mdA.jpg’ saved [138837/138837]
+2021-09-05 08:55:09 (738 KB/s) - ‘/home/feli/Downloads/trx/IB-7FInyxXg.jpg’ saved [203529/203529]
 

@@ -496,7 +496,7 @@ class Sync
                         if (empty($pid)){   
                             
                             if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
-                                $row['status'] = $config['status_at_creation'];
+                                $row['status'] = Products::convertStatusFromShopifyToWooCommerce($config['status_at_creation']);
                             }
     
                             $pid = Products::createProduct($row);
@@ -583,13 +583,10 @@ class Sync
                    
                     $pid = \wc_get_product_id_by_sku($sku);
                                     
-                    if (empty($pid)){   
-                        
-                        /*
+                    if (empty($pid)){          
                         if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
                             $product['status'] = $config['status_at_creation'];
                         }
-                        */
 
                         $pid = Products::createProduct($product);
                         

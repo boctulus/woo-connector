@@ -52,9 +52,9 @@ dd($pid);
 
 //dd(Sync::processDataFromShopify());
 
-delete_all_webhooks();
+//delete_all_webhooks();
 
-//Products::deleteAllProducts();
+Products::deleteAllProducts();
 
 
 //dd(Sync::getInitialDataFromWooCommerce('actandbe'));
