@@ -607,6 +607,59 @@ class Sync
         }        
     }
 
+    static function process(Array $row, string $vendor_slug){   
+        $config      = self::getConfig();
+
+        $sku       = $row['sku'];
+        $operation = $row['operation'];
+       
+        
+        $pid = \wc_get_product_id_by_sku($sku);
+
+        dd($operation, "VENDOR: $vendor_slug - SKU $sku");
+
+        // Si ya existe,...
+        if (!empty($pid)){
+            switch ($operation){
+                case 'DELETE':
+                    Products::deleteProduct($pid, true);
+                    break;
+                case 'CREATE':                                             
+                case 'RESTORE':                           
+                case 'UPDATE':
+                    Products::updateProductBySku($row);                            
+                    Sync::updateVendor($vendor_slug, $pid);
+
+                    break;
+                default:
+                    $msg = "Operación $operation desconocida";
+                    dd($msg);
+                    Files::logger($msg);
+            }
+        } else {
+            switch ($operation){
+                case 'DELETE':
+                    // nada que hacer en este caso                        
+                    break;                        
+                case 'UPDATE':                           
+                case 'RESTORE':                            
+                case 'CREATE':
+                    if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
+                        $row['status'] = $config['status_at_creation'];
+                    }
+                    
+                    $pid = Products::createProduct($row);
+                    Sync::updateVendor($vendor_slug, $pid);
+
+                    break;
+                default:
+                    $msg = "Operación $operation desconocida";
+                    dd($msg);
+                    Files::logger($msg);
+            }
+
+        }
+    }
 
     static function getUpdatedDataFromWooCommerce(){
         $vendors = Sync::getVendors(true, ['wc', 'woocommerce']);
@@ -656,9 +709,17 @@ class Sync
 
             $data = $res['data'];
             
-            foreach ($data as $row){
+            foreach ($data as $row)
+            {
                 #dd($row, 'ROW'); ///
-               
+
+                $sku         = $row['sku'];
+                $vendor_slug = $vendor['slug'];
+
+                if ($config['test_mode']){
+                    Files::dump($data, "$vendor_slug.$sku.txt");
+                }
+
                 if (empty($row['sku'])){
                     continue;
                 }
@@ -666,60 +727,8 @@ class Sync
                 if ($row['status'] != 'publish' && !$config['insert_unpublished']){
                     continue;
                 }
-
-                $sku       = $row['sku'];
-                $operation = $row['operation'];
                
-
-                if ($config['test_mode']){
-                    Files::dump($data, "$vendor_slug.$sku.txt");
-                }
-                
-                $pid = \wc_get_product_id_by_sku($sku);
-
-                dd($operation, "VENDOR: $vendor_slug - SKU $sku");
-
-                // Si ya existe,...
-                if (!empty($pid)){
-                    switch ($operation){
-                        case 'DELETE':
-                            Products::deleteProduct($pid, true);
-                            break;
-                        case 'CREATE':                                             
-                        case 'RESTORE':                           
-                        case 'UPDATE':
-                            Products::updateProductBySku($row);                            
-                            Sync::updateVendor($vendor_slug, $pid);
-
-                            break;
-                        default:
-                            $msg = "Operación $operation desconocida";
-                            dd($msg);
-                            Files::logger($msg);
-                    }
-                } else {
-                    switch ($operation){
-                        case 'DELETE':
-                            // nada que hacer en este caso                        
-                            break;                        
-                        case 'UPDATE':                           
-                        case 'RESTORE':                            
-                        case 'CREATE':
-                            if (isset($config['status_at_creation']) && $config['status_at_creation'] != null){
-                                $row['status'] = $config['status_at_creation'];
-                            }
-                            
-                            $pid = Products::createProduct($row);
-                            Sync::updateVendor($vendor_slug, $pid);
-
-                            break;
-                        default:
-                            $msg = "Operación $operation desconocida";
-                            dd($msg);
-                            Files::logger($msg);
-                    }
-
-                }
+                static::process($row, $vendor_slug);
             }
 
             //Files::dump($res, 'response.txt');
