@@ -789,8 +789,18 @@ class Products
 
         // Images and Gallery
     
+        $att_ids = [];
+    
+        if (isset($args['image'])) {
+            $img = is_array($args['image']) ? $args['image'][0] : $args['image'];
+            $att_id1 = static::uploadImage($img);
+
+            if (!empty($att_id1)){
+                $att_ids[] = $att_id1;
+            }
+        }
+    
         if (isset($args['gallery_images']) && count($args['gallery_images']) >0){
-            $att_ids = [];
             foreach ($args['gallery_images'] as $img){
                 $img_url = $img[0];
 
@@ -799,19 +809,12 @@ class Products
                 if (!empty($att_id)){
                     $att_ids[] = $att_id;
                 }  
-            }
+            }        
+        } 
 
-            static::setImagesForPost($pid, $att_ids); 
-            static::setDefaultImage($pid, $att_ids[0]);        
-        } elseif (isset($args['image'])) {
-            $img = is_array($args['image']) ? $args['image'][0] : $args['image'];
-            $att_id = static::uploadImage($img);
-
-            if (!empty($att_id)){
-                static::setImagesForPost($pid, [$att_id]); 
-                static::setDefaultImage($pid, $att_id); 
-            }
-        }
+        static::setImagesForPost($pid, $att_ids); 
+        static::setDefaultImage($pid, $att_ids[0]);
+    
 
         if ($args['type'] == 'variable' && isset($args['variations'])){
             foreach ($args['variations'] as $variation){

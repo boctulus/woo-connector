@@ -716,7 +716,7 @@ class Sync
                 $sku         = $row['sku'];
                 $vendor_slug = $vendor['slug'];
 
-                if ($config['test_mode']){
+                if ($config['debug']){
                     Files::dump($data, "$vendor_slug.$sku.txt");
                 }
 

@@ -216,7 +216,7 @@ function adaptToShopify(Array $a, $shop, $api_key, $api_secret, $api_ver){
 function insert_or_update_products(){
     $config = include __DIR__ . '/config/config.php';
 
-	if ($config['test_mode']){
+	if ($config['debug']){
 		Files::logger("Shopify WebHook fired");
 	}
 
@@ -242,7 +242,7 @@ function insert_or_update_products(){
         Files::logger("Error al recibir datos para shop $shop");
     }
 
-    if ($config['test_mode']){
+    if ($config['debug']){
         Files::dump($arr, $arr['handle'] . '.txt'); 
         Files::dump($rows, $arr['handle'] . '_adaptado.txt'); 
     }

@@ -47,7 +47,7 @@ add_action('admin_init', 'connector\in_admin_header_product_page_edit');
 function in_admin_header_product_page_edit() {
     $config = include (__DIR__ . '/config/config.php');
 
-    if (!$config['test_mode']){
+    if (!$config['debug']){
         return;
     }
 
