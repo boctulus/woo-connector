@@ -616,7 +616,7 @@ class Sync
         
         $pid = \wc_get_product_id_by_sku($sku);
 
-        dd($operation, "VENDOR: $vendor_slug - SKU $sku");
+        //dd($operation, "VENDOR: $vendor_slug - SKU $sku");
 
         // Si ya existe,...
         if (!empty($pid)){
