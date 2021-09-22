@@ -812,9 +812,10 @@ class Products
             }        
         } 
 
-        static::setImagesForPost($pid, $att_ids); 
-        static::setDefaultImage($pid, $att_ids[0]);
-    
+        if (count($att_ids) >0){
+            static::setImagesForPost($pid, $att_ids); 
+            static::setDefaultImage($pid, $att_ids[0]);
+        }
 
         if ($args['type'] == 'variable' && isset($args['variations'])){
             foreach ($args['variations'] as $variation){
