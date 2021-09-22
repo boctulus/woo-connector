@@ -8,5 +8,5 @@
 return [
 	'status_at_creation' => 'draft',
 	'insert_unpublished' => false,
-	'debug' => true,
+	'debug' => false,
 ];
