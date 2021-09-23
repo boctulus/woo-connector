@@ -54,6 +54,8 @@ dd($pid);
 
 //delete_all_webhooks();
 
+
+Products::deleteAllGaleryImages();
 Products::deleteAllProducts();
 
 

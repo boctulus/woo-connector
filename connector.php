@@ -2,8 +2,8 @@
 /*
 Plugin Name: Woo connector
 Description: API Rest alternativa
-Version: 1.1
-Author: boctulus@gmail.com <Pablo>
+Version: 1.125
+Author: boctul.us@gmail.com <Pablo>
 */
 
 namespace connector;
